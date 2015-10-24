@@ -1,6 +1,33 @@
 console.group( 'Weather Homepage' );
 console.log( 'included' );
 
+var currentWindowState = 'normal';
+
+function toggleWindowState() {
+    console.log( 'currentWindowState:', currentWindowState );
+    var nextWindowState = currentWindowState === 'normal' ? 'fullscreen' : 'normal';
+    console.log( 'nextWindowState:', nextWindowState );
+    chrome.runtime.sendMessage({
+        'action': 'chrome.windows.update',
+        'data': {
+            'updateInfo': {
+                'state': nextWindowState,
+            },
+        },
+    }, function( response ) {
+        console.log( 'response received:', response );
+        currentWindowState = response;
+        console.log( 'currentWindowState:', currentWindowState );
+    });
+}
+
+toggleWindowState();
+
+// Restore window when page is clicked.
+document.addEventListener('click', function() {
+    toggleWindowState();
+});
+
 console.log( 'adding style' );
 var style = document.createElement( 'style' );
 style.type = 'text/css';
@@ -50,6 +77,35 @@ style.innerHTML =
         'box-shadow: none !important;' +
         // Remove weather card padding.
         'padding: 0 !important;' +
+    '}' +
+
+    // Vertical align weather card.
+    [
+        'html',
+        'body',
+        '#main',
+        '#cnt',
+        '.mw:not(#ucs)',
+        '#rcnt',
+        '.col:not(#rhscol)',
+        '#center_col',
+    ].join(',') + '{' +
+        'height: 100%;' +
+    '}' +
+    '#center_col {' +
+        'display: table;' +
+    '}' +
+    '#res {' +
+        'display: table-cell;' +
+        'padding: 0;' +
+        'vertical-align: middle;' +
+    '}' +
+    '#search {' +
+        'width: 528px;' +
+    '}' +
+    '.vk_c {' +
+        'margin-left: 0 !important;' +
+        'margin-right: 0 !important;' +
     '}' +
     '';
 var head = document.getElementsByTagName( 'head' )[ '0' ];
