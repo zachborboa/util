@@ -1,0 +1,14 @@
+{
+  "name": "Weather Homepage",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Give the weather search page a clean look.",
+  "content_scripts": [{
+    "matches": [
+      "https://www.google.com/search?q=weather*"
+    ],
+    "js": [
+      "content_script.js"
+    ]
+  }]
+}
