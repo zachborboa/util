@@ -1,0 +1,19 @@
+{
+   "background": {
+      "scripts": [ "js/background.js" ]
+   },
+   "browser_action": {
+      "default_icon": "img/icon-48x48.png",
+      "default_title": "Pin Tab"
+   },
+   "icons": {
+      "128": "img/icon-128x128.png",
+      "16": "img/icon-16x16.png",
+      "48": "img/icon-48x48.png"
+   },
+   "manifest_version": 2,
+   "name": "Pin Tab",
+   "options_page": "html/options.html",
+   "permissions": [ "tabs", "storage" ],
+   "version": "0.0.1"
+}
