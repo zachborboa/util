@@ -1,19 +1,21 @@
 {
-  "name": "Weather Homepage",
-  "version": "0.0.1",
-  "manifest_version": 2,
-  "description": "Give the weather search page a clean look.",
-  "background":{
-    "scripts":[
+  "background": {
+    "scripts": [
       "background.js"
     ]
   },
-  "content_scripts": [{
-    "matches": [
-      "https://www.google.com/search?q=weather*"
-    ],
-    "js": [
-      "content_script.js"
-    ]
-  }]
+  "content_scripts": [
+    {
+      "js": [
+        "content_script.js"
+      ],
+      "matches": [
+        "https://www.google.com/search?q=weather*"
+      ]
+    }
+  ],
+  "description": "Give the weather search page a clean look.",
+  "manifest_version": 2,
+  "name": "Weather Homepage",
+  "version": "0.0.1"
 }
