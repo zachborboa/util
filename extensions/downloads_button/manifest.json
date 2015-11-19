@@ -11,8 +11,7 @@
   "description": "Provides quick icon access to your Chrome downloads.",
   "icons": {
     "128": "img/icon-128x128.png",
-    "26": "img/icon-26x26.png",
-    "512": "img/icon-512x512.png",
+    "16": "img/icon-16x16.png",
     "64": "img/icon-64x64.png"
   },
   "manifest_version": 2,
