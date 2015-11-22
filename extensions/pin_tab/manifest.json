@@ -8,6 +8,7 @@
     "default_icon": "img/icon-48x48.png",
     "default_title": "Pin Tab"
   },
+  "description": "Provides quick access to pin and unpin your tabs.",
   "icons": {
     "128": "img/icon-128x128.png",
     "16": "img/icon-16x16.png",
