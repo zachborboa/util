@@ -1,22 +1,22 @@
 {
-  "name": "Always Select",
-  "version": "1.0.0",
-  "manifest_version": 2,
-  "description": "Always Select prevents sites from disabling user selection via css.",
-  "content_scripts":[
+  "content_scripts": [
     {
       "all_frames": true,
-      "css":[
+      "css": [
         "css/style.css"
       ],
-      "matches":[
+      "matches": [
         "*://*/*"
       ]
     }
   ],
+  "description": "Always Select prevents sites from disabling user selection via css.",
   "icons": {
+    "128": "img/icon128.png",
     "16": "img/icon16.png",
-    "48": "img/icon48.png",
-    "128": "img/icon128.png"
-  }
+    "48": "img/icon48.png"
+  },
+  "manifest_version": 2,
+  "name": "Always Select",
+  "version": "1.0.0"
 }
