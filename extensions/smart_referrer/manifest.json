@@ -1,0 +1,16 @@
+{
+  "background": {
+    "scripts": [
+      "js/background.js"
+    ]
+  },
+  "description": "Send referrers only from the same origin.",
+  "manifest_version": 2,
+  "name": "Smart Referrer",
+  "permissions": [
+    "*://*/*",
+    "webRequest",
+    "webRequestBlocking"
+  ],
+  "version": "0.0.1"
+}
