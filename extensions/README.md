@@ -16,6 +16,10 @@ Provides quick icon access to your Chrome extensions.
 
 Provides quick access to pin and unpin your tabs.
 
+### Smart Referrer
+
+Send referrers only from the same origin.
+
 ### Weather Homepage
 
 Give the weather search page a clean look.
