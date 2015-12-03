@@ -1,0 +1,12 @@
+@media (min-width: 1200px) {
+  .container-fluid {
+    max-width: 1000px;
+  }
+}
+.row > div {
+  margin-top: 2em;
+}
+
+.pattern {
+  font-family: monospace;
+}
