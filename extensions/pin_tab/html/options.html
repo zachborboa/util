@@ -12,6 +12,10 @@
 <div class="container-fluid">
     <div class="row">
 
+        <div class="col-xs-12">
+            <h2>Pin Tabs</h2>
+        </div>
+
         <div class="
             col-xs-12 col-xs-offset-0
             col-md-8 col-md-offset-2
@@ -162,7 +166,107 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
 
+        <div class="col-xs-12">
+            <h2>Keep Tabs Open</h2>
+        </div>
+
+        <div class="
+            col-xs-12 col-xs-offset-0
+            col-md-8 col-md-offset-2
+            col-lg-6 col-lg-offset-3
+            ">
+            <form>
+                <div class="form-group">
+                    <label for="pattern">URL to open...</label>
+                    <input
+                        class="form-control"
+                        id="pattern"
+                        placeholder="(e.g. https://calendar.google.com/calendar/render)"
+                        type="text"
+                        />
+                    <p class="help-block">Enter a url to keep open.</p>
+                </div>
+                <div class="form-group">
+                    <label for="pattern">...when the url pattern is not found</label>
+                    <input
+                        class="form-control"
+                        id="pattern"
+                        placeholder="(e.g. https:\/\/calendar\.google\.com\/)"
+                        type="text"
+                        />
+                    <p class="help-block">Enter a url pattern used to check if the page is not open.</p>
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+        </div>
+
+        <div class="col-xs-12">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            URL to open
+                        </th>
+                        <th>
+                            Pattern
+                        </th>
+                        <th>
+                        </th>
+                        <th>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="url">
+                            https://mail.google.com/mail/u/0/#inbox
+                        </td>
+                        <td class="pattern">
+                            https:\/\/mail\.google\.com\/
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-default">
+                                <span class="glyphicon glyphicon-edit"></span> Edit
+                            </button>
+                            <button type="button" class="btn btn-default">
+                                <strong>
+                                    <span class="glyphicon glyphicon-check"></span> Enabled
+                                </strong>
+                            </button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-default">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="url">
+                            https://calendar.google.com/calendar/render
+                        </td>
+                        <td class="pattern">
+                            https:\/\/calendar\.google\.com\/
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-default">
+                                <span class="glyphicon glyphicon-edit"></span> Edit
+                            </button>
+                            <button type="button" class="btn btn-default">
+                                <strong>
+                                    <span class="glyphicon glyphicon-check"></span> Enabled
+                                </strong>
+                            </button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-default">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
     </div>

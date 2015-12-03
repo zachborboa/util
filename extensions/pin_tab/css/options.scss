@@ -5,7 +5,12 @@
 }
 
 .row > div {
-    margin-top: 2em;
+    margin-bottom: 1.5em;
+    margin-top: .5em;
+
+    &:last-child {
+        margin-bottom: 9em;
+    }
 }
 
 .pattern {
