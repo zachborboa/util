@@ -2,6 +2,7 @@ var PinTab = function() {
 };
 
 PinTab.prototype.pinTab = function( options ) {
+    console.info( 'PinTab.prototype.pinTab' );
     var updateProperties = {
         pinned: true,
     };
@@ -18,6 +19,7 @@ PinTab.prototype.pinTab = function( options ) {
 };
 
 PinTab.prototype.unpinTab = function( options ) {
+    console.info( 'PinTab.prototype.unpinTab' );
     chrome.tabs.update( options.tab.id, {
         'pinned': false,
     }, function( tab ) {
@@ -28,6 +30,25 @@ PinTab.prototype.unpinTab = function( options ) {
         } else {
             console.log( 'failed to unpin tab' );
         }
+    });
+};
+
+PinTab.prototype.togglePin = function( options ) {
+    console.info( 'PinTab.prototype.togglePin' );
+    if ( options.tab.pinned ) {
+        this.unpinTab({
+            'tab': options.tab,
+        });
+    } else {
+        this.pinTab({
+            'tab': options.tab,
+        });
+    }
+};
+
+PinTab.prototype.set = function( key, callback ) {
+    console.info( 'PinTab.prototype.set' );
+    chrome.storage.sync.set( key, function() {
     });
 };
 
@@ -46,18 +67,9 @@ chrome.browserAction.onClicked.addListener(function() {
             console.log( 'tab:', tab );
             if ( tab.active ) {
                 console.log( 'tab is active' );
-                if ( tab.pinned ) {
-                    pinTab.unpinTab({
-                        'tab': tab,
-                        'source': 'browseraction',
-                    });
-                } else {
-                    pinTab.pinTab({
-                        'tab': tab,
-                        'source': 'browseraction',
-                        'remember': false,
-                    });
-                }
+                pinTab.togglePin({
+                    'tab': tab,
+                });
                 break;
             }
         }
@@ -76,6 +88,25 @@ chrome.tabs.onUpdated.addListener(function(
     /* integer */ tabId,
     /* object */ changeInfo,
     /* Tab */ tab ) {
-    console.info( 'chrome.tabs.onCreated', tab );
-    // TODO: Loop through all saved settings to see if we should pin this tab.
+    console.info( 'chrome.tabs.onUpdated', tab );
+    if ( tab.pinned ) {
+        return;
+    }
+    if ( tab.status === 'complete' ) {
+        // TODO: Get pin patterns from settings/storage.
+        var pinPatterns = [
+            /^https:\/\/www\.example\.com\/pin\//,
+        ];
+        for ( var i = 0; i < pinPatterns.length; i++ ) {
+            var pinPattern = pinPatterns[ i ];
+            console.log( pinPattern );
+            if ( pinPattern.test( tab.url ) ) {
+                console.log( 'matched' );
+                pinTab.pinTab({
+                    'tab': tab,
+                });
+                break;
+            }
+        }
+    }
 });
