@@ -1,0 +1,16 @@
+{
+  "background": {
+    "scripts": [
+      "js/background.js"
+    ]
+  },
+  "description": "Log all requests to the background page.",
+  "incognito": "split",
+  "manifest_version": 2,
+  "name": "Request Viewer",
+  "permissions": [
+    "*://*/*",
+    "webRequest"
+  ],
+  "version": "0.0.1"
+}
