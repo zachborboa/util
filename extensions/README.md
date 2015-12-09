@@ -16,6 +16,10 @@ Provides quick icon access to your Chrome extensions.
 
 Provides quick access to pin and unpin your tabs.
 
+### Request Viewer
+
+Log all requests to the background page.
+
 ### Smart Referrer
 
 Send referrers only from the same origin.
