@@ -11,6 +11,7 @@
   margin-bottom: 9em;
 }
 
+.form-control,
 .pattern {
   font-family: monospace;
 }

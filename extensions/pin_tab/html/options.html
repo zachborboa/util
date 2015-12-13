@@ -20,7 +20,7 @@
             <div class="
                 col-xs-12 col-xs-offset-0
                 col-md-8 col-md-offset-2
-                col-lg-6 col-lg-offset-3
+                col-lg-8 col-lg-offset-2
                 ">
                 <form>
                     <div class="form-group">
@@ -67,14 +67,14 @@
             <div class="
                 col-xs-12 col-xs-offset-0
                 col-md-8 col-md-offset-2
-                col-lg-6 col-lg-offset-3
+                col-lg-8 col-lg-offset-2
                 ">
                 <form>
                     <div class="form-group">
                         <label for="pattern">URL to open...</label>
                         <input
                             class="form-control"
-                            id="pattern"
+                            id="keep-open-pattern"
                             placeholder="(e.g. https://calendar.google.com/calendar/render)"
                             type="text"
                             />
@@ -84,7 +84,7 @@
                         <label for="pattern">...when the url pattern is not found</label>
                         <input
                             class="form-control"
-                            id="pattern"
+                            id="keep-open-url"
                             placeholder="(e.g. https:\/\/calendar\.google\.com\/)"
                             type="text"
                             />
@@ -113,7 +113,9 @@
                     <tbody>
                         <tr>
                             <td class="url">
-                                https://mail.google.com/mail/u/0/#inbox
+                                <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank">
+                                    https://mail.google.com/mail/u/0/#inbox
+                                </a>
                             </td>
                             <td class="pattern">
                                 https:\/\/mail\.google\.com\/
@@ -136,7 +138,9 @@
                         </tr>
                         <tr>
                             <td class="url">
-                                https://calendar.google.com/calendar/render
+                                <a href="https://calendar.google.com/calendar/render" target="_blank">
+                                    https://calendar.google.com/calendar/render
+                                </a>
                             </td>
                             <td class="pattern">
                                 https:\/\/calendar\.google\.com\/
