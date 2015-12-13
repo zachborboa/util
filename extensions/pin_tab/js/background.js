@@ -47,6 +47,25 @@ PinTab.prototype.pinTab = function( options ) {
     });
 };
 
+PinTab.prototype.pinTabIfUrlMatch = function( tab ) {
+    console.info( 'PinTab.prototype.pinTabIfUrlMatch' );
+    if ( tab.pinned ) {
+        return;
+    }
+    for ( var key in this.options.pin_patterns ) {
+        var pinTabsPattern = this.options.pin_patterns[ key ];
+        var pattern = RegExp( pinTabsPattern.pattern );
+        console.log( pattern );
+        if ( pattern.test( tab.url ) ) {
+            console.log( 'matched' );
+            pinTab.pinTab({
+                'tab': tab,
+            });
+            break;
+        }
+    }
+};
+
 PinTab.prototype.unpinTab = function( options ) {
     console.info( 'PinTab.prototype.unpinTab' );
     chrome.tabs.update( options.tab.id, {
@@ -152,6 +171,7 @@ chrome.browserAction.onClicked.addListener(function() {
 chrome.tabs.onCreated.addListener(function(
     /* Tab */ tab ) {
     console.info( 'chrome.tabs.onCreated', tab );
+    pinTab.pinTabIfUrlMatch( tab );
 });
 
 // Fired when a tab is updated.
@@ -160,25 +180,5 @@ chrome.tabs.onUpdated.addListener(function(
     /* object */ changeInfo,
     /* Tab */ tab ) {
     console.info( 'chrome.tabs.onUpdated', tab );
-    if ( tab.pinned ) {
-        return;
-    }
-    if ( tab.status === 'complete' ) {
-        var pinTabsPatterns = pinTab.options.pin_patterns;
-        console.log( 'pinTabsPatterns:', pinTabsPatterns );
-        if ( pinTabsPatterns ) {
-            for ( var key in pinTabsPatterns ) {
-                var pinTabsPattern = pinTabsPatterns[ key ];
-                var pattern = RegExp( pinTabsPattern.pattern );
-                console.log( pattern );
-                if ( pattern.test( tab.url ) ) {
-                    console.log( 'matched' );
-                    pinTab.pinTab({
-                        'tab': tab,
-                    });
-                    break;
-                }
-            }
-        }
-    }
+    pinTab.pinTabIfUrlMatch( tab );
 });
