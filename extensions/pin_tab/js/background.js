@@ -1,7 +1,17 @@
-var DEFAULT_PIN_PATTERNS = [
-    /^https:\/\/calendar\.google\.com\//,
-    /^https:\/\/mail\.google\.com\//,
+var DEFAULT_PIN_PATTERN_URLS = [
+    '^https:\\/\\/calendar\\.google\\.com\\/',
+    '^https:\\/\\/mail\\.google\\.com\\/',
 ];
+var DEFAULT_PIN_PATTERNS = {};
+for ( var i in DEFAULT_PIN_PATTERN_URLS ) {
+    var pattern = DEFAULT_PIN_PATTERN_URLS[ i ];
+    var key = btoa( pattern );
+    DEFAULT_PIN_PATTERNS[ key ] = {
+        'enabled': true,
+        'pattern': pattern,
+    };
+}
+console.log( 'DEFAULT_PIN_PATTERNS:', DEFAULT_PIN_PATTERNS );
 
 var PinTab = function() {
     this.options = {};
@@ -13,6 +23,9 @@ PinTab.prototype.init = function() {
     this.get( null, function( items ) {
         console.info( 'this.get callback' );
         pinTab.options = items;
+        if ( ! pinTab.options.pin_patterns ) {
+            pinTab.options.pin_patterns = DEFAULT_PIN_PATTERNS;
+        }
         console.info( 'options set', pinTab );
     });
 };
@@ -90,6 +103,7 @@ PinTab.prototype.set = function( key, callback ) {
 PinTab.prototype.addPattern = function( patternObj, callback ) {
     console.info( 'PinTab.prototype.addPattern', patternObj );
     var key = btoa( patternObj.pattern );
+    console.log( 'key:', key );
     var added = false;
     if ( ! ( key in this.options.pin_patterns ) ) {
         added = true;
@@ -104,6 +118,7 @@ PinTab.prototype.addPattern = function( patternObj, callback ) {
 PinTab.prototype.removePattern = function( pattern, callback ) {
     console.info( 'PinTab.prototype.removePattern', pattern );
     var key = btoa( pattern );
+    console.log( 'key:', key );
     delete this.options.pin_patterns[ key ];
     callback();
 };
