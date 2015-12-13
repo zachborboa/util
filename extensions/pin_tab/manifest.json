@@ -8,6 +8,7 @@
     "default_icon": "img/icon-48x48.png",
     "default_title": "Pin Tab"
   },
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "description": "Provides quick access to pin and unpin your tabs.",
   "icons": {
     "128": "img/icon-128x128.png",

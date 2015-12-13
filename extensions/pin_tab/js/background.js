@@ -1,4 +1,20 @@
+var DEFAULT_PIN_PATTERNS = [
+    /^https:\/\/calendar\.google\.com\//,
+    /^https:\/\/mail\.google\.com\//,
+];
+
 var PinTab = function() {
+    this.options = {};
+    this.init();
+};
+
+PinTab.prototype.init = function() {
+    console.info( 'PinTab.prototype.init' );
+    this.get( null, function( items ) {
+        console.info( 'this.get callback' );
+        pinTab.options = items;
+        console.info( 'options set', pinTab );
+    });
 };
 
 PinTab.prototype.pinTab = function( options ) {
@@ -46,10 +62,50 @@ PinTab.prototype.togglePin = function( options ) {
     }
 };
 
-PinTab.prototype.set = function( key, callback ) {
-    console.info( 'PinTab.prototype.set' );
-    chrome.storage.sync.set( key, function() {
+PinTab.prototype.get = function( key, callback ) {
+    console.info( 'PinTab.prototype.get key:', key );
+    chrome.storage.sync.get( key, function( items ) {
+        console.log( 'PinTab.prototype.get callback for key:', key );
+        if ( chrome.runtime.lastError ) {
+            console.warn( 'chrome.runtime.lastError.message', chrome.runtime.lastError.message );
+        } else {
+            console.log( 'items:', items );
+            callback( items );
+        }
     });
+};
+
+PinTab.prototype.set = function( key, callback ) {
+    console.info( 'PinTab.prototype.set key:', key );
+    chrome.storage.sync.get( key, function() {
+        console.log( 'PinTab.prototype.set callback for key:', key );
+        if ( chrome.runtime.lastError ) {
+            console.warn( 'chrome.runtime.lastError.message', chrome.runtime.lastError.message );
+        } else {
+            callback();
+        }
+    });
+};
+
+PinTab.prototype.addPattern = function( patternObj, callback ) {
+    console.info( 'PinTab.prototype.addPattern', patternObj );
+    var key = btoa( patternObj.pattern );
+    var added = false;
+    if ( ! ( key in this.options.pin_patterns ) ) {
+        added = true;
+    }
+    console.log( 'added:', added );
+    this.options.pin_patterns[ key ] = patternObj;
+    pinTab.set( this.options, function() {
+        callback( added );
+    });
+};
+
+PinTab.prototype.removePattern = function( pattern, callback ) {
+    console.info( 'PinTab.prototype.removePattern', pattern );
+    var key = btoa( pattern );
+    delete this.options.pin_patterns[ key ];
+    callback();
 };
 
 var pinTab = new PinTab();
@@ -93,19 +149,20 @@ chrome.tabs.onUpdated.addListener(function(
         return;
     }
     if ( tab.status === 'complete' ) {
-        // TODO: Get pin patterns from settings/storage.
-        var pinPatterns = [
-            /^https:\/\/www\.example\.com\/pin\//,
-        ];
-        for ( var i = 0; i < pinPatterns.length; i++ ) {
-            var pinPattern = pinPatterns[ i ];
-            console.log( pinPattern );
-            if ( pinPattern.test( tab.url ) ) {
-                console.log( 'matched' );
-                pinTab.pinTab({
-                    'tab': tab,
-                });
-                break;
+        var pinTabsPatterns = pinTab.options.pin_patterns;
+        console.log( 'pinTabsPatterns:', pinTabsPatterns );
+        if ( pinTabsPatterns ) {
+            for ( var key in pinTabsPatterns ) {
+                var pinTabsPattern = pinTabsPatterns[ key ];
+                var pattern = RegExp( pinTabsPattern.pattern );
+                console.log( pattern );
+                if ( pattern.test( tab.url ) ) {
+                    console.log( 'matched' );
+                    pinTab.pinTab({
+                        'tab': tab,
+                    });
+                    break;
+                }
             }
         }
     }
