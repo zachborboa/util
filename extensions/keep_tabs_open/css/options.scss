@@ -1,0 +1,19 @@
+@media (min-width: 1200px) {
+    .container-fluid {
+        max-width: 1000px;
+    }
+}
+
+.row > div {
+    margin-bottom: 1.5em;
+    margin-top: .5em;
+
+    &:last-child {
+        margin-bottom: 9em;
+    }
+}
+
+.form-control,
+.pattern {
+    font-family: monospace;
+}
