@@ -14,9 +14,13 @@ Provides quick icon access to your Chrome downloads.
 
 Provides quick icon access to your Chrome extensions.
 
+### Keep Tabs Open
+
+Continually check and ensure select pages are open.
+
 ### Pin Tab
 
-Provides quick access to pin and unpin your tabs.
+Automatically pin tabs based on url patterns and quickly pin and unpin your tabs.
 
 ### Request Viewer
 
