@@ -44,123 +44,18 @@
                             <th>
                                 URL or Regular Expression
                             </th>
+                            <!--
                             <th>
                                 <span title="Number of tabs currently matching url or pattern">Matching</span>
                             </th>
                             <th>
                             </th>
+                            -->
                             <th>
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="col-xs-12" id="keep-tabs-open">
-            <div class="col-xs-12">
-                <h2>Keep Tabs Open</h2>
-            </div>
-
-            <div class="
-                col-xs-12 col-xs-offset-0
-                col-md-8 col-md-offset-2
-                col-lg-8 col-lg-offset-2
-                ">
-                <form>
-                    <div class="form-group">
-                        <label for="pattern">URL to open...</label>
-                        <input
-                            class="form-control"
-                            id="keep-open-pattern"
-                            placeholder="(e.g. https://calendar.google.com/calendar/render)"
-                            type="text"
-                            />
-                        <p class="help-block">Enter a url to keep open.</p>
-                    </div>
-                    <div class="form-group">
-                        <label for="pattern">...when the url pattern is not found</label>
-                        <input
-                            class="form-control"
-                            id="keep-open-url"
-                            placeholder="(e.g. https:\/\/calendar\.google\.com\/)"
-                            type="text"
-                            />
-                        <p class="help-block">Enter a url pattern used to check if the page is not open.</p>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </form>
-            </div>
-
-            <div class="col-xs-12">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>
-                                URL to open
-                            </th>
-                            <th>
-                                Pattern
-                            </th>
-                            <th>
-                            </th>
-                            <th>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="url">
-                                <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank">
-                                    https://mail.google.com/mail/u/0/#inbox
-                                </a>
-                            </td>
-                            <td class="pattern">
-                                https:\/\/mail\.google\.com\/
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-default">
-                                    <span class="glyphicon glyphicon-edit"></span> Edit
-                                </button>
-                                <button type="button" class="btn btn-default">
-                                    <strong>
-                                        <span class="glyphicon glyphicon-check"></span> Enabled
-                                    </strong>
-                                </button>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-default">
-                                    <span class="glyphicon glyphicon-trash"></span>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="url">
-                                <a href="https://calendar.google.com/calendar/render" target="_blank">
-                                    https://calendar.google.com/calendar/render
-                                </a>
-                            </td>
-                            <td class="pattern">
-                                https:\/\/calendar\.google\.com\/
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-default">
-                                    <span class="glyphicon glyphicon-edit"></span> Edit
-                                </button>
-                                <button type="button" class="btn btn-default">
-                                    <strong>
-                                        <span class="glyphicon glyphicon-check"></span> Enabled
-                                    </strong>
-                                </button>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-default">
-                                    <span class="glyphicon glyphicon-trash"></span>
-                                </button>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -177,6 +72,7 @@
     <td>
         {{ matching }}
     </td>
+    <!--
     <td>
         <button type="button" class="btn btn-default edit">
             <span class="glyphicon glyphicon-edit"></span> Edit
@@ -187,6 +83,7 @@
             </strong>
         </button>
     </td>
+    -->
     <td>
         <button type="button" class="btn btn-default delete">
             <span class="glyphicon glyphicon-trash"></span>
