@@ -26,7 +26,7 @@ PinTab.prototype.init = function() {
         if ( ! pinTab.options.pin_patterns ) {
             pinTab.options.pin_patterns = DEFAULT_PIN_PATTERNS;
         }
-        console.info( 'options set', pinTab );
+        console.info( 'options set', pinTab.options );
     });
 };
 
