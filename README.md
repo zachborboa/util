@@ -6,6 +6,10 @@
 
 Always Select prevents sites from disabling user selection via css.
 
+### Close Window
+
+Allowing closing a window's tab.
+
 ### Downloads Button
 
 Provides quick icon access to your Chrome downloads.
