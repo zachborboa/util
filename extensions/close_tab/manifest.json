@@ -16,7 +16,7 @@
   ],
   "description": "Allowing closing a window's tab.",
   "manifest_version": 2,
-  "name": "Close Window",
+  "name": "Close Tab",
   "permissions": [
     "tabs"
   ],
