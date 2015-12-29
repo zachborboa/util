@@ -17,6 +17,7 @@ var DEFAULT_PATTERNS = function() {
         var url = patterns[ pattern ][ 'url' ];
         var key = btoa( pattern );
         defaultPatterns[ key ] = {
+            // FIXME: Add ability to specify multiple patterns to check against before opening url.
             'pattern': pattern,
             'url': url,
         };
