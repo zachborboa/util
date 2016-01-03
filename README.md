@@ -6,7 +6,7 @@
 
 Always Select prevents sites from disabling user selection via css.
 
-### Close Window
+### Close Tab
 
 Allowing closing a window's tab.
 
@@ -17,6 +17,10 @@ Provides quick icon access to your Chrome downloads.
 ### Extensions Button
 
 Provides quick icon access to your Chrome extensions.
+
+### Google Calendar Workflow
+
+Gives you more control over your events in Google Calendar
 
 ### Keep Tabs Open
 
