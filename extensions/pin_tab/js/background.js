@@ -109,7 +109,7 @@ PinTab.prototype.get = function( key, callback ) {
 
 PinTab.prototype.set = function( key, callback ) {
     console.info( 'PinTab.prototype.set key:', key );
-    chrome.storage.sync.get( key, function() {
+    chrome.storage.sync.set( key, function() {
         console.log( 'PinTab.prototype.set callback for key:', key );
         if ( chrome.runtime.lastError ) {
             console.warn( 'chrome.runtime.lastError.message', chrome.runtime.lastError.message );
