@@ -32,10 +32,12 @@ pinTabsForm.submit(function( event ) {
         }
 
         var patternObj = {
+            'key': btoa(pattern),
             'enabled': true,
             'matching': '-',
             'pattern': pattern,
         };
+        console.log(patternObj);
 
         var context = patternObj;
         var html = pinTabsRowTemplate( context );
@@ -44,7 +46,27 @@ pinTabsForm.submit(function( event ) {
             patternInput.val( '' );
             if ( added ) {
                 pinTabsRowWrapper.prepend( html );
-                backgroundPage.pinTab.updateMatchingTabCount();
+                backgroundPage.pinTab.getMatchingTabCount(function(patternMatches) {
+                    for ( var key in patternMatches ) {
+                        var matches = patternMatches[key];
+                        console.log(pattern, matches);
+                        var selector = '[data-key="' + key + '"]';
+                        console.log('selector:', selector);
+                        var row = document.querySelector(selector);
+                        if ( ! row ) {
+                            console.error('row not found');
+                        } else {
+                            var matching = row.querySelector('.matching');
+                            if ( ! matching ) {
+                                console.error('matching not found');
+                            } else {
+                                matching.innerText = matches;
+                                console.log('matching set');
+                            }
+                        }
+                        console.log('---');
+                    }
+                });
             }
         });
     }

@@ -142,8 +142,8 @@ PinTab.prototype.removePattern = function( pattern, callback ) {
     callback();
 };
 
-PinTab.prototype.updateMatchingTabCount = function() {
-    console.info('PinTab.prototype.updateMatchingTabCount');
+PinTab.prototype.getMatchingTabCount = function(callback) {
+    console.info('PinTab.prototype.getMatchingTabCount');
     chrome.windows.getAll(
         /* object getInfo */ {
             'populate': true,
@@ -164,20 +164,20 @@ PinTab.prototype.updateMatchingTabCount = function() {
                 console.log('pattern:', pinTabsPattern.pattern);
                 var regex = RegExp(pinTabsPattern.pattern);
                 console.log('regex:', regex);
-                patternMatches[pinTabsPattern.pattern] = 0;
+                patternMatches[key] = 0;
                 for ( var k in tabsOpen ) {
                     var tab = tabsOpen[k];
                     console.log('tab.url:', tab.url);
                     if ( regex.test(tab.url) ) {
                         console.log('matched');
-                        patternMatches[pinTabsPattern.pattern] += 1;
+                        patternMatches[key] += 1;
                     }
                 }
                 console.log('---');
             }
 
-            // TODO: Update options page with matching counts.
             console.log('patternMatches:', patternMatches);
+            callback(patternMatches);
         }
     );
 };
