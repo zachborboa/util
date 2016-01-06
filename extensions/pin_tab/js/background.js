@@ -53,11 +53,11 @@ PinTab.prototype.pinTabIfUrlMatch = function( tab ) {
         return;
     }
     for ( var key in this.options.pin_patterns ) {
-        var pinTabsPattern = this.options.pin_patterns[ key ];
-        var pattern = RegExp( pinTabsPattern.pattern );
-        console.log( pattern );
-        if ( pattern.test( tab.url ) ) {
-            console.log( 'matched' );
+        var pinTabsPattern = this.options.pin_patterns[key];
+        var pattern = RegExp(pinTabsPattern.pattern);
+        console.log(pattern);
+        if ( pattern.test(tab.url) ) {
+            console.log('matched');
             pinTab.pinTab({
                 'tab': tab,
             });
@@ -141,6 +141,47 @@ PinTab.prototype.removePattern = function( pattern, callback ) {
     delete this.options.pin_patterns[ key ];
     callback();
 };
+
+PinTab.prototype.updateMatchingTabCount = function() {
+    console.info('PinTab.prototype.updateMatchingTabCount');
+    chrome.windows.getAll(
+        /* object getInfo */ {
+            'populate': true,
+        },
+        /* function callback */ function(windows) {
+            var tabsOpen = {};
+            windows.forEach(function(window) {
+                window.tabs.forEach(function(tab) {
+                    tabsOpen[tab.id] = tab;
+                });
+            });
+            console.log('tabsOpen:', tabsOpen);
+
+            console.log('looping through all pin patterns');
+            var patternMatches = {};
+            for ( var key in pinTab.options.pin_patterns ) {
+                var pinTabsPattern = pinTab.options.pin_patterns[key];
+                console.log('pattern:', pinTabsPattern.pattern);
+                var regex = RegExp(pinTabsPattern.pattern);
+                console.log('regex:', regex);
+                patternMatches[pinTabsPattern.pattern] = 0;
+                for ( var k in tabsOpen ) {
+                    var tab = tabsOpen[k];
+                    console.log('tab.url:', tab.url);
+                    if ( regex.test(tab.url) ) {
+                        console.log('matched');
+                        patternMatches[pinTabsPattern.pattern] += 1;
+                    }
+                }
+                console.log('---');
+            }
+
+            // TODO: Update options page with matching counts.
+            console.log('patternMatches:', patternMatches);
+        }
+    );
+};
+
 
 var pinTab = new PinTab();
 

@@ -33,7 +33,7 @@ pinTabsForm.submit(function( event ) {
 
         var patternObj = {
             'enabled': true,
-            'matching': 2, // FIXME
+            'matching': '-',
             'pattern': pattern,
         };
 
@@ -44,6 +44,7 @@ pinTabsForm.submit(function( event ) {
             patternInput.val( '' );
             if ( added ) {
                 pinTabsRowWrapper.prepend( html );
+                backgroundPage.pinTab.updateMatchingTabCount();
             }
         });
     }
