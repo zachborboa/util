@@ -10,7 +10,7 @@
       ]
     }
   ],
-  "description": "Gives you more control over your events in Google Calendar",
+  "description": "Gives you more control over your events in Google Calendar.",
   "manifest_version": 2,
   "name": "Google Calendar Workflow",
   "version": "0.0.1"

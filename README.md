@@ -20,7 +20,7 @@ Provides quick icon access to your Chrome extensions.
 
 ### Google Calendar Workflow
 
-Gives you more control over your events in Google Calendar
+Gives you more control over your events in Google Calendar.
 
 ### Keep Tabs Open
 

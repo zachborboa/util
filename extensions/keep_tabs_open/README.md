@@ -1,5 +1,7 @@
 # Keep Tabs Open
 
+Continually check and ensure select pages are open.
+
 New window icon from Glyphicons Halflings (http://glyphicons.com/).
 
 "Includes over 250 glyphs in font format from the Glyphicon Halflings set. Glyphicons Halflings are normally not
