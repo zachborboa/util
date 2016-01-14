@@ -41,3 +41,7 @@ Send referrers only from the same origin.
 ### Weather Homepage
 
 Give the weather search page a clean look.
+
+### YouTube Real Spacebar
+
+Spacebar plays/pauses YouTube as expected.

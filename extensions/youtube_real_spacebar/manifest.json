@@ -1,0 +1,24 @@
+{
+  "background": {
+    "scripts": [
+      "js/background.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "js/content_script.js"
+      ],
+      "matches": [
+        "https://www.youtube.com/*"
+      ]
+    }
+  ],
+  "description": "Spacebar plays/pauses YouTube as expected.",
+  "manifest_version": 2,
+  "name": "YouTube Real Spacebar",
+  "permissions": [
+    "https://www.youtube.com/*"
+  ],
+  "version": "0.0.1"
+}
