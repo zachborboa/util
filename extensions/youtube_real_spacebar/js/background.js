@@ -4,10 +4,13 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         var code = [
             '(function() {',
                 'var video = document.querySelector(\'video\');',
-                'if ( video.paused ) {',
-                    'video.play();',
-                '} else {',
-                    'video.pause();',
+                'var fullScreen = document.querySelector(\'.ytp-fullscreen-button[title="Exit full screen"]\') ? 1 : 0;',
+                'if ( ! fullScreen ) {',
+                    'if ( video.paused ) {',
+                        'video.play();',
+                    '} else {',
+                        'video.pause();',
+                    '}',
                 '}',
             '})();',
         ].join('');
