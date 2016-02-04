@@ -1,5 +1,3 @@
-console.log('loaded');
-
 window.onhashchange = function() {
     console.log('hash changed', window.location.hash);
 
@@ -132,7 +130,6 @@ document.onclick = function( event ) {
     }
 };
 
-console.log('adding style');
 var style = document.createElement('style');
 style.type = 'text/css';
 style.innerHTML =
@@ -143,6 +140,3 @@ style.innerHTML =
     '';
 var head = document.getElementsByTagName('head')['0'];
 head.appendChild(style);
-console.log('style added');
-
-console.log('done');
