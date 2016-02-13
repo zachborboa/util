@@ -6,6 +6,7 @@ window.onhashchange = function() {
     console.log('element:', textarea);
     if ( textarea ) {
         var linkContainer = document.createElement('div');
+        linkContainer.style.whiteSpace = 'nowrap';
         linkContainer.innerHTML = urlize(
                 textarea.innerHTML,
                 {
@@ -137,6 +138,18 @@ style.innerHTML =
     '.cal-dialog-buttons button {' +
         '-webkit-appearance: none;' +
     '}' +
+
+    // Increase width of title.
+    '.ep-title .textinput {' +
+        'box-sizing: border-box;' +
+        'width: 100%;' +
+    '}' +
+
+    // Fix sidebar positioning.
+    '.ep-dp-panel {' +
+        'width: inherit;' +
+    '}' +
+
     '';
 var head = document.getElementsByTagName('head')['0'];
 head.appendChild(style);
