@@ -35,11 +35,14 @@ document.onclick = function( event ) {
     // Add action buttons to calendar event bubbles.
     var bubble = document.querySelector('.bubble');
     if ( bubble && ! ( bubble.style.visibility === 'hidden' ) ) {
-        console.log('calendar event clicked. bubble should be present.');
-        if ( ! document.querySelector( '.button-done' ) ) {
-            console.log('adding buttons');
-            var eventBubble = document.querySelector('.eb-root');
-            if ( eventBubble ) {
+        console.log('calendar event clicked');
+        var eventBubble = document.querySelector('.eb-root');
+        if ( eventBubble ) {
+            console.log('event bubble is present');
+            var editLink = eventBubble.querySelector('.eb-details-link');
+            var buttonDone = eventBubble.querySelector('.button-done');
+            if ( editLink.innerText === 'Edit event »' && ! buttonDone ) {
+                console.log('adding buttons');
                 var buttonLabels = [
                     'DONE',
                     'NOPE',
@@ -125,8 +128,6 @@ document.onclick = function( event ) {
                     eventBubble.appendChild(button);
                 }
             }
-        } else {
-            console.log('not adding done button');
         }
     }
 };
