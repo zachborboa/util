@@ -1,6 +1,9 @@
 {
   "content_scripts": [
     {
+      "css":[
+        "css/style.css"
+      ],
       "js": [
         "js/urlize.js",
         "js/content_script.js"

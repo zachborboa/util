@@ -1,0 +1,36 @@
+.eb-root {
+    .eb-header {
+        // Hide event color down arrow.
+        .eb-rb-default,
+        .eb-rb-color {
+            display: none;
+        }
+    }
+
+    .eb-popup {
+
+        // Always show event color selector.
+        display: block !important;
+        visibility: visible !important;
+
+        // Remove styles from event color selector.
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 10px 0 0 0 !important;
+
+        // Reposition event color selector.
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+
+        // Hide "Choose an event color:" label.
+        .ecp-label {
+            display: none;
+        }
+
+        // Left-align first color.
+        .ecp-rb-default {
+            margin-left: 0;
+        }
+    }
+}
