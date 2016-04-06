@@ -36,39 +36,46 @@ document.onclick = function( event ) {
     var bubble = document.querySelector('.bubble');
     if ( bubble && ! ( bubble.style.visibility === 'hidden' ) ) {
         console.log('calendar event clicked');
-        var eventBubble = document.querySelector('.eb-root');
+        var eventBubble = document.querySelector('.bubblemain');
         if ( eventBubble ) {
             console.log('event bubble is present');
-            var editLink = eventBubble.querySelector('.eb-details-link');
+            var editLink = eventBubble.querySelector('.details-button');
             var buttonDone = eventBubble.querySelector('.button-done');
-            if ( editLink.innerText === 'Edit event »' && ! buttonDone ) {
+            if ( editLink.innerText === 'Edit event' && ! buttonDone ) {
+
+                // Re-stylize delete button.
+                var deleteButton = eventBubble.querySelector('.delete-button');
+                if ( deleteButton ) {
+                    deleteButton.classList.remove('jfk-button-standard');
+                    deleteButton.classList.add('jfk-button-primary');
+                }
+
+                // Add buttons.
                 console.log('adding buttons');
                 var buttonLabels = [
-                    'DONE',
-                    'NOPE',
-                    'OKAY',
+                    ['DONE', 'jfk-button-default'],
+                    ['NOPE', 'jfk-button-standard'],
+                    ['OKAY', 'jfk-button-standard'],
                 ];
                 for ( var i in buttonLabels ) {
-                    var buttonLabel = buttonLabels[ i ];
+                    var buttonLabel = buttonLabels[i][0];
                     console.log('buttonLabel:', buttonLabel);
-                    var buttonClassName = 'button-' + buttonLabel.toLowerCase();
-                    console.log('buttonClassName:', buttonClassName);
+                    var buttonClassNames = buttonLabels[i][1] + ' button-' + buttonLabel.toLowerCase();
+                    console.log('buttonClassNames:', buttonClassNames);
                     var button = document.createElement('div');
                     button.innerHTML =
-                        '<div class="goog-inline-block goog-imageless-button goog-imageless-button-collapse-right ' + buttonClassName + '" role="button" aria-pressed="false" tabindex="0" style="-webkit-user-select: none;">' +
-                            '<div class="goog-inline-block goog-imageless-button-outer-box">' +
-                                '<div class="goog-inline-block goog-imageless-button-inner-box">' +
-                                    '<div class="goog-imageless-button-pos">' +
-                                        '<div class="goog-imageless-button-top-shadow">' +
-                                            '&nbsp;' +
-                                        '</div>' +
-                                        '<div class="goog-imageless-button-content">' +
-                                            buttonLabel +
-                                        '</div>' +
-                                    '</div>' +
-                                '</div>'
-                            '</div>'
-                        '</div>'
+                        '<div ' +
+                            'role="button" ' +
+                            'class="' +
+                                'goog-inline-block ' +
+                                'jfk-button ' +
+                                'jfk-button-clear-outline ' +
+                                buttonClassNames +
+                                '" ' +
+                            'style="-webkit-user-select: none;"' +
+                            '>' +
+                            buttonLabel +
+                        '</div>' +
                         '';
                     button.style.display = 'inline-block';
                     button.style.marginRight = '8px';
@@ -76,7 +83,7 @@ document.onclick = function( event ) {
 
                     (function( myButtonLabel ) {
                         button.onclick = function() {
-                            var eventTitle = eventBubble.querySelector('.eb-title .ui-sch-schmedit');
+                            var eventTitle = eventBubble.querySelector('.neb-title .ui-sch-schmedit');
                             if ( eventTitle ) {
                                 console.log('event title clicked');
                                 eventTitle.click();
@@ -84,7 +91,7 @@ document.onclick = function( event ) {
                                 console.log('event title not clicked');
                             }
 
-                            var eventButtonTitle = eventBubble.querySelector('input.eb-title');
+                            var eventButtonTitle = eventBubble.querySelector('input.neb-title');
                             if ( eventButtonTitle ) {
                                 console.log('event title found');
 
@@ -94,7 +101,7 @@ document.onclick = function( event ) {
                                 var todayFormattedDate = monthName + ' ' + date.getDate() + ', ' + date.getFullYear();
 
                                 // Event date.
-                                var eventDate = eventBubble.querySelector('.eb-date').innerText;
+                                var eventDate = eventBubble.querySelector('.neb-date').innerText;
 
                                 var calendarEventTitle = eventButtonTitle.value;
                                 console.log('before calendarEventTitle:', calendarEventTitle);
@@ -116,7 +123,7 @@ document.onclick = function( event ) {
                                 console.log('event title not found');
                             }
 
-                            var saveButton = eventBubble.querySelector('.eb-save .goog-imageless-button-content');
+                            var saveButton = eventBubble.querySelector('.save-button');
                             if ( saveButton ) {
                                 saveButton.click();
                                 console.log('save button clicked');

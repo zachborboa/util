@@ -1,8 +1,8 @@
-.eb-root .eb-header .eb-rb-default,
-.eb-root .eb-header .eb-rb-color {
+.neb-root .neb-header .neb-rb-default,
+.neb-root .neb-header .neb-rb-color {
   display: none;
 }
-.eb-root .eb-popup {
+.neb-root .neb-popup {
   display: block !important;
   visibility: visible !important;
   border: 0 !important;
@@ -12,9 +12,12 @@
   top: 0 !important;
   left: 0 !important;
 }
-.eb-root .eb-popup .ecp-label {
+.neb-root .neb-popup .neb-popup-tip {
   display: none;
 }
-.eb-root .eb-popup .ecp-rb-default {
+.neb-root .neb-popup .ecp-label {
+  display: none;
+}
+.neb-root .neb-popup .ecp-rb-default {
   margin-left: 0;
 }

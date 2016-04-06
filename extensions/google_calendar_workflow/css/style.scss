@@ -1,13 +1,18 @@
-.eb-root {
-    .eb-header {
+.neb-root {
+    .neb-header {
         // Hide event color down arrow.
-        .eb-rb-default,
-        .eb-rb-color {
+        .neb-rb-default,
+        .neb-rb-color {
             display: none;
         }
     }
 
-    .eb-popup {
+    .neb-popup {
+
+        // Hide popup arrow up.
+        .neb-popup-tip {
+            display: none;
+        }
 
         // Always show event color selector.
         display: block !important;
