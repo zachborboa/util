@@ -1,7 +1,7 @@
 {
   "content_scripts": [
     {
-      "css":[
+      "css": [
         "css/style.css"
       ],
       "js": [
