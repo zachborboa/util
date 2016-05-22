@@ -10,11 +10,11 @@
   },
   "commands": {
     "Ctrl+Shift+X": {
+      "description": "Ctrl+Shift+X.",
       "suggested_key": {
         "default": "Ctrl+Shift+X",
         "mac": "Command+Shift+X"
-      },
-      "description": "Ctrl+Shift+X."
+      }
     }
   },
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
