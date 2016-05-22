@@ -223,3 +223,22 @@ chrome.tabs.onUpdated.addListener(function(
     console.info( 'chrome.tabs.onUpdated', tab );
     pinTab.pinTabIfUrlMatch( tab );
 });
+
+chrome.commands.onCommand.addListener(function() {
+    console.info('chrome.commands.onCommand');
+
+    chrome.tabs.query(
+        // queryInfo
+        {
+            'active': true,
+            'currentWindow': true,
+        },
+        // callback
+        function(tabs) {
+            var tab = tabs[0];
+            pinTab.togglePin({
+                'tab': tab,
+            });
+        }
+    );
+});
