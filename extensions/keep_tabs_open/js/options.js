@@ -1,1 +1,1 @@
-console.info( 'options.js' );
+console.info('options.js');
