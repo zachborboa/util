@@ -10,21 +10,25 @@ function updateCounter() {
             });
         });
 
-        // Set tooltip.
-        var title = [
-            'Tab Counter',
-            'tabs: ' + tabs.length,
-            'windows: ' + windows.length,
-        ].join('\n');
-        chrome.browserAction.setTitle({
-            'title': title,
-        });
+        if ( chrome.browserAction ) {
+            // Set tooltip.
+            var title = [
+                'Tab Counter',
+                'tabs: ' + tabs.length,
+                'windows: ' + windows.length,
+            ].join('\n');
+            chrome.browserAction.setTitle({
+                'title': title,
+            });
 
-        // Set extension icon text.
-        var text = tabs.length + '';
-        chrome.browserAction.setBadgeText({
-            text: text,
-        });
+            // Set extension icon text.
+            var text = tabs.length + '';
+            chrome.browserAction.setBadgeText({
+                text: text,
+            });
+        } else {
+            console.warn('chrome.browserAction is:', chrome.browserAction);
+        }
     });
 }
 
