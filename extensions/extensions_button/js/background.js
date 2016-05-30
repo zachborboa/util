@@ -1,10 +1,11 @@
-chrome.browserAction.onClicked.addListener(function( tab ) {
-    chrome.tabs.query({ 'url': 'chrome://extensions/' }, function ( tabs ) {
+// Open extensions page when extension button pressed.
+chrome.browserAction.onClicked.addListener(function(tab) {
+    chrome.tabs.query({ 'url': 'chrome://extensions/' }, function(tabs) {
         for ( var i = 0; i < tabs.length; i++ ) {
-            chrome.tabs.update( tabs[ i ].id, {
+            chrome.tabs.update(tabs[i].id, {
                 'active': true,
             });
-            chrome.windows.update( tabs[ i ].windowId, {
+            chrome.windows.update(tabs[i].windowId, {
                 'focused': true,
             });
             return;
