@@ -2,6 +2,10 @@
 
 ## Extensions
 
+### Always Paste
+
+Always Paste prevents sites from disabling paste via javascript.
+
 ### Always Select
 
 Always Select prevents sites from disabling user selection via css.
@@ -37,6 +41,10 @@ Log all requests to the background page.
 ### Smart Referrer
 
 Send referrers only from the same origin.
+
+### Tab Counter
+
+Display how many tabs are open.
 
 ### Weather Homepage
 
