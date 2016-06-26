@@ -1,0 +1,18 @@
+{
+  "content_scripts": [
+    {
+      "all_frames": true,
+      "js": [
+        "js/content_script.js"
+      ],
+      "matches": [
+        "*://*/*",
+        "file://*/*"
+      ]
+    }
+  ],
+  "description": "Always Paste prevents sites from disabling paste via javascript.",
+  "manifest_version": 2,
+  "name": "Always Paste",
+  "version": "0.0.1"
+}
