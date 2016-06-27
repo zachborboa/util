@@ -15,6 +15,7 @@
         <div class="col-xs-12" id="keep-tabs-open">
             <div class="col-xs-12">
                 <h2>Keep Tabs Open</h2>
+                <p class="lead">Configure Options</p>
             </div>
 
             <div class="
@@ -31,17 +32,21 @@
                             placeholder="(e.g. https://calendar.google.com/calendar/render)"
                             type="text"
                             />
-                        <p class="help-block">Enter a url to keep open.</p>
+                        <p class="help-block">Enter a url for a page to keep open in a tab.</p>
                     </div>
                     <div class="form-group">
-                        <label for="pattern">...when the url pattern is not found</label>
-                        <input
-                            class="form-control"
-                            id="keep-open-url"
-                            placeholder="(e.g. https:\/\/calendar\.google\.com\/)"
-                            type="text"
-                            />
-                        <p class="help-block">Enter a url pattern used to check if the page is not open.</p>
+                        <label for="pattern">...whenever all of the following url pattern(s) are not found:</label>
+                        <div class="keep-open-url-pattern-wrapper">
+                            <input
+                                class="form-control"
+                                id="keep-open-url-pattern"
+                                name="keep-open-url-pattern[]"
+                                placeholder="(e.g. https:\/\/calendar\.google\.com\/)"
+                                type="text"
+                                />
+                        </div>
+                        <a href="" id="keep-open-add-another-url">Add another url pattern</a>
+                        <p class="help-block">Enter one or more url patterns used to check that your page is not already open.</p>
                     </div>
                     <button type="submit" class="btn btn-primary">Save</button>
                 </form>
