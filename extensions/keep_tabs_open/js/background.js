@@ -5,14 +5,14 @@ var KeepTabsOpen = function() {
     this.default_patterns = function() {
         var patterns = [
             {
-                'urlToOpen': 'https://www.google.com/calendar/render',
+                'urlToOpen': 'https://accounts.google.com/ServiceLogin?service=cl&continue=https://calendar.google.com/',
                 'whenPatternsNotFound': [
                     '^https:\\/\\/accounts\\.google\\.com\\/ServiceLogin\\?',
                     '^https:\\/\\/calendar\\.google\\.com\\/',
                 ],
             },
             {
-                'urlToOpen': 'https://mail.google.com/mail/u/0/#inbox',
+                'urlToOpen': 'https://accounts.google.com/ServiceLogin?service=mail&continue=https://mail.google.com/',
                 'whenPatternsNotFound': [
                     '^https:\\/\\/accounts\\.google\\.com\\/ServiceLogin\\?',
                     '^https:\\/\\/mail\\.google\\.com\\/',
@@ -188,7 +188,10 @@ chrome.alarms.onAlarm.addListener(function( alarm ) {
     }
 });
 
+// TODO: Make alarm settings configurable in options.
 // TODO: Get alarm settings from storage.
+
+var periodInMinutes = 1;
 
 // Creates an alarm. Near the time(s) specified by alarmInfo, the onAlarm event is fired. If there is another alarm
 // with the same name (or no name if none is specified), it will be cancelled and replaced by this alarm.
@@ -198,6 +201,6 @@ chrome.alarms.create(
     // object alarmInfo
     {
         'when': 1000,
-        'periodInMinutes': 1,
+        'periodInMinutes': periodInMinutes,
     }
 );
