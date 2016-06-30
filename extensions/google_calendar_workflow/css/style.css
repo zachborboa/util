@@ -1,8 +1,22 @@
-.neb-root .neb-header .neb-rb-default,
-.neb-root .neb-header .neb-rb-color {
+.bubble {
+  min-width: 500px;
+}
+.bubble .neb-root .neb-header .neb-rb-default,
+.bubble .neb-root .neb-header .neb-rb-color {
   display: none;
 }
-.neb-root .neb-popup {
+.bubble .neb-root .neb-header .neb-title {
+  box-sizing: border-box;
+  padding-right: 20px;
+  width: 100%;
+}
+.bubble .neb-root .neb-header .neb-title .ui-sch-schmedit {
+  font-family: consolas, monospace !important;
+}
+.bubble .neb-root .neb-header .neb-title input {
+  font-family: consolas, monospace !important;
+}
+.bubble .neb-root .neb-popup {
   display: block !important;
   visibility: visible !important;
   border: 0 !important;
@@ -12,12 +26,22 @@
   top: 0 !important;
   left: 0 !important;
 }
-.neb-root .neb-popup .neb-popup-tip {
+.bubble .neb-root .neb-popup .neb-popup-tip {
   display: none;
 }
-.neb-root .neb-popup .ecp-label {
+.bubble .neb-root .neb-popup .ecp-label {
   display: none;
 }
-.neb-root .neb-popup .ecp-rb-default {
+.bubble .neb-root .neb-popup .ecp-rb-default {
   margin-left: 0;
+}
+.bubble .gcal-textinput {
+  font-family: consolas, monospace !important;
+}
+
+#calcontent .ep-title .textinput {
+  font-family: consolas, monospace !important;
+}
+#calcontent .ep-dp-descript textarea.textinput {
+  font-family: consolas, monospace !important;
 }

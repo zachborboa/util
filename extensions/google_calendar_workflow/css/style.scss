@@ -1,41 +1,92 @@
-.neb-root {
-    .neb-header {
-        // Hide event color down arrow.
-        .neb-rb-default,
-        .neb-rb-color {
-            display: none;
+// Fixed-width font for Google Calendar.
+$font-family: consolas, monospace !important;
+$font-size: medium;
+
+// Calendar event popup.
+.bubble {
+    // Increase minimum width of event popup.
+    min-width: 500px;
+
+    .neb-root {
+        // Header. Includes event title and event date.
+        .neb-header {
+            // Hide event color down arrow.
+            .neb-rb-default,
+            .neb-rb-color {
+                display: none;
+            }
+
+            .neb-title {
+                // Expand title to use available width.
+                box-sizing: border-box;
+                padding-right: 20px;
+                width: 100%;
+
+                // Calendar edit event popup text node.
+                .ui-sch-schmedit {
+                    font-family: $font-family;
+                }
+
+                // Calendar edit event popup text field.
+                input {
+                    font-family: $font-family;
+                }
+            }
+        }
+
+        // Popup. Includes event color popup.
+        .neb-popup {
+
+            // Hide popup arrow up.
+            .neb-popup-tip {
+                display: none;
+            }
+
+            // Always show event color selector.
+            display: block !important;
+            visibility: visible !important;
+
+            // Remove styles from event color selector.
+            border: 0 !important;
+            box-shadow: none !important;
+            padding: 10px 0 0 0 !important;
+
+            // Reposition event color selector.
+            position: relative !important;
+            top: 0 !important;
+            left: 0 !important;
+
+            // Hide "Choose an event color:" label.
+            .ecp-label {
+                display: none;
+            }
+
+            // Left-align first color.
+            .ecp-rb-default {
+                margin-left: 0;
+            }
         }
     }
 
-    .neb-popup {
+    // Calendar create event popup "What:" field.
+    .gcal-textinput {
+        font-family: $font-family;
+    }
+}
 
-        // Hide popup arrow up.
-        .neb-popup-tip {
-            display: none;
+// Full page new event.
+#calcontent {
+    // Event title field.
+    .ep-title {
+        .textinput {
+            font-family: $font-family;
         }
+    }
 
-        // Always show event color selector.
-        display: block !important;
-        visibility: visible !important;
-
-        // Remove styles from event color selector.
-        border: 0 !important;
-        box-shadow: none !important;
-        padding: 10px 0 0 0 !important;
-
-        // Reposition event color selector.
-        position: relative !important;
-        top: 0 !important;
-        left: 0 !important;
-
-        // Hide "Choose an event color:" label.
-        .ecp-label {
-            display: none;
-        }
-
-        // Left-align first color.
-        .ecp-rb-default {
-            margin-left: 0;
+    // Event description field.
+    .ep-dp-descript {
+        textarea.textinput {
+            font-family: $font-family;
         }
     }
 }
