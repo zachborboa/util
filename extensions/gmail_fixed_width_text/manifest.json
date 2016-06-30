@@ -1,0 +1,16 @@
+{
+  "content_scripts": [
+    {
+      "css": [
+        "css/style.css"
+      ],
+      "matches": [
+        "https://mail.google.com/*"
+      ]
+    }
+  ],
+  "description": "Fixed width text for Gmail",
+  "manifest_version": 2,
+  "name": "Gmail Fixed Width Text",
+  "version": "1.0.0"
+}
