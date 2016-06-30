@@ -41,6 +41,7 @@
 
 #calcontent .ep-title .textinput {
   font-family: consolas, monospace !important;
+  width: 100%;
 }
 #calcontent .ep-dp-descript textarea.textinput {
   font-family: consolas, monospace !important;
