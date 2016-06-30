@@ -22,6 +22,10 @@ Provides quick icon access to your Chrome downloads.
 
 Provides quick icon access to your Chrome extensions.
 
+### Gmail Fixed Width Text
+
+Fixed width text for Gmail
+
 ### Google Calendar Workflow
 
 Gives you more control over your events in Google Calendar.
