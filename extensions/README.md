@@ -22,7 +22,7 @@ Provides quick icon access to your Chrome extensions.
 
 ### Gmail Fixed Width Text
 
-Fixed width text for Gmail
+Fixed width text for Gmail.
 
 ### Google Calendar Workflow
 
