@@ -7,3 +7,7 @@ $('#keep-open-add-another-url').click(function(event) {
         .removeAttr('id')
         .appendTo('.keep-open-url-pattern-wrapper');
 });
+
+$(':input[type="submit"]').click(function(event) {
+    event.preventDefault();
+});
