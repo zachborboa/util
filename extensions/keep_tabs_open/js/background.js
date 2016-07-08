@@ -2,36 +2,28 @@ console.info('background.js');
 
 var KeepTabsOpen = function() {
     this.options = {};
-    this.default_patterns = function() {
-        var patterns = [
-            {
-                'urlToOpen': 'https://accounts.google.com/ServiceLogin?service=cl&continue=https://calendar.google.com/',
-                'whenPatternsNotFound': [
-                    '^https:\\/\\/accounts\\.google\\.com\\/ServiceLogin\\?',
-                    '^https:\\/\\/calendar\\.google\\.com\\/',
-                ],
-            },
-            {
-                'urlToOpen': 'https://accounts.google.com/ServiceLogin?service=mail&continue=https://mail.google.com/',
-                'whenPatternsNotFound': [
-                    '^https:\\/\\/accounts\\.google\\.com\\/ServiceLogin\\?',
-                    '^https:\\/\\/mail\\.google\\.com\\/',
-                ],
-            },
-        ];
-        var defaultPatterns = {};
-        for ( var i in patterns ) {
-            var urlToOpen = patterns[i]['urlToOpen'];
-            var key = btoa(urlToOpen);
-            defaultPatterns[key] = patterns[i];
-        }
-        return defaultPatterns;
-    }();
-    console.log('default patterns:', this.default_patterns);
-
-    this.init();
+    this.settings = [
+        {
+            'url_to_open': 'https://accounts.google.com/ServiceLogin?service=cl&continue=https://calendar.google.com/',
+            'when_patterns_not_found': [
+                'https:\/\/accounts\.google\.com\/ServiceLogin',
+                'https:\/\/calendar\.google\.com\/',
+                'https:\/\/www\.google\.com\/calendar',
+            ],
+        },
+        {
+            'url_to_open': 'https://accounts.google.com/ServiceLogin?service=mail&continue=https://mail.google.com/',
+            'when_patterns_not_found': [
+                'https:\/\/accounts\.google\.com\/ServiceLogin',
+                'https:\/\/mail\.google\.com\/',
+            ],
+        },
+    ];
+    console.log('settings:', this.settings);
+    //this.init();
 };
 
+/*
 KeepTabsOpen.prototype.init = function() {
     console.info('KeepTabsOpen.prototype.init');
     this.get(null, function(items) {
@@ -43,7 +35,9 @@ KeepTabsOpen.prototype.init = function() {
         console.info('options set', keepTabsOpen.options);
     });
 };
+*/
 
+/*
 KeepTabsOpen.prototype.get = function(key, callback) {
     console.info('KeepTabsOpen.prototype.get key:', key);
     chrome.storage.sync.get(key, function(items) {
@@ -56,6 +50,7 @@ KeepTabsOpen.prototype.get = function(key, callback) {
         }
     });
 };
+*/
 
 /*
 KeepTabsOpen.prototype.set = function(key, callback) {
@@ -98,93 +93,103 @@ KeepTabsOpen.prototype.removePattern = function(pattern, callback) {
 };
 */
 
-var keepTabsOpen = new KeepTabsOpen();
+KeepTabsOpen.prototype.getUrlsToOpen = function(ref, settings) {
+    var actualUrlsThatOpened = [];
+    for ( var j = 0; j < settings.length; j++ ) {
+        var setting = settings[j];
+        var urlToMaybeOpen = setting['url_to_open'];
+        var whenPatternsNotFound = setting['when_patterns_not_found'];
+        var found = false;
+        dance:
+        for ( var k = 0; k < whenPatternsNotFound.length; k++ ) {
+            var pattern = whenPatternsNotFound[k];
+            var regex = RegExp(pattern);
+            for ( var m = 0; m < ref.openUrls.length; m++ ) {
+                var openUrl = ref.openUrls[m];
+                if ( regex.test(openUrl) ) {
+                    found = true;
+                    break dance;
+                }
+            }
+        }
 
+        if ( ! found ) {
+            // Add url to list of urls to open.
+            actualUrlsThatOpened.push(urlToMaybeOpen);
+
+            // Add url that will be opened to list of effectively open urls.
+            ref.openUrls.push(urlToMaybeOpen);
+        }
+    }
+
+    return actualUrlsThatOpened;
+};
+
+KeepTabsOpen.prototype.cron = function() {
+    chrome.windows.getAll(
+        // object getInfo
+        {
+            'populate': true,
+        },
+        // function callback
+        function( windows ) {
+
+            var openUrls = [];
+            windows.forEach(function(win) {
+                win.tabs.forEach(function(tab) {
+                    openUrls.push(tab.url);
+                });
+            });
+            console.log('urls open:', openUrls);
+            console.log('--------------------------------------------------------------------------------');
+
+            var settings = keepTabsOpen.settings;
+            var ref = {
+                'openUrls': openUrls,
+            };
+            var urlsToOpen = keepTabsOpen.getUrlsToOpen(ref, settings);
+            console.log('urls to open:', urlsToOpen);
+            console.log('number of urls to open:', urlsToOpen.length);
+
+            if ( urlsToOpen.length ) {
+                for ( var i = 0; i < urlsToOpen.length; i++ ) {
+                    var url = urlsToOpen[i];
+                    console.log('opening', url);
+
+                    // For chrome.windows.create:
+                    // TODO: Add ability to open incognito windows.
+                    // TODO: Add ability to open an active window.
+                    // TODO: Add ability to specify the window's 'left', 'top', 'width', and 'height'.
+                    // TODO: Add ability to specify the window state ("normal", "minimized", "maximized", "fullscreen",
+                    // or "docked").
+
+                    // For chrome.tabs.create:
+                    // TODO: Add ability to open an active tab.
+
+                    chrome.tabs.create(
+                        // object createProperties
+                        {
+                            'active': false,
+                            'url': url,
+                        },
+                        // function callback
+                        function() {
+                        }
+                    );
+                }
+            }
+        }
+    );
+};
+
+var keepTabsOpen = new KeepTabsOpen();
+keepTabsOpen.cron();
+
+/*
 chrome.alarms.onAlarm.addListener(function( alarm ) {
     console.info('chrome.alarms.onAlarm.addListener callback', alarm);
     if ( alarm.name === 'keepTabsOpen' ) {
-        chrome.windows.getAll(
-            // object getInfo
-            {
-                'populate': true,
-            },
-            // function callback
-            function( windows ) {
-
-                var openUrls = [];
-                windows.forEach(function(win) {
-                    win.tabs.forEach(function(tab) {
-                        openUrls.push(tab.url);
-                    });
-                });
-                console.log('urls open:', openUrls);
-                console.log('--------------------------------------------------------------------------------');
-
-                var urlsToOpen = [];
-                for ( var key in keepTabsOpen.options.patterns ) {
-                    console.log('key:', key);
-                    var data = keepTabsOpen.options.patterns[key];
-                    console.log('data:', data);
-
-                    var urlToMaybeOpen = data['urlToOpen'];
-                    var whenPatternsNotFound = data['whenPatternsNotFound'];
-                    var found = false;
-                    dance:
-                    for ( var i = 0; i < whenPatternsNotFound.length; i++ ) {
-                        var pattern = whenPatternsNotFound[i];
-                        var regex = RegExp(pattern);
-                        console.log('looking for pattern:', pattern);
-                        for ( var j = 0; j < openUrls.length; j++ ) {
-                            var openUrl = openUrls[j];
-                            console.log('looking for pattern:', pattern, 'in open url:', openUrl);
-                            if ( regex.test(openUrl) ) {
-                                console.log('pattern found');
-                                found = true;
-                                break dance;
-                            }
-                        }
-                    }
-
-                    if (!found) {
-                        console.log('pattern not found');
-                        console.log('adding url', urlToMaybeOpen, 'to list of urls to open');
-                        urlsToOpen.push(urlToMaybeOpen);
-                    }
-                    console.log('---');
-                }
-
-                console.log('urls to open:', urlsToOpen);
-                console.log('number of urls to open:', urlsToOpen.length);
-
-                if ( urlsToOpen.length ) {
-                    for ( var i = 0; i < urlsToOpen.length; i++ ) {
-                        var url = urlsToOpen[i];
-                        console.log('opening', url);
-
-                        // For chrome.windows.create:
-                        // TODO: Add ability to open incognito windows.
-                        // TODO: Add ability to open an active window.
-                        // TODO: Add ability to specify the window's 'left', 'top', 'width', and 'height'.
-                        // TODO: Add ability to specify the window state ("normal", "minimized", "maximized", "fullscreen",
-                        // or "docked").
-
-                        // For chrome.tabs.create:
-                        // TODO: Add ability to open an active tab.
-
-                        chrome.tabs.create(
-                            // object createProperties
-                            {
-                                'active': false,
-                                'url': url,
-                            },
-                            // function callback
-                            function() {
-                            }
-                        );
-                    }
-                }
-            }
-        );
+        keepTabsOpen.cron();
     }
 });
 
@@ -204,3 +209,4 @@ chrome.alarms.create(
         'periodInMinutes': periodInMinutes,
     }
 );
+*/
