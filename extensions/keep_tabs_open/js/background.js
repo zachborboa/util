@@ -1,43 +1,42 @@
 console.info('background.js');
 
 var KeepTabsOpen = function() {
-    this.options = {};
-    this.settings = [
-        {
-            'url_to_open': 'https://accounts.google.com/ServiceLogin?service=cl&continue=https://calendar.google.com/',
-            'when_patterns_not_found': [
-                'https:\/\/accounts\.google\.com\/ServiceLogin',
-                'https:\/\/calendar\.google\.com\/',
-                'https:\/\/www\.google\.com\/calendar',
-            ],
-        },
-        {
-            'url_to_open': 'https://accounts.google.com/ServiceLogin?service=mail&continue=https://mail.google.com/',
-            'when_patterns_not_found': [
-                'https:\/\/accounts\.google\.com\/ServiceLogin',
-                'https:\/\/mail\.google\.com\/',
-            ],
-        },
-    ];
-    console.log('settings:', this.settings);
-    //this.init();
+    this.options = {
+        'alarmPeriodInMinutes': 1,
+        'settings': [
+            {
+                'url_to_open': 'https://accounts.google.com/ServiceLogin?service=cl&continue=https://calendar.google.com/',
+                'when_patterns_not_found': [
+                    'https:\/\/accounts\.google\.com\/ServiceLogin',
+                    'https:\/\/calendar\.google\.com\/',
+                    'https:\/\/www\.google\.com\/calendar',
+                ],
+            },
+            {
+                'url_to_open': 'https://accounts.google.com/ServiceLogin?service=mail&continue=https://mail.google.com/',
+                'when_patterns_not_found': [
+                    'https:\/\/accounts\.google\.com\/ServiceLogin',
+                    'https:\/\/mail\.google\.com\/',
+                ],
+            },
+        ],
+    };
+    this.init();
 };
 
-/*
 KeepTabsOpen.prototype.init = function() {
     console.info('KeepTabsOpen.prototype.init');
     this.get(null, function(items) {
         console.info('this.get callback');
-        keepTabsOpen.options = items;
-        if ( ! keepTabsOpen.options.patterns ) {
-            keepTabsOpen.options.patterns = keepTabsOpen.default_patterns;
+        if ( items.length ) {
+            keepTabsOpen.options = items;
+            console.info('options updated:', keepTabsOpen.options);
+        } else {
+            console.info('options not updated');
         }
-        console.info('options set', keepTabsOpen.options);
     });
 };
-*/
 
-/*
 KeepTabsOpen.prototype.get = function(key, callback) {
     console.info('KeepTabsOpen.prototype.get key:', key);
     chrome.storage.sync.get(key, function(items) {
@@ -50,7 +49,6 @@ KeepTabsOpen.prototype.get = function(key, callback) {
         }
     });
 };
-*/
 
 /*
 KeepTabsOpen.prototype.set = function(key, callback) {
@@ -143,11 +141,10 @@ KeepTabsOpen.prototype.cron = function() {
             console.log('urls open:', openUrls);
             console.log('--------------------------------------------------------------------------------');
 
-            var settings = keepTabsOpen.settings;
             var ref = {
                 'openUrls': openUrls,
             };
-            var urlsToOpen = keepTabsOpen.getUrlsToOpen(ref, settings);
+            var urlsToOpen = keepTabsOpen.getUrlsToOpen(ref, keepTabsOpen.options.settings);
             console.log('urls to open:', urlsToOpen);
             console.log('number of urls to open:', urlsToOpen.length);
 
@@ -183,12 +180,10 @@ KeepTabsOpen.prototype.cron = function() {
 };
 
 var keepTabsOpen = new KeepTabsOpen();
-keepTabsOpen.cron();
 
-/*
 chrome.alarms.onAlarm.addListener(function( alarm ) {
     console.info('chrome.alarms.onAlarm.addListener callback', alarm);
-    if ( alarm.name === 'keepTabsOpen' ) {
+    if ( alarm.name === 'keepTabsOpen.cron' ) {
         keepTabsOpen.cron();
     }
 });
@@ -196,17 +191,16 @@ chrome.alarms.onAlarm.addListener(function( alarm ) {
 // TODO: Make alarm settings configurable in options.
 // TODO: Get alarm settings from storage.
 
-var periodInMinutes = 1;
-
 // Creates an alarm. Near the time(s) specified by alarmInfo, the onAlarm event is fired. If there is another alarm
 // with the same name (or no name if none is specified), it will be cancelled and replaced by this alarm.
 chrome.alarms.create(
     // string name
-    'keepTabsOpen',
+    'keepTabsOpen.cron',
     // object alarmInfo
     {
         'when': 1000,
-        'periodInMinutes': periodInMinutes,
+        'periodInMinutes': keepTabsOpen.options.alarmPeriodInMinutes,
     }
 );
-*/
+
+keepTabsOpen.cron();

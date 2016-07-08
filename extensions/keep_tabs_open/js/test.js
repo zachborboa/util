@@ -120,8 +120,8 @@ function getUrlsToOpen(ref, settings) {
         for ( var k = 0; k < whenPatternsNotFound.length; k++ ) {
             var pattern = whenPatternsNotFound[k];
             var regex = RegExp(pattern);
-            for ( var m = 0; m < openUrls.length; m++ ) {
-                var openUrl = openUrls[m];
+            for ( var m = 0; m < ref.openUrls.length; m++ ) {
+                var openUrl = ref.openUrls[m];
                 if ( regex.test(openUrl) ) {
                     found = true;
                     break dance;
