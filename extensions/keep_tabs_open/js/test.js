@@ -109,12 +109,8 @@ var tests = [
     },
 ];
 
-for ( var i = 0; i < tests.length; i++ ) {
-    var test = tests[i];
-    var openUrls = test['urls_currently_open'];
-    var settings = test['settings'];
-
-    var ActualUrlsThatOpened = [];
+function getUrlsToOpen(ref, settings) {
+    var actualUrlsThatOpened = [];
     for ( var j = 0; j < settings.length; j++ ) {
         var setting = settings[j];
         var urlToMaybeOpen = setting['url_to_open'];
@@ -135,13 +131,24 @@ for ( var i = 0; i < tests.length; i++ ) {
 
         if ( ! found ) {
             // Add url to list of urls to open.
-            ActualUrlsThatOpened.push(urlToMaybeOpen);
+            actualUrlsThatOpened.push(urlToMaybeOpen);
 
             // Add url that will be opened to list of effectively open urls.
-            openUrls.push(urlToMaybeOpen);
+            ref.openUrls.push(urlToMaybeOpen);
         }
     }
 
-    var ExpectedUrlsThatShouldOpen = test['urls_that_should_open'];
-    assert.deepEqual(ActualUrlsThatOpened, ExpectedUrlsThatShouldOpen);
+    return actualUrlsThatOpened;
+}
+
+for ( var i = 0; i < tests.length; i++ ) {
+    var test = tests[i];
+    var openUrls = test['urls_currently_open'];
+    var settings = test['settings'];
+    var ref = {
+        'openUrls': openUrls,
+    };
+    var actualUrlsThatOpened = getUrlsToOpen(ref, settings);
+    var expectedUrlsThatShouldOpen = test['urls_that_should_open'];
+    assert.deepEqual(actualUrlsThatOpened, expectedUrlsThatShouldOpen);
 }
