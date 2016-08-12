@@ -90,4 +90,24 @@ $font-size: medium;
             font-family: $font-family;
         }
     }
+
+    // Increase contrast for current calendar day.
+    $border: 1px solid #656565;
+    .st-dtitle-today {
+        border-left: $border;
+        border-top: $border;
+    }
+    .st-bg-today {
+        background-color: #b9b9b9;
+        border-left: $border;
+    }
+    .st-dtitle-next {
+        border-left: $border;
+    }
+    .st-bg-next {
+        border-left: $border;
+    }
+    .st-dtitle-down {
+        border-top: $border;
+    }
 }
