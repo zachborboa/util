@@ -47,11 +47,11 @@
   font-family: consolas, monospace !important;
 }
 #calcontent .st-dtitle-today {
+  background-color: #00a1ff;
   border-left: 1px solid #656565;
   border-top: 1px solid #656565;
 }
 #calcontent .st-bg-today {
-  background-color: #b9b9b9;
   border-left: 1px solid #656565;
 }
 #calcontent .st-dtitle-next {
