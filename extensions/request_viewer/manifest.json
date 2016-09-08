@@ -10,7 +10,8 @@
   "name": "Request Viewer",
   "permissions": [
     "*://*/*",
-    "webRequest"
+    "webRequest",
+    "webRequestBlocking"
   ],
   "version": "0.0.1"
 }
