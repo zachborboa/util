@@ -32,6 +32,8 @@ function updateCounter() {
     });
 }
 
+// TODO: Update counter when a window (last tab) is closed for number of windows to be accurate.
+
 // Fired when a tab is created.
 chrome.tabs.onCreated.addListener(function(
     /* Tab */ tab ) {
