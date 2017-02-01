@@ -1,7 +1,7 @@
 // Block referrers when the referring url origin doesn't match the request url origin.
 
-function getOrigin( url ) {
-    var parser = document.createElement( 'a' );
+function getOrigin(url) {
+    var parser = document.createElement('a');
     parser.href = url;
     return parser.origin;
 }
