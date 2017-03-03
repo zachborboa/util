@@ -10,4 +10,9 @@ $font-size: medium;
         font-family: $font-family;
         font-size: $font-size;
     }
+
+    // Prevent tiny inline font (e.g. <span style="font-size:x-small"></span>).
+    span[style] {
+        font-size: $font-size !important;
+    }
 }

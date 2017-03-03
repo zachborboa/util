@@ -7,3 +7,6 @@
   font-family: consolas, monospace !important;
   font-size: medium;
 }
+.ii span[style] {
+  font-size: medium !important;
+}
