@@ -10,3 +10,7 @@
 .ii span[style] {
   font-size: medium !important;
 }
+.ii img[width] {
+  max-width: 768px !important;
+  height: auto;
+}

@@ -15,4 +15,10 @@ $font-size: medium;
     span[style] {
         font-size: $font-size !important;
     }
+
+    // Limit email image size. (e.g. <img alt="" width="4096" height="2160" src="" />).
+    img[width] {
+        max-width: 768px !important;
+        height: auto;
+    }
 }
