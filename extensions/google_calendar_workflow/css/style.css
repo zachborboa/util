@@ -46,7 +46,7 @@
 #calcontent .ep-main .ep-dp {
   width: auto;
 }
-#calcontent .ep-dp-descript textarea.textinput {
+#calcontent .ep-main .ep-dp .ep-dp-descript textarea.textinput {
   font-family: consolas, monospace !important;
 }
 #calcontent .st-dtitle-today {

@@ -85,16 +85,16 @@ $font-size: medium;
     }
 
     .ep-main {
-        // Use full width for "Event details"/"Find a time" tab wrapper.
         .ep-dp {
+            // Use full width for "Event details"/"Find a time" tab wrapper.
             width: auto;
-        }
-    }
 
-    // Event description field.
-    .ep-dp-descript {
-        textarea.textinput {
-            font-family: $font-family;
+            // Event description field.
+            .ep-dp-descript {
+                textarea.textinput {
+                    font-family: $font-family;
+                }
+            }
         }
     }
 
