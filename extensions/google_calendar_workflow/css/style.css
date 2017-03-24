@@ -49,8 +49,11 @@
 #calcontent .ep-main .ep-dp .ep-dp-descript textarea.textinput {
   font-family: consolas, monospace !important;
 }
+#calcontent .st-dtitle {
+  font-size: 16px;
+}
 #calcontent .st-dtitle-today {
-  background-color: #00a1ff;
+  background-color: lime;
   border-left: 1px solid #656565;
   border-top: 1px solid #656565;
 }
@@ -65,4 +68,9 @@
 }
 #calcontent .st-dtitle-down {
   border-top: 1px solid #656565;
+}
+#calcontent .st-grid tr:nth-of-type(14) td > div {
+  border-top-color: darkgrey;
+  border-top-style: dashed;
+  border-top-width: 5px;
 }

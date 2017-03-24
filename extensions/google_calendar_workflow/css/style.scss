@@ -98,10 +98,15 @@ $font-size: medium;
         }
     }
 
+    // Increase calendar day font-size.
+    .st-dtitle{
+        font-size: 16px
+    }
+
     // Increase contrast for current calendar day.
     $border: 1px solid #656565;
     .st-dtitle-today {
-        background-color: #00a1ff;
+        background-color: lime;
         border-left: $border;
         border-top: $border;
     }
@@ -116,5 +121,12 @@ $font-size: medium;
     }
     .st-dtitle-down {
         border-top: $border;
+    }
+
+    // Add below-the-fold separator.
+    .st-grid tr:nth-of-type(14) td > div {
+        border-top-color: darkgrey;
+        border-top-style: dashed;
+        border-top-width: 5px;
     }
 }
