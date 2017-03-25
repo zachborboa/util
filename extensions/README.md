@@ -28,6 +28,10 @@ Fixed width text for Gmail.
 
 Gives you more control over your events in Google Calendar.
 
+### Google Docs Fixes
+
+Fix Google Docs.
+
 ### Keep Tabs Open
 
 Continually check and ensure select pages are open.

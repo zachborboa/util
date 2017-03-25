@@ -1,0 +1,8 @@
+// Improve contrast for selected text color "Text" or "Highlight" "checkbox".
+.docs-colormenuitems {
+    .jfk-button-checked {
+        background-color: blue !important;
+        border-color: #565656 !important;
+        border-width: 2px !important;
+    }
+}
