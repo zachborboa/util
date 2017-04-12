@@ -69,8 +69,8 @@
 #calcontent .st-dtitle-down {
   border-top: 1px solid #656565;
 }
-#calcontent .st-grid tr:nth-of-type(14) td > div {
-  border-top-color: darkgrey;
-  border-top-style: dashed;
-  border-top-width: 2px;
+#calcontent .st-grid tr:nth-of-type(13) td > div {
+  border-bottom-color: darkgrey;
+  border-bottom-style: dashed;
+  border-bottom-width: 2px;
 }

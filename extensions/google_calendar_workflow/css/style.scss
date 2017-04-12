@@ -124,9 +124,9 @@ $font-size: medium;
     }
 
     // Add below-the-fold separator.
-    .st-grid tr:nth-of-type(14) td > div {
-        border-top-color: darkgrey;
-        border-top-style: dashed;
-        border-top-width: 2px;
+    .st-grid tr:nth-of-type(13) td > div {
+        border-bottom-color: darkgrey;
+        border-bottom-style: dashed;
+        border-bottom-width: 2px;
     }
 }
