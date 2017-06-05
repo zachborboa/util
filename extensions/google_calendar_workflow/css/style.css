@@ -53,21 +53,20 @@
   font-size: 16px;
 }
 #calcontent .st-dtitle-today {
-  background-color: lime;
-  border-left: 1px solid #656565;
-  border-top: 1px solid #656565;
+  border-left: 4px solid #333;
+  border-top: 4px solid #333;
 }
 #calcontent .st-bg-today {
-  border-left: 1px solid #656565;
+  border-left: 4px solid #333;
 }
 #calcontent .st-dtitle-next {
-  border-left: 1px solid #656565;
+  border-left: 4px solid #333;
 }
 #calcontent .st-bg-next {
-  border-left: 1px solid #656565;
+  border-left: 4px solid #333;
 }
 #calcontent .st-dtitle-down {
-  border-top: 1px solid #656565;
+  border-top: 4px solid #333;
 }
 #calcontent .st-grid tr:nth-of-type(13) td > div {
   border-bottom-color: darkgrey;
