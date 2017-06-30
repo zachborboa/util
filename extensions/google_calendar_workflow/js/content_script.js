@@ -53,14 +53,17 @@ document.onclick = function( event ) {
                 // Add buttons.
                 console.log('adding buttons');
                 var buttonLabels = [
-                    ['DONE', 'jfk-button-default'],
-                    ['NOPE', 'jfk-button-standard'],
-                    ['OKAY', 'jfk-button-standard'],
+                    // buttonLabel, eventTitlePrefix, buttonClassName.
+                    ['DONE', '✓', 'jfk-button-default'],
+                    ['NOPE', '✗', 'jfk-button-standard'],
+                    ['OKAY', '●', 'jfk-button-standard'],
                 ];
                 for ( var i in buttonLabels ) {
                     var buttonLabel = buttonLabels[i][0];
                     console.log('buttonLabel:', buttonLabel);
-                    var buttonClassNames = buttonLabels[i][1] + ' button-' + buttonLabel.toLowerCase();
+                    var eventTitlePrefix = buttonLabels[i][1];
+                    console.log('eventTitlePrefix:', eventTitlePrefix);
+                    var buttonClassNames = buttonLabels[i][2] + ' button-' + buttonLabel.toLowerCase();
                     console.log('buttonClassNames:', buttonClassNames);
                     var button = document.createElement('div');
                     button.innerHTML =
@@ -81,7 +84,7 @@ document.onclick = function( event ) {
                     button.style.marginRight = '8px';
                     button.style.marginTop = '12px';
 
-                    (function( myButtonLabel ) {
+                    (function( myEventTitlePrefix ) {
                         button.onclick = function() {
                             var eventTitle = eventBubble.querySelector('.neb-title .ui-sch-schmedit');
                             if ( eventTitle ) {
@@ -112,9 +115,9 @@ document.onclick = function( event ) {
                                 calendarEventTitle = calendarEventTitle.replace(/^~ /, '');
 
                                 console.log(' after calendarEventTitle:', calendarEventTitle);
-                                // "DONE: My Event; Dec 31, 2015; event date: Jan 1, 2016"
+                                // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
                                 var newCalendarEventTitle =
-                                    myButtonLabel + ': ' + calendarEventTitle + ';' +
+                                    myEventTitlePrefix + ' ' + calendarEventTitle + ';' +
                                     ' ' + todayFormattedDate + ';' +
                                     ' event date: ' + eventDate;
                                 console.log('newCalendarEventTitle:', newCalendarEventTitle);
@@ -131,7 +134,7 @@ document.onclick = function( event ) {
                                 console.log('save button not clicked');
                             }
                         };
-                    }( buttonLabel ));
+                    }( eventTitlePrefix ));
                     eventBubble.appendChild(button);
                 }
             }
