@@ -56,7 +56,7 @@ document.onclick = function( event ) {
                     // buttonLabel, eventTitlePrefix, buttonClassName.
                     ['DONE', '✓', 'jfk-button-default'],
                     ['NOPE', '✗', 'jfk-button-standard'],
-                    ['OKAY', '❍', 'jfk-button-standard'],
+                    ['OKAY', '▣', 'jfk-button-standard'],
                     ['AWESOME', 'ツ', 'jfk-button-standard'],
                 ];
                 for ( var i in buttonLabels ) {
