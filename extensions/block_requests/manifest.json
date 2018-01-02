@@ -1,0 +1,16 @@
+{
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "description": "",
+  "manifest_version": 2,
+  "name": "Block Requests",
+  "permissions": [
+    "*://*/*",
+    "webRequest",
+    "webRequestBlocking"
+  ],
+  "version": "0.1"
+}
