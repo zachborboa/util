@@ -4,7 +4,7 @@ cd "${root}"
 # Generate readme for extensions.
 cd "extensions"
 echo -e "## Extensions\n" > "README.md"
-echo -e "$(find . -iname "manifest.json" -exec php -r '$path = "{}"; $data = json_decode(file_get_contents($path)); echo "### " . $data->name . "\n\n" . $data->description . "\n\n";' \;)" >> "README.md"
+echo -e "$(find . -iname "manifest.json" | sort | xargs -n 1 -I {} php -r '$path = "{}"; $data = json_decode(file_get_contents($path)); echo "### " . $data->name . "\n\n" . $data->description . "\n\n";' \;)" >> "README.md"
 cd "${root}"
 
 # Generate main readme.
