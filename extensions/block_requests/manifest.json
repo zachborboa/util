@@ -4,7 +4,7 @@
       "background.js"
     ]
   },
-  "description": "",
+  "description": "Block requests from loading resources using url pattern matching.",
   "manifest_version": 2,
   "name": "Block Requests",
   "permissions": [

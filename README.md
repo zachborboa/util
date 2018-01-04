@@ -10,6 +10,10 @@ Always Paste prevents sites from disabling paste via javascript.
 
 Always Select prevents sites from disabling user selection via css.
 
+### Block Requests
+
+Block requests from loading resources using url pattern matching.
+
 ### Close Tab
 
 Allowing closing a window's tab.
