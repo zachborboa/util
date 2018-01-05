@@ -15,14 +15,14 @@ chrome.webRequest.onBeforeRequest.addListener(
             }
         }
 
-        var funcReturn = {};
+        var returnObj = {};
         if (blockRequest) {
             console.warn('BLOCKING request');
-            funcReturn['cancel'] = true;
+            returnObj['cancel'] = true;
         }
 
         console.groupEnd();
-        return funcReturn;
+        return returnObj;
     },
     {
         urls: ["<all_urls>"],
