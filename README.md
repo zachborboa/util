@@ -46,6 +46,10 @@ Continually check and ensure select pages are open.
 
 Automatically pin tabs based on url patterns and quickly pin and unpin your tabs.
 
+### Redirect Requests
+
+Redirect requests using url pattern matching.
+
 ### Request Viewer
 
 Log all requests to the background page.
