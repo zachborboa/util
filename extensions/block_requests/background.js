@@ -26,7 +26,21 @@ chrome.webRequest.onBeforeRequest.addListener(
     },
     {
         urls: ["<all_urls>"],
-        types: ["main_frame", "sub_frame", "stylesheet", "script", "image", "object", "xmlhttprequest", "other"]
+        types: [
+            "csp_report",
+            "font",
+            "image",
+            "main_frame",
+            "media",
+            "object",
+            "other",
+            "ping",
+            "script",
+            "stylesheet",
+            "sub_frame",
+            "websocket",
+            "xmlhttprequest"
+        ]
     },
     ["blocking"]
 );
