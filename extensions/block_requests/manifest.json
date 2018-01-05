@@ -1,7 +1,7 @@
 {
   "background": {
     "scripts": [
-      "background.js"
+      "js/background.js"
     ]
   },
   "description": "Block requests from loading resources using url pattern matching.",
