@@ -103,25 +103,6 @@ $font-size: medium;
         font-size: 16px
     }
 
-    // Increase contrast for current calendar day.
-    $border: 4px solid #333;
-    .st-dtitle-today {
-        border-left: $border;
-        border-top: $border;
-    }
-    .st-bg-today {
-        border-left: $border;
-    }
-    .st-dtitle-next {
-        border-left: $border;
-    }
-    .st-bg-next {
-        border-left: $border;
-    }
-    .st-dtitle-down {
-        border-top: $border;
-    }
-
     // Add below-the-fold separator.
     .st-grid tr:nth-of-type(13) td > div {
         border-bottom-color: darkgrey;
@@ -130,80 +111,83 @@ $font-size: medium;
     }
 }
 
+// Use Google Calendar Classic font.
+.yzifAd {
+    font-family: Arial, sans-serif;
+}
+
+// Use Google Calendar Classic font color for past events.
+.g3dbUc.UflSff {
+    color: #777 !important;
+}
+
 // Use Google Calendar Classic colors.
 div[style="background-color:#4285F4;"],
 div[style="background-color: rgb(66, 133, 244);"] {
     background-color: #a2c8e7 !important;
     color: #1d1d1d;
-    font-family: Arial, sans-serif;
 }
 div[style="background-color:#3F51B5;"],
 div[style="background-color: rgb(63, 81, 181);"] {
     background-color: #5b89ed !important;
     color: #1d1d1d;
-    font-family: Arial, sans-serif;
 }
 div[style="background-color:#7986CB;"],
 div[style="background-color: rgb(121, 134, 203);"] {
     background-color: #a4bdfc !important;
     color: #1d1d1d;
-    font-family: Arial, sans-serif;
 }
 div[style="background-color:#039BE5;"],
 div[style="background-color: rgb(3, 155, 229);"] {
     background-color: #46d6db !important;
     color: #1d1d1d;
-    font-family: Arial, sans-serif;
 }
 div[style="background-color:#33B679;"],
 div[style="background-color: rgb(51, 182, 121);"] {
     background-color: #7ae7bf !important;
     color: #1d1d1d;
-    font-family: Arial, sans-serif;
 }
 div[style="background-color:#0B8043;"],
 div[style="background-color: rgb(11, 128, 67);"] {
     background-color: #51b749 !important;
     color: #1d1d1d;
-    font-family: Arial, sans-serif;
 }
 div[style="background-color:#F6BF26;"],
 div[style="background-color: rgb(246, 191, 38);"] {
     background-color: #fbd75b !important;
     color: #1d1d1d;
-    font-family: Arial, sans-serif;
 }
 div[style="background-color:#F4511E;"] {
     background-color: #ffb878 !important;
     color: #1d1d1d;
-    font-family: Arial, sans-serif;
 }
 div[style="background-color:#E67C73;"],
 div[style="background-color: rgb(230, 124, 115);"] {
     background-color: #ff887c !important;
     color: #1d1d1d;
-    font-family: Arial, sans-serif;
 }
 div[style="background-color:#D50000;"],
 div[style="background-color: rgb(213, 0, 0);"] {
     background-color: #dc2127 !important;
     color: #1d1d1d;
-    font-family: Arial, sans-serif;
 }
 div[style="background-color:#8E24AA;"],
 div[style="background-color: rgb(142, 36, 170);"] {
     background-color: #dbadff !important;
     color: #1d1d1d;
-    font-family: Arial, sans-serif;
 }
 div[style="background-color: #616161;"],
 div[style="background-color: rgb(97, 97, 97);"] {
     background-color: #e1e1e1 !important;
     color: #1d1d1d;
-    font-family: Arial, sans-serif;
 }
 
 // Remove calendar event leading marker.
 .zhRc7[aria-hidden="true"] {
     opacity: 0;
+}
+
+// Increase contrast for current calendar day.
+.ef2wWc {
+    border: 4px solid #333;
 }
