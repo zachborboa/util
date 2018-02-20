@@ -1,3 +1,99 @@
+function dispatchEvent(obj, event) {
+    var evt = new Event(
+        event,
+        {
+            target: obj,
+            bubbles: true,
+        }
+    );
+    obj.dispatchEvent(evt);
+}
+
+function insertAfter(newNode, referenceNode) {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}
+
+(function(){
+    var pathname = window.location.pathname;
+    setInterval(function() {
+        if (pathname !== window.location.pathname) {
+            console.log('pathname changed');
+            pathname = window.location.pathname;
+            if (pathname.match(/^\/calendar\/r\/eventedit\//)) {
+                console.log('on event edit page');
+
+                // Add action buttons to calendar event edit page.
+                console.log('adding buttons');
+                var saveButton = document.querySelector('[aria-label="Save"]');
+                var insertAfterTarget = saveButton;
+                var buttonLabels = [
+                    // buttonLabel, eventTitlePrefix.
+                    ['DONE', '✓'],
+                    ['NOPE', '✗'],
+                    ['OKAY', '▣'],
+                    ['AWESOME', 'ツ'],
+                ];
+                for ( var i in buttonLabels ) {
+                    var buttonLabel = buttonLabels[i][0];
+                    console.log('buttonLabel:', buttonLabel);
+
+                    var eventTitlePrefix = buttonLabels[i][1];
+                    console.log('eventTitlePrefix:', eventTitlePrefix);
+
+                    var button = document.createElement('button');
+                    button.innerText = buttonLabel;
+
+                    (function(myEventTitlePrefix, myButton) {
+                        myButton.onclick = function() {
+                            console.log('button clicked');
+
+                            // Today.
+                            var date = new Date();
+                            var monthName = date.toLocaleString('en-us', { 'month': 'short' });
+                            var todayFormattedDate = monthName + ' ' + date.getDate() + ', ' + date.getFullYear();
+
+                            // Event date.
+                            var startDateInput = document.querySelector('[aria-label="Start date"]');
+                            var endDateInput = document.querySelector('[aria-label="End date"]');
+                            var eventDate = startDateInput.value;
+                            if (endDateInput.value !== startDateInput.value) {
+                                eventDate += ' - ' + endDateInput.value;
+                            }
+                            console.log('eventDate:', eventDate);
+
+                            var eventTitle = document.querySelector('[aria-label="Title"]');
+                            var calendarEventTitle = eventTitle.value;
+                            console.log('before calendarEventTitle:', calendarEventTitle);
+
+                            // Remove leading number (e.g. "1. " in "1. My Calendar Event").
+                            calendarEventTitle = calendarEventTitle.replace(/^\d+\. /, '');
+                            // Remove leading ~ character.
+                            calendarEventTitle = calendarEventTitle.replace(/^~ /, '');
+
+                            console.log(' after calendarEventTitle:', calendarEventTitle);
+
+                            // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
+                            var newCalendarEventTitle =
+                                myEventTitlePrefix + ' ' + calendarEventTitle + ';' +
+                                ' ' + todayFormattedDate + ';' +
+                                ' event date: ' + eventDate;
+                            console.log('newCalendarEventTitle:', newCalendarEventTitle);
+                            eventTitle.value = newCalendarEventTitle;
+
+                            dispatchEvent(eventTitle, 'input');
+                            saveButton.click();
+                        };
+                    }(eventTitlePrefix, button));
+
+                    console.log('inserting button', button, 'after', insertAfterTarget);
+                    insertAfter(button, insertAfterTarget);
+                    insertAfterTarget = button;
+                }
+            }
+        }
+    }, 1000);
+})();
+
 window.onhashchange = function() {
     console.log('hash changed', window.location.hash);
 
@@ -24,120 +120,6 @@ window.onhashchange = function() {
             var childNode = textarea.nextElementSibling.childNodes[ i ];
             if ( childNode.nodeType === TEXT_NODE ) {
                 textarea.nextElementSibling.removeChild(childNode);
-            }
-        }
-    }
-};
-
-document.onclick = function( event ) {
-    console.log('element clicked:', event.target);
-
-    // Add action buttons to calendar event bubbles.
-    var bubble = document.querySelector('.bubble');
-    if ( bubble && ! ( bubble.style.visibility === 'hidden' ) ) {
-        console.log('calendar event clicked');
-        var eventBubble = document.querySelector('.bubblemain');
-        if ( eventBubble ) {
-            console.log('event bubble is present');
-            var editLink = eventBubble.querySelector('.details-button');
-            var buttonDone = eventBubble.querySelector('.button-done');
-            if ( editLink.innerText === 'Edit event' && ! buttonDone ) {
-
-                // Re-stylize delete button.
-                var deleteButton = eventBubble.querySelector('.delete-button');
-                if ( deleteButton ) {
-                    deleteButton.classList.remove('jfk-button-standard');
-                    deleteButton.classList.add('jfk-button-primary');
-                }
-
-                // Add buttons.
-                console.log('adding buttons');
-                var buttonLabels = [
-                    // buttonLabel, eventTitlePrefix, buttonClassName.
-                    ['DONE', '✓', 'jfk-button-default'],
-                    ['NOPE', '✗', 'jfk-button-standard'],
-                    ['OKAY', '▣', 'jfk-button-standard'],
-                    ['AWESOME', 'ツ', 'jfk-button-standard'],
-                ];
-                for ( var i in buttonLabels ) {
-                    var buttonLabel = buttonLabels[i][0];
-                    console.log('buttonLabel:', buttonLabel);
-                    var eventTitlePrefix = buttonLabels[i][1];
-                    console.log('eventTitlePrefix:', eventTitlePrefix);
-                    var buttonClassNames = buttonLabels[i][2] + ' button-' + buttonLabel.toLowerCase();
-                    console.log('buttonClassNames:', buttonClassNames);
-                    var button = document.createElement('div');
-                    button.innerHTML =
-                        '<div ' +
-                            'role="button" ' +
-                            'class="' +
-                                'goog-inline-block ' +
-                                'jfk-button ' +
-                                'jfk-button-clear-outline ' +
-                                buttonClassNames +
-                                '" ' +
-                            'style="-webkit-user-select: none;"' +
-                            '>' +
-                            buttonLabel +
-                        '</div>' +
-                        '';
-                    button.style.display = 'inline-block';
-                    button.style.marginRight = '8px';
-                    button.style.marginTop = '12px';
-
-                    (function( myEventTitlePrefix ) {
-                        button.onclick = function() {
-                            var eventTitle = eventBubble.querySelector('.neb-title .ui-sch-schmedit');
-                            if ( eventTitle ) {
-                                console.log('event title clicked');
-                                eventTitle.click();
-                            } else {
-                                console.log('event title not clicked');
-                            }
-
-                            var eventButtonTitle = eventBubble.querySelector('input.neb-title');
-                            if ( eventButtonTitle ) {
-                                console.log('event title found');
-
-                                // Today.
-                                var date = new Date();
-                                var monthName = date.toLocaleString('en-us', { 'month': 'short' });
-                                var todayFormattedDate = monthName + ' ' + date.getDate() + ', ' + date.getFullYear();
-
-                                // Event date.
-                                var eventDate = eventBubble.querySelector('.neb-date').innerText;
-
-                                var calendarEventTitle = eventButtonTitle.value;
-                                console.log('before calendarEventTitle:', calendarEventTitle);
-
-                                // Remove leading number (e.g. "1. " in "1. My Calendar Event").
-                                calendarEventTitle = calendarEventTitle.replace(/^\d+\. /, '');
-                                // Remove leading ~ character.
-                                calendarEventTitle = calendarEventTitle.replace(/^~ /, '');
-
-                                console.log(' after calendarEventTitle:', calendarEventTitle);
-                                // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
-                                var newCalendarEventTitle =
-                                    myEventTitlePrefix + ' ' + calendarEventTitle + ';' +
-                                    ' ' + todayFormattedDate + ';' +
-                                    ' event date: ' + eventDate;
-                                console.log('newCalendarEventTitle:', newCalendarEventTitle);
-                                eventButtonTitle.value = newCalendarEventTitle;
-                            } else {
-                                console.log('event title not found');
-                            }
-
-                            var saveButton = eventBubble.querySelector('.save-button');
-                            if ( saveButton ) {
-                                saveButton.click();
-                                console.log('save button clicked');
-                            } else {
-                                console.log('save button not clicked');
-                            }
-                        };
-                    }( eventTitlePrefix ));
-                    eventBubble.appendChild(button);
-                }
             }
         }
     }
