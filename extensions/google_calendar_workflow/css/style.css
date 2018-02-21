@@ -153,3 +153,10 @@ body.geSgge .g3dbUc {
 .ef2wWc {
   border: 4px solid #333;
 }
+
+.Mh0NNb {
+  min-height: auto !important;
+}
+.Mh0NNb > div > div {
+  padding: 8px 14px;
+}

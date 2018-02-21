@@ -203,3 +203,12 @@ body.geSgge .g3dbUc {
 .ef2wWc {
     border: 4px solid #333;
 }
+
+// Decrease height of toast message to limit blocking of calendar events.
+.Mh0NNb {
+    min-height: auto !important;
+
+    > div > div {
+        padding: 8px 14px;
+    }
+}
