@@ -17,10 +17,10 @@ function insertButtonsAfter(referenceNode, onclickAction) {
     var insertAfterTarget = referenceNode;
     var buttonLabels = [
         // buttonLabel, eventTitlePrefix.
-        ['DONE', '✓'],
-        ['NOPE', '✗'],
-        ['OKAY', '▣'],
-        ['AWESOME', 'ツ'],
+        ['DONE',    '✓',  ['jfk-button', 'jfk-button-default' ]],
+        ['NOPE',    '✗',  ['jfk-button', 'jfk-button-standard']],
+        ['OKAY',    '▣',  ['jfk-button', 'jfk-button-standard']],
+        ['AWESOME', 'ツ', ['jfk-button', 'jfk-button-standard']],
     ];
     for ( var i in buttonLabels ) {
         var buttonLabel = buttonLabels[i][0];
@@ -29,8 +29,12 @@ function insertButtonsAfter(referenceNode, onclickAction) {
         var eventTitlePrefix = buttonLabels[i][1];
         console.log('eventTitlePrefix:', eventTitlePrefix);
 
+        var buttonClassNames = buttonLabels[i][2];
+        console.log('buttonClassNames:', buttonClassNames);
+
         var button = document.createElement('button');
         button.innerText = buttonLabel;
+        button.classList.add(...buttonClassNames);
 
         (function(myButton, myEventTitlePrefix) {
             myButton.onclick = function() {
