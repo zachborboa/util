@@ -42,43 +42,43 @@
 }
 
 .g3dbUc.UflSff {
-  color: #777;
+  color: #777 !important;
   border: 1px solid #a9abfe;
 }
-.g3dbUc.UflSff[style="background-color:#c6dafc;"] {
+.g3dbUc.UflSff[style="background-color: rgb(198, 218, 252);"], .g3dbUc.UflSff[style="background-color:#C6DAFC;"] {
   background-color: #e3e3ff !important;
 }
-.g3dbUc.UflSff[style="background-color:#c5cbe9;"] {
+.g3dbUc.UflSff[style="background-color: rgb(197, 203, 233);"], .g3dbUc.UflSff[style="background-color:#C5CBE9;"] {
   background-color: #dde6fb !important;
 }
-.g3dbUc.UflSff[style="background-color:#d7dbef;"] {
+.g3dbUc.UflSff[style="background-color: rgb(215, 219, 239);"], .g3dbUc.UflSff[style="background-color:#D7DBEF;"] {
   background-color: #e4ebfe !important;
 }
-.g3dbUc.UflSff[style="background-color:#b3e1f7;"] {
+.g3dbUc.UflSff[style="background-color: rgb(179, 225, 247);"], .g3dbUc.UflSff[style="background-color:#B3E1F7;"] {
   background-color: #c7f3f4 !important;
 }
-.g3dbUc.UflSff[style="background-color:#c2e9d7;"] {
+.g3dbUc.UflSff[style="background-color: rgb(194, 233, 215);"], .g3dbUc.UflSff[style="background-color:#C2E9D7;"] {
   background-color: #d7f8ec !important;
 }
-.g3dbUc.UflSff[style="background-color:#b6d9c7;"] {
+.g3dbUc.UflSff[style="background-color: rgb(182, 217, 199);"], .g3dbUc.UflSff[style="background-color:#B6D9C7;"] {
   background-color: #dcf1db !important;
 }
-.g3dbUc.UflSff[style="background-color:#fcecbe;"] {
+.g3dbUc.UflSff[style="background-color: rgb(252, 236, 190);"], .g3dbUc.UflSff[style="background-color:#FCECBE;"] {
   background-color: #fef3cd !important;
 }
-.g3dbUc.UflSff[style="background-color:#fccbbc;"] {
+.g3dbUc.UflSff[style="background-color: rgb(252, 203, 188);"], .g3dbUc.UflSff[style="background-color:#FCCBBC;"] {
   background-color: #ffead6 !important;
 }
-.g3dbUc.UflSff[style="background-color:#f8d8d5;"] {
+.g3dbUc.UflSff[style="background-color: rgb(248, 216, 213);"], .g3dbUc.UflSff[style="background-color:#F8D8D5;"] {
   background-color: #ffdbd7 !important;
 }
-.g3dbUc.UflSff[style="background-color:#f2b3b3;"] {
+.g3dbUc.UflSff[style="background-color: rgb(242, 179, 179);"], .g3dbUc.UflSff[style="background-color:#F2B3B3;"] {
   background-color: #f8d3d4 !important;
 }
-.g3dbUc.UflSff[style="background-color:#ddbde6;"] {
+.g3dbUc.UflSff[style="background-color: rgb(221, 189, 230);"], .g3dbUc.UflSff[style="background-color:#DDBDE6;"] {
   background-color: #f4e6ff !important;
 }
-.g3dbUc.UflSff[style="background-color:#d0d0d0;"] {
+.g3dbUc.UflSff[style="background-color: rgb(208, 208, 208);"], .g3dbUc.UflSff[style="background-color:#D0D0D0;"] {
   background-color: #f6f6f6 !important;
 }
 

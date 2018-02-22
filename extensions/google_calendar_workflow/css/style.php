@@ -30,18 +30,18 @@ $new_background_color_current_events = array(
 );
 
 $new_background_color_past_events = array(
-    'calendar_color' => '#c6dafc',
-    'blueberry'      => '#c5cbe9',
-    'lavender'       => '#d7dbef',
-    'peacock'        => '#b3e1f7',
-    'sage'           => '#c2e9d7',
-    'basil'          => '#b6d9c7',
-    'banana'         => '#fcecbe',
-    'tangerine'      => '#fccbbc',
-    'flamingo'       => '#f8d8d5',
-    'tomato'         => '#f2b3b3',
-    'grape'          => '#ddbde6',
-    'graphite'       => '#d0d0d0',
+    'calendar_color' => array('#c6dafc', 'rgb(198, 218, 252)'),
+    'blueberry'      => array('#c5cbe9', 'rgb(197, 203, 233)'),
+    'lavender'       => array('#d7dbef', 'rgb(215, 219, 239)'),
+    'peacock'        => array('#b3e1f7', 'rgb(179, 225, 247)'),
+    'sage'           => array('#c2e9d7', 'rgb(194, 233, 215)'),
+    'basil'          => array('#b6d9c7', 'rgb(182, 217, 199)'),
+    'banana'         => array('#fcecbe', 'rgb(252, 236, 190)'),
+    'tangerine'      => array('#fccbbc', 'rgb(252, 203, 188)'),
+    'flamingo'       => array('#f8d8d5', 'rgb(248, 216, 213)'),
+    'tomato'         => array('#f2b3b3', 'rgb(242, 179, 179)'),
+    'grape'          => array('#ddbde6', 'rgb(221, 189, 230)'),
+    'graphite'       => array('#d0d0d0', 'rgb(208, 208, 208)'),
 );
 
 $classic_background_color_current_events_hex = array(
@@ -90,15 +90,16 @@ foreach ($new_background_color_current_events as $new_background_color_name => $
 $scss = ob_get_contents();
 ob_end_clean();
 file_put_contents('current_events.inc.scss', $scss);
-echo $scss;
 
 ob_start();
-foreach ($new_background_color_past_events as $new_background_color_name => $new_color) {
+foreach ($new_background_color_past_events as $new_background_color_name => $new_colors) {
+    list($hex, $rgb) = $new_colors;
     $classic_color_name = $new_to_classic_name[$new_background_color_name];
     $classic_color = $classic_background_color_past_events_hex[$classic_color_name];
     echo
         '    // ' . $new_background_color_name . ' => ' . $classic_color_name . '.' . "\n" .
-        '    &[style="background-color:' . $new_color . ';"] {' . "\n" .
+        '    &[style="background-color: ' . $rgb . ';"],' . "\n" .
+        '    &[style="background-color:' . strtoupper($hex) . ';"] {' . "\n" .
         '        background-color: ' . $classic_color . ' !important;' . "\n" .
         '    }' . "\n" .
         '';
