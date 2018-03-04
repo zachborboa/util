@@ -91,7 +91,9 @@ function clickButton(clickedData) {
     dispatchEvent(eventTitle, 'input');
 
     var saveButton = document.querySelector('[aria-label="Save"]');
-    saveButton.click();
+    setTimeout(function() {
+        saveButton.click();
+    }, 100);
 
     console.groupEnd();
 }
