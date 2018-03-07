@@ -93,6 +93,8 @@
 
 .Mh0NNb {
   min-height: auto !important;
+  top: 45px;
+  bottom: auto !important;
 }
 .Mh0NNb > div > div {
   padding: 8px 14px;

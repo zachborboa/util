@@ -34,6 +34,10 @@
     > div > div {
         padding: 8px 14px;
     }
+
+    // Move toast message to top of screen to prevent blocking of calendar events.
+    top: 45px;
+    bottom: auto !important;
 }
 
 .jfk-button {
