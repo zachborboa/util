@@ -92,12 +92,18 @@
 }
 
 .Mh0NNb {
+  background-color: #fce4a6 !important;
+  color: #333 !important;
   min-height: auto !important;
   top: 45px;
   bottom: auto !important;
 }
 .Mh0NNb > div > div {
-  padding: 8px 14px;
+  padding: 5px 7px;
+}
+.Mh0NNb .UYjEbd {
+  color: #333 !important;
+  text-decoration: underline;
 }
 
 .jfk-button {

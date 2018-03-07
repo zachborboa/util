@@ -29,15 +29,26 @@
 
 // Decrease height of toast message to limit blocking of calendar events.
 .Mh0NNb {
+    // Lighten up colors.
+    background-color: #fce4a6 !important;
+    color: #333 !important;
+
+    // Decrease height.
     min-height: auto !important;
 
     > div > div {
-        padding: 8px 14px;
+        padding: 5px 7px;
     }
 
     // Move toast message to top of screen to prevent blocking of calendar events.
     top: 45px;
     bottom: auto !important;
+
+    // Stylize "undo".
+    .UYjEbd {
+        color: #333 !important;
+        text-decoration: underline;
+    }
 }
 
 .jfk-button {
