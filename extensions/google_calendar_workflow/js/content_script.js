@@ -16,13 +16,16 @@ function insertAfter(newNode, referenceNode) {
 function insertButtonsAfter(referenceNode, onclickAction) {
     var insertAfterTarget = referenceNode;
     var buttonLabels = [
-        // buttonLabel, eventTitlePrefix.
+        // buttonLabel, eventTitlePrefix, buttonClassNames.
         ['DONE',    '✓',  ['jfk-button', 'jfk-button-default' ]],
         ['NOPE',    '✗',  ['jfk-button', 'jfk-button-standard']],
         ['OKAY',    '▣',  ['jfk-button', 'jfk-button-standard']],
         ['AWESOME', 'ツ', ['jfk-button', 'jfk-button-standard']],
+        ['1',       '1.', ['jfk-button', 'jfk-button-standard']],
+        ['2',       '2.', ['jfk-button', 'jfk-button-standard']],
+        ['3',       '3.', ['jfk-button', 'jfk-button-standard']],
     ];
-    for ( var i in buttonLabels ) {
+    for (var i in buttonLabels) {
         var buttonLabel = buttonLabels[i][0];
         console.log('buttonLabel:', buttonLabel);
 
@@ -80,11 +83,14 @@ function clickButton(clickedData) {
     console.log(' after calendarEventTitle:', calendarEventTitle);
 
     // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
+    // "1. My Event"
     var eventTitlePrefix = clickedData['eventTitlePrefix'];
-    var newCalendarEventTitle =
-        eventTitlePrefix + ' ' + calendarEventTitle + ';' +
-        ' ' + todayFormattedDate + ';' +
-        ' event date: ' + eventDate;
+    var newCalendarEventTitle = eventTitlePrefix + ' ' + calendarEventTitle;
+    if (! ['1.', '2.', '3.'].includes(eventTitlePrefix)) {
+        newCalendarEventTitle += ';' +
+            ' ' + todayFormattedDate + ';' +
+            ' event date: ' + eventDate;
+    }
     console.log('newCalendarEventTitle:', newCalendarEventTitle);
     eventTitle.value = newCalendarEventTitle;
 
