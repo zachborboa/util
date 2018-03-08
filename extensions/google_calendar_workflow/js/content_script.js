@@ -1,4 +1,4 @@
-const PRIORITY_EVENT_TITLE_PREFIXES = ['1.', '2.', '3.'];
+const PRIORITY_EVENT_TITLE_PREFIXES = ['1.', '2.', '3.', '4.', '5.'];
 
 function dispatchEvent(obj, event) {
     var evt = new Event(
@@ -26,6 +26,8 @@ function insertButtons(referenceNode, onclickAction, where, alternateReferenceNo
         ['1',       '1.', ['jfk-button', 'jfk-button-standard']],
         ['2',       '2.', ['jfk-button', 'jfk-button-standard']],
         ['3',       '3.', ['jfk-button', 'jfk-button-standard']],
+        ['4',       '4.', ['jfk-button', 'jfk-button-standard']],
+        ['5',       '5.', ['jfk-button', 'jfk-button-standard']],
     ];
     for (var i in buttonLabels) {
         var buttonLabel = buttonLabels[i][0];
