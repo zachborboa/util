@@ -13,8 +13,8 @@ function insertAfter(newNode, referenceNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
 
-function insertButtonsAfter(referenceNode, onclickAction) {
-    var insertAfterTarget = referenceNode;
+function insertButtons(referenceNode, onclickAction, where) {
+    var insertTarget = referenceNode;
     var buttonLabels = [
         // buttonLabel, eventTitlePrefix, buttonClassNames.
         ['DONE',    '✓',  ['jfk-button', 'jfk-button-default' ]],
@@ -46,9 +46,13 @@ function insertButtonsAfter(referenceNode, onclickAction) {
             };
         }(button, eventTitlePrefix));
 
-        console.log('inserting button', button, 'after', insertAfterTarget);
-        insertAfter(button, insertAfterTarget);
-        insertAfterTarget = button;
+        console.log('inserting button', button, where, insertTarget);
+        if (where === 'after') {
+            insertAfter(button, insertTarget);
+            insertTarget = button;
+        } else if (where === 'inside') {
+            referenceNode.appendChild(button);
+        }
     }
 }
 
@@ -129,7 +133,7 @@ var buttonClickedData;
                         clickButton(buttonClickedData);
                         buttonClickedData = null;
                     };
-                    insertButtonsAfter(saveButton, onclickAction);
+                    insertButtons(saveButton, onclickAction, 'after');
                 }
             }
         }
@@ -161,6 +165,10 @@ document.onclick = function(event) {
             console.log('eventBubble:', eventBubble);
 
             var lastEventBubbleMetaItem = document.querySelector('#xDtlDlgCt > div:last-child');
+            var newEventBubbleMetaItem = document.createElement('div');
+            newEventBubbleMetaItem.classList.add(...lastEventBubbleMetaItem.classList);
+            insertAfter(newEventBubbleMetaItem, lastEventBubbleMetaItem);
+
             var onclickAction = function(myButton, myEventTitlePrefix) {
                 buttonClickedData = {
                     'button': myButton,
@@ -171,7 +179,7 @@ document.onclick = function(event) {
                 console.log('editEventButton:', editEventButton);
                 editEventButton.click();
             };
-            insertButtonsAfter(lastEventBubbleMetaItem, onclickAction);
+            insertButtons(newEventBubbleMetaItem, onclickAction, 'inside');
         }, 100);
     }
     console.groupEnd();
