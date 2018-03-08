@@ -1,3 +1,5 @@
+const PRIORITY_EVENT_TITLE_PREFIXES = ['1.', '2.', '3.'];
+
 function dispatchEvent(obj, event) {
     var evt = new Event(
         event,
@@ -13,7 +15,7 @@ function insertAfter(newNode, referenceNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
 
-function insertButtons(referenceNode, onclickAction, where) {
+function insertButtons(referenceNode, onclickAction, where, alternateReferenceNode) {
     var insertTarget = referenceNode;
     var buttonLabels = [
         // buttonLabel, eventTitlePrefix, buttonClassNames.
@@ -51,7 +53,11 @@ function insertButtons(referenceNode, onclickAction, where) {
             insertAfter(button, insertTarget);
             insertTarget = button;
         } else if (where === 'inside') {
-            referenceNode.appendChild(button);
+            if (alternateReferenceNode && PRIORITY_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
+                alternateReferenceNode.appendChild(button);
+            } else {
+                referenceNode.appendChild(button);
+            }
         }
     }
 }
@@ -90,7 +96,7 @@ function clickButton(clickedData) {
     // "1. My Event"
     var eventTitlePrefix = clickedData['eventTitlePrefix'];
     var newCalendarEventTitle = eventTitlePrefix + ' ' + calendarEventTitle;
-    if (! ['1.', '2.', '3.'].includes(eventTitlePrefix)) {
+    if (! PRIORITY_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
         newCalendarEventTitle += ';' +
             ' ' + todayFormattedDate + ';' +
             ' event date: ' + eventDate;
@@ -165,9 +171,14 @@ document.onclick = function(event) {
             console.log('eventBubble:', eventBubble);
 
             var lastEventBubbleMetaItem = document.querySelector('#xDtlDlgCt > div:last-child');
+
             var newEventBubbleMetaItem = document.createElement('div');
             newEventBubbleMetaItem.classList.add(...lastEventBubbleMetaItem.classList);
             insertAfter(newEventBubbleMetaItem, lastEventBubbleMetaItem);
+
+            var lastNewEventBubbleMetaItem = document.createElement('div');
+            lastNewEventBubbleMetaItem.classList.add(...lastEventBubbleMetaItem.classList);
+            insertAfter(lastNewEventBubbleMetaItem, newEventBubbleMetaItem);
 
             var onclickAction = function(myButton, myEventTitlePrefix) {
                 buttonClickedData = {
@@ -179,7 +190,7 @@ document.onclick = function(event) {
                 console.log('editEventButton:', editEventButton);
                 editEventButton.click();
             };
-            insertButtons(newEventBubbleMetaItem, onclickAction, 'inside');
+            insertButtons(newEventBubbleMetaItem, onclickAction, 'inside', lastNewEventBubbleMetaItem);
         }, 100);
     }
     console.groupEnd();
