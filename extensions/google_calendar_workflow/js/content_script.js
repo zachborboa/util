@@ -19,15 +19,15 @@ function insertButtons(referenceNode, onclickAction, where, alternateReferenceNo
     var insertTarget = referenceNode;
     var buttonLabels = [
         // buttonLabel, eventTitlePrefix, buttonClassNames.
-        ['DONE',    '✓',  ['jfk-button', 'jfk-button-default' ]],
-        ['NOPE',    '✗',  ['jfk-button', 'jfk-button-standard']],
-        ['OKAY',    '▣',  ['jfk-button', 'jfk-button-standard']],
-        ['AWESOME', 'ツ', ['jfk-button', 'jfk-button-standard']],
         ['1',       '1.', ['jfk-button', 'jfk-button-standard']],
         ['2',       '2.', ['jfk-button', 'jfk-button-standard']],
         ['3',       '3.', ['jfk-button', 'jfk-button-standard']],
         ['4',       '4.', ['jfk-button', 'jfk-button-standard']],
         ['5',       '5.', ['jfk-button', 'jfk-button-standard']],
+        ['DONE',    '✓',  ['jfk-button', 'jfk-button-default' ]],
+        ['NOPE',    '✗',  ['jfk-button', 'jfk-button-standard']],
+        ['OKAY',    '▣',  ['jfk-button', 'jfk-button-standard']],
+        ['AWESOME', 'ツ', ['jfk-button', 'jfk-button-standard']],
     ];
     for (var i in buttonLabels) {
         var buttonLabel = buttonLabels[i][0];
@@ -55,7 +55,7 @@ function insertButtons(referenceNode, onclickAction, where, alternateReferenceNo
             insertAfter(button, insertTarget);
             insertTarget = button;
         } else if (where === 'inside') {
-            if (alternateReferenceNode && PRIORITY_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
+            if (alternateReferenceNode && !PRIORITY_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
                 alternateReferenceNode.appendChild(button);
             } else {
                 referenceNode.appendChild(button);
