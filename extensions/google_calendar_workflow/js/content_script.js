@@ -172,6 +172,12 @@ document.onclick = function(event) {
             var eventBubble = document.querySelector('#xDetDlg[data-eventid="' + eventId + '"]');
             console.log('eventBubble:', eventBubble);
 
+            var editEventButton = eventBubble.querySelector('[data-tooltip="Edit event"]');
+            var eventEditable = editEventButton ? true : false;
+            if (!eventEditable) {
+                return;
+            }
+
             var lastEventBubbleMetaItem = document.querySelector('#xDtlDlgCt > div:last-child');
 
             var newEventBubbleMetaItem = document.createElement('div');
