@@ -132,7 +132,6 @@ var buttonClickedData;
                 } else {
                     // Add action buttons to calendar event edit page.
                     console.log('adding buttons');
-                    var saveButton = document.querySelector('[aria-label="Save"]');
                     var onclickAction = function(myButton, myEventTitlePrefix) {
                         buttonClickedData = {
                             'button': myButton,
@@ -141,7 +140,17 @@ var buttonClickedData;
                         clickButton(buttonClickedData);
                         buttonClickedData = null;
                     };
-                    insertButtons(saveButton, onclickAction, 'after');
+
+                    var saveButton = document.querySelector('[aria-label="Save"]');
+
+                    var buttonWrapper = document.createElement('div');
+                    buttonWrapper.style.left = '350px';
+                    buttonWrapper.style.position = 'absolute';
+                    buttonWrapper.style.top = '65px';
+                    buttonWrapper.style.width = '350px';
+
+                    insertAfter(buttonWrapper, saveButton);
+                    insertButtons(buttonWrapper, onclickAction, 'inside');
                 }
             }
         }
