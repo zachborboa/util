@@ -177,9 +177,14 @@ document.onclick = function(event) {
     if (eventIdFound) {
         var eventId = target.getAttribute('data-eventid');
         console.log('event id found:', eventId);
-        setTimeout(function() {
+
+        function modifyEventBubble() {
             var eventBubble = document.querySelector('#xDetDlg[data-eventid="' + eventId + '"]');
             console.log('eventBubble:', eventBubble);
+            if (!eventBubble) {
+                setTimeout(modifyEventBubble, 500);
+                return;
+            }
 
             var editEventButton = eventBubble.querySelector('[data-tooltip="Edit event"]');
             var eventEditable = editEventButton ? true : false;
@@ -208,7 +213,8 @@ document.onclick = function(event) {
                 editEventButton.click();
             };
             insertButtons(newEventBubbleMetaItem, onclickAction, 'inside', lastNewEventBubbleMetaItem);
-        }, 100);
+        }
+        setTimeout(modifyEventBubble, 100);
     }
     console.groupEnd();
 };
