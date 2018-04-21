@@ -111,7 +111,7 @@ function clickButton(clickedData) {
     var saveButton = document.querySelector('[aria-label="Save"]');
     setTimeout(function() {
         saveButton.click();
-    }, 100);
+    }, 500);
 
     console.groupEnd();
 }
