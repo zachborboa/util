@@ -178,11 +178,17 @@ document.onclick = function(event) {
         var eventId = target.getAttribute('data-eventid');
         console.log('event id found:', eventId);
 
-        function modifyEventBubble() {
+        function modifyEventBubble(attempt) {
+            attempt = attempt || 1;
+            if (attempt >= 3) {
+                return;
+            }
+            attempt += 1;
+
             var eventBubble = document.querySelector('#xDetDlg[data-eventid="' + eventId + '"]');
             console.log('eventBubble:', eventBubble);
             if (!eventBubble) {
-                setTimeout(modifyEventBubble, 500);
+                setTimeout(modifyEventBubble, 500, attempt);
                 return;
             }
 
