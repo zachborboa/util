@@ -148,6 +148,7 @@ var buttonClickedData;
                     buttonWrapper.style.position = 'absolute';
                     buttonWrapper.style.top = '65px';
                     buttonWrapper.style.width = '350px';
+                    buttonWrapper.style.zIndex = '1';
 
                     insertAfter(buttonWrapper, saveButton);
                     insertButtons(buttonWrapper, onclickAction, 'inside');
