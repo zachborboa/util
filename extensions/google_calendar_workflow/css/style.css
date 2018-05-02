@@ -134,3 +134,9 @@
   border: 1px solid #dcdcdc;
   color: #444;
 }
+
+.zlaSJd {
+  right: 1em !important;
+  top: 1em;
+  z-index: 1000 !important;
+}

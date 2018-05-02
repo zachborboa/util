@@ -80,3 +80,10 @@
     border: 1px solid #dcdcdc;
     color: #444;
 }
+
+// Move create event button as it blocks calendar events.
+.zlaSJd {
+    right: 1em !important;
+    top: 1em;
+    z-index: 1000 !important;
+}
