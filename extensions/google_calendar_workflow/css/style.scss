@@ -88,3 +88,8 @@
     top: 1em;
     z-index: 1000 !important;
 }
+
+// Hide Google notifications.
+[aria-label$="Google notifications"] {
+    display: none !important;
+}

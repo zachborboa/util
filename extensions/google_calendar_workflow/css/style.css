@@ -141,3 +141,7 @@
   top: 1em;
   z-index: 1000 !important;
 }
+
+[aria-label$="Google notifications"] {
+  display: none !important;
+}
