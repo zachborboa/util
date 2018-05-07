@@ -93,3 +93,9 @@
 [aria-label$="Google notifications"] {
     display: none !important;
 }
+
+// Allow more events to appear in the event bubble without requiring scrolling.
+.wGEy5 {
+    // Maximum height was 480px.
+    max-height: initial !important;
+}
