@@ -1,4 +1,4 @@
-const PRIORITY_EVENT_TITLE_PREFIXES = ['1.', '2.', '3.', '4.', '5.'];
+const PRIORITY_EVENT_TITLE_PREFIXES = ['1.', '2.', '3.', '4.', '5.', null];
 
 function dispatchEvent(obj, event) {
     var evt = new Event(
@@ -24,6 +24,7 @@ function insertButtons(referenceNode, onclickAction, where, alternateReferenceNo
         ['3',       '3.', ['jfk-button', 'jfk-button-standard']],
         ['4',       '4.', ['jfk-button', 'jfk-button-standard']],
         ['5',       '5.', ['jfk-button', 'jfk-button-standard']],
+        ['X',       null, ['jfk-button', 'jfk-button-standard']],
         ['DONE',    '✓',  ['jfk-button', 'jfk-button-default' ]],
         ['NOPE',    '✗',  ['jfk-button', 'jfk-button-standard']],
         ['OKAY',    '▣',  ['jfk-button', 'jfk-button-standard']],
@@ -96,12 +97,16 @@ function clickButton(clickedData) {
 
     // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
     // "1. My Event"
+    // "My Event"
     var eventTitlePrefix = clickedData['eventTitlePrefix'];
-    var newCalendarEventTitle = eventTitlePrefix + ' ' + calendarEventTitle;
-    if (! PRIORITY_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
-        newCalendarEventTitle += ';' +
-            ' ' + todayFormattedDate + ';' +
-            ' event date: ' + eventDate;
+    var newCalendarEventTitle = calendarEventTitle;
+    if (eventTitlePrefix !== null) {
+        newCalendarEventTitle = eventTitlePrefix + ' ' + calendarEventTitle;
+        if (! PRIORITY_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
+            newCalendarEventTitle += ';' +
+                ' ' + todayFormattedDate + ';' +
+                ' event date: ' + eventDate;
+        }
     }
     console.log('newCalendarEventTitle:', newCalendarEventTitle);
     eventTitle.value = newCalendarEventTitle;
