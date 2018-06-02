@@ -99,3 +99,9 @@
     // Maximum height was 480px.
     max-height: initial !important;
 }
+
+// Allow more text of a calendar event's title to appear.
+.jefcFd {
+    max-width: initial !important;
+    width: 600px !important;
+}
