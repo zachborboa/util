@@ -90,6 +90,8 @@ function clickButton(clickedData) {
 
     // Remove leading number (e.g. "1. " in "1. My Calendar Event").
     calendarEventTitle = calendarEventTitle.replace(/^\d+\. /, '');
+    // Remove leading ! character.
+    calendarEventTitle = calendarEventTitle.replace(/^! /, '');
     // Remove leading ~ character.
     calendarEventTitle = calendarEventTitle.replace(/^~ /, '');
 
