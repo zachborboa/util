@@ -1,5 +1,5 @@
 const PRIORITY_EVENT_TITLE_PREFIXES = ['1.', '2.', '3.', '4.', '5.', null];
-const DEBUG = false;
+/* const */ DEBUG = false;
 
 function dispatchEvent(obj, event) {
     var evt = new Event(
