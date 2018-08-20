@@ -105,3 +105,9 @@
     max-width: initial !important;
     width: 600px !important;
 }
+
+// Fix calendar event color selector appearing under a popup.
+.kydeve {
+    // Originally value: "z-index: 5000;"
+    z-index: 5005 !important;
+}

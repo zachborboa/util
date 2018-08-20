@@ -154,3 +154,7 @@
   max-width: initial !important;
   width: 600px !important;
 }
+
+.kydeve {
+  z-index: 5005 !important;
+}
