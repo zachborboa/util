@@ -16,6 +16,15 @@
     @import "past_events.inc";
 }
 
+// Center-align events.
+.g3dbUc {
+    margin-left: 2px;
+}
+.g3dbUc.PT41Tc:not(.JRw8kf) {
+    margin-left: 2px !important;
+    padding-left: 4px !important;
+}
+
 // Remove calendar event leading marker.
 .zhRc7[aria-hidden="true"] {
     opacity: 0;

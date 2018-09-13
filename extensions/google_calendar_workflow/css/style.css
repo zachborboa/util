@@ -82,6 +82,15 @@
   background-color: #f6f6f6 !important;
 }
 
+.g3dbUc {
+  margin-left: 2px;
+}
+
+.g3dbUc.PT41Tc:not(.JRw8kf) {
+  margin-left: 2px !important;
+  padding-left: 4px !important;
+}
+
 .zhRc7[aria-hidden="true"] {
   opacity: 0;
 }
