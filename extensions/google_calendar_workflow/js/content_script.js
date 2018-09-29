@@ -121,7 +121,9 @@ function clickButton(clickedData) {
     DEBUG && console.log('newCalendarEventTitle:', newCalendarEventTitle);
     eventTitle.value = newCalendarEventTitle;
 
-    dispatchEvent(eventTitle, 'input');
+    setTimeout(function() {
+        dispatchEvent(eventTitle, 'input');
+    }, 200);
 
     var saveButton = document.querySelector('[aria-label="Save"]');
     setTimeout(function() {
