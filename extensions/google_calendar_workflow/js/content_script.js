@@ -180,6 +180,9 @@ document.onclick = function(event) {
     DEBUG && console.log('element clicked:', event.target);
 
     var target = event.target;
+    if (!target) {
+        return;
+    }
     var eventIdFound = false;
     for (var i = 0; i < 5; i++) {
         // Ignore event bubble.
