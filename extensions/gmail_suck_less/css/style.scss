@@ -115,3 +115,11 @@ div > .aeN,
     font-size: $thread-list-email-label-font-size !important;
     letter-spacing: $thread-list-email-label-letter-spacing !important;
 }
+
+// Fix chat excess padding.
+div > .akj.aND .s {
+    padding-left: 0 !important;
+}
+div > .aCl .akj {
+    padding-right: 0 !important;
+}
