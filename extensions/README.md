@@ -28,6 +28,10 @@ Provides quick icon access to your Chrome extensions.
 
 Fixed width text for Gmail.
 
+### Gmail Suck Less
+
+Make Gmail suck less.
+
 ### Google Calendar Workflow
 
 Gives you more control over your events in Google Calendar.
@@ -35,6 +39,10 @@ Gives you more control over your events in Google Calendar.
 ### Google Docs Fixes
 
 Fix Google Docs.
+
+### Always Paste
+
+Always Paste prevents sites from disabling paste via javascript.
 
 ### Keep Tabs Open
 
