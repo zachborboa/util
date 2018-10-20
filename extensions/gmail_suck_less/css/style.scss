@@ -1,0 +1,94 @@
+// Previous (better) gmail style.
+$thread-list-background-color: rgba(243, 243, 243, .85);
+$thread-list-email-from-color: #222;
+$thread-list-email-from-font-family: arial, sans-serif;
+$thread-list-email-from-font-size: 12.8px;
+$thread-list-email-from-letter-spacing: 0;
+$thread-list-email-from-webkit-font-smoothing: auto;
+$thread-list-email-label-border-radius: 0;
+$thread-list-email-label-font-family: arial, sans-serif;
+$thread-list-email-label-font-size: 11px;
+$thread-list-email-label-letter-spacing: 0;
+$thread-list-email-label-webkit-border-radius: 0;
+$thread-list-email-label-webkit-font-smoothing: auto;
+$thread-list-email-subject-font-family: arial, sans-serif;
+$thread-list-email-subject-font-size: 12.8px;
+$thread-list-email-subject-letter-spacing: 0;
+$thread-list-email-subject-webkit-font-smoothing: auto;
+
+// Fix sidebar.
+.TO.nZ .nU > .n0 {
+    // Fix sidebar active entry font.
+    color: #dd4b39 !important;
+}
+.TO .nU > .n0 {
+    // Fix sidebar entry font.
+    -webkit-font-smoothing: auto !important;
+    color: #222 !important;
+    font-family: arial, sans-serif !important;
+    font-size: 12.8px !important;
+    letter-spacing: 0 !important;
+}
+.qj {
+    // Hide sidebar entry icons.
+    opacity: 0 !important;
+}
+div > .aeN,
+.wT {
+    // Fix sidebar width.
+    max-width: none !important;
+    min-width: auto !important;
+}
+
+// Fix thread section header font.
+.Wr > .Wn {
+    -webkit-font-smoothing: auto !important;
+    color: #222 !important;
+    font-family: arial, sans-serif !important;
+    font-size: 15px !important;
+    letter-spacing: 0 !important;
+}
+
+// Fix thread section arrows pointing the wrong way.
+.Wo,
+.Wo-A8 {
+    transform: rotate(-90deg);
+}
+.Wq,
+.Wq-A8 {
+    transform: rotate(180deg);
+}
+
+// transform: rotate(-90deg);
+
+// Fix thread list background color.
+.yO {
+    background-color: $thread-list-background-color !important;
+}
+
+// Fix thread list email from font.
+.yW {
+    -webkit-font-smoothing: $thread-list-email-from-webkit-font-smoothing !important;
+    color: $thread-list-email-from-color !important;
+    font-family: $thread-list-email-from-font-family !important;
+    font-size: $thread-list-email-from-font-size !important;
+    letter-spacing: $thread-list-email-from-letter-spacing !important;
+}
+
+// Fix thread list email subject font.
+.zA > .a4W {
+    -webkit-font-smoothing: $thread-list-email-subject-webkit-font-smoothing !important;
+    font-family: $thread-list-email-subject-font-family !important;
+    font-size: $thread-list-email-subject-font-size !important;
+    letter-spacing: $thread-list-email-subject-letter-spacing !important;
+}
+
+// Fix thread list email label font.
+.ar {
+    -webkit-border-radius: $thread-list-email-label-webkit-border-radius !important;
+    -webkit-font-smoothing: $thread-list-email-label-webkit-font-smoothing !important;
+    border-radius: $thread-list-email-label-border-radius !important;
+    font-family: $thread-list-email-label-font-family !important;
+    font-size: $thread-list-email-label-font-size !important;
+    letter-spacing: $thread-list-email-label-letter-spacing !important;
+}

@@ -1,0 +1,16 @@
+{
+  "content_scripts": [
+    {
+      "css": [
+        "css/style.css"
+      ],
+      "matches": [
+        "https://mail.google.com/*"
+      ]
+    }
+  ],
+  "description": "Make Gmail suck less.",
+  "manifest_version": 2,
+  "name": "Gmail Suck Less",
+  "version": "1.0.0"
+}
