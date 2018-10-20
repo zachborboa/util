@@ -10,6 +10,10 @@
   letter-spacing: 0 !important;
 }
 
+.afM {
+  margin: 0 8px 0 0 !important;
+}
+
 .qj {
   opacity: 0 !important;
 }
@@ -18,6 +22,26 @@ div > .aeN,
 .wT {
   max-width: none !important;
   min-width: auto !important;
+}
+
+.TN,
+.n4 {
+  padding: 0 !important;
+}
+
+.hx .ie .xu .iq {
+  border-top: 1px solid #d8d8d8 !important;
+}
+
+.hR .hM {
+  -webkit-border-radius: 0 !important;
+  border-radius: 0 !important;
+}
+
+.hU {
+  font-family: arial, sans-serif !important;
+  font-size: 11px !important;
+  letter-spacing: 0 !important;
 }
 
 .Wr > .Wn {

@@ -29,6 +29,10 @@ $thread-list-email-subject-webkit-font-smoothing: auto;
     font-size: 12.8px !important;
     letter-spacing: 0 !important;
 }
+.afM {
+    // Fix inbox down arrow on hover positioning.
+    margin: 0 8px 0 0 !important;
+}
 .qj {
     // Hide sidebar entry icons.
     opacity: 0 !important;
@@ -38,6 +42,27 @@ div > .aeN,
     // Fix sidebar width.
     max-width: none !important;
     min-width: auto !important;
+}
+.TN,
+.n4 {
+    // Fix sidebar entry excess padding.
+    padding: 0 !important;
+}
+
+// Add outline of email for security.
+.hx .ie .xu .iq {
+    border-top: 1px solid #d8d8d8 !important;
+}
+
+// Fix email labels.
+.hR .hM {
+    -webkit-border-radius: 0 !important;
+    border-radius: 0 !important;
+}
+.hU {
+    font-family: arial, sans-serif !important;
+    font-size: 11px !important;
+    letter-spacing: 0 !important;
 }
 
 // Fix thread section header font.
@@ -58,8 +83,6 @@ div > .aeN,
 .Wq-A8 {
     transform: rotate(180deg);
 }
-
-// transform: rotate(-90deg);
 
 // Fix thread list background color.
 .yO {
