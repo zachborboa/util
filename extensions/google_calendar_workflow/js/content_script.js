@@ -1,4 +1,4 @@
-const PRIORITY_EVENT_TITLE_PREFIXES = ['1.', '2.', '3.', '4.', '5.', null];
+const PRIORITY_EVENT_TITLE_PREFIXES = ['-', '1.', '2.', '3.', '4.', '5.', null];
 /* const */ DEBUG = false;
 
 function dispatchEvent(obj, event) {
@@ -20,6 +20,7 @@ function insertButtons(referenceNode, onclickAction, where, alternateReferenceNo
     var insertTarget = referenceNode;
     var buttonLabels = [
         // buttonLabel, eventTitlePrefix, buttonClassNames.
+        ['-',       '-',  ['jfk-button', 'jfk-button-standard']],
         ['1',       '1.', ['jfk-button', 'jfk-button-standard']],
         ['2',       '2.', ['jfk-button', 'jfk-button-standard']],
         ['3',       '3.', ['jfk-button', 'jfk-button-standard']],
@@ -93,6 +94,8 @@ function clickButton(clickedData) {
     calendarEventTitle = calendarEventTitle.replace(/^\d+\. /, '');
     // Remove leading ! character.
     calendarEventTitle = calendarEventTitle.replace(/^! /, '');
+    // Remove leading - character.
+    calendarEventTitle = calendarEventTitle.replace(/^- /, '');
     // Remove leading ~ character.
     calendarEventTitle = calendarEventTitle.replace(/^~ /, '');
 
