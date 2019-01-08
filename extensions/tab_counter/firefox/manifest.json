@@ -1,0 +1,15 @@
+{
+  "background": {
+    "scripts": [
+      "js/background.js"
+    ]
+  },
+  "browser_action": {},
+  "description": "Display how many tabs are open.",
+  "manifest_version": 2,
+  "name": "Tab Counter",
+  "permissions": [
+    "tabs"
+  ],
+  "version": "0.0.1"
+}
