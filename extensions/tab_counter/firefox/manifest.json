@@ -1,4 +1,9 @@
 {
+  "applications": {
+    "gecko": {
+      "id": "tab-counter@example.com"
+    }
+  },
   "background": {
     "scripts": [
       "js/background.js"
