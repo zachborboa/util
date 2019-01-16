@@ -188,8 +188,10 @@ document.onclick = function(event) {
     }
     var eventIdFound = false;
     for (var i = 0; i < 5; i++) {
+        if (!target) {
+            break;
         // Ignore event bubble.
-        if (target.getAttribute('id') === 'xDetDlg') {
+        } else if (target.getAttribute('id') === 'xDetDlg') {
             break;
         } else if (target.getAttribute('data-eventid')) {
             eventIdFound = true;
