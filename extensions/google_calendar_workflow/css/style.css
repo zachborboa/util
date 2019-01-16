@@ -100,7 +100,7 @@
   outline: 3px solid #000;
 }
 
-.Mh0NNb {
+div.wgVzIb {
   background-color: #f9edbe !important;
   border: 1px solid #f0c36d;
   color: #222 !important;
@@ -108,13 +108,26 @@
   top: 45px;
   bottom: auto !important;
 }
-.Mh0NNb > div > div {
+div.wgVzIb > div > div {
   padding: 5px 7px;
 }
-.Mh0NNb .M6tHv [jsaction] {
+div.wgVzIb > div > div:nth-of-type(2) {
+  line-height: 1;
+}
+div.wgVzIb > div > div:nth-of-type(3) {
+  display: none;
+}
+div.wgVzIb [aria-label=Close] {
+  display: none;
+}
+div.wgVzIb > div > div:nth-of-type(2) {
   color: #222 !important;
   text-decoration: underline;
   text-transform: initial;
+}
+div.wgVzIb svg {
+  color: #222;
+  fill: #222;
 }
 
 .jfk-button {
