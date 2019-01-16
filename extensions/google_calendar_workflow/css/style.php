@@ -98,8 +98,8 @@ foreach ($new_background_color_past_events as $new_background_color_name => $new
     $classic_color = $classic_background_color_past_events_hex[$classic_color_name];
     echo
         '    // ' . $new_background_color_name . ' => ' . $classic_color_name . '.' . "\n" .
-        '    &[style*="' . $rgb . '" i],' . "\n" .
-        '    &[style*="' . strtolower($hex) . '" i] {' . "\n" .
+        '    &[style*="' . $rgb . '"],' . "\n" .
+        '    &[style*="' . strtolower($hex) . '"] {' . "\n" .
         '        background-color: ' . $classic_color . ' !important;' . "\n" .
         '    }' . "\n" .
         '';

@@ -45,40 +45,40 @@
   color: #777 !important;
   border: 1px solid #a9abfe;
 }
-.g3dbUc.UflSff[style*="rgb(198, 218, 252)" i], .g3dbUc.UflSff[style*="#c6dafc" i] {
+.g3dbUc.UflSff[style*="rgb(198, 218, 252)"], .g3dbUc.UflSff[style*="#c6dafc"] {
   background-color: #e3e3ff !important;
 }
-.g3dbUc.UflSff[style*="rgb(197, 203, 233)" i], .g3dbUc.UflSff[style*="#c5cbe9" i] {
+.g3dbUc.UflSff[style*="rgb(197, 203, 233)"], .g3dbUc.UflSff[style*="#c5cbe9"] {
   background-color: #dde6fb !important;
 }
-.g3dbUc.UflSff[style*="rgb(215, 219, 239)" i], .g3dbUc.UflSff[style*="#d7dbef" i] {
+.g3dbUc.UflSff[style*="rgb(215, 219, 239)"], .g3dbUc.UflSff[style*="#d7dbef"] {
   background-color: #e4ebfe !important;
 }
-.g3dbUc.UflSff[style*="rgb(179, 225, 247)" i], .g3dbUc.UflSff[style*="#b3e1f7" i] {
+.g3dbUc.UflSff[style*="rgb(179, 225, 247)"], .g3dbUc.UflSff[style*="#b3e1f7"] {
   background-color: #c7f3f4 !important;
 }
-.g3dbUc.UflSff[style*="rgb(194, 233, 215)" i], .g3dbUc.UflSff[style*="#c2e9d7" i] {
+.g3dbUc.UflSff[style*="rgb(194, 233, 215)"], .g3dbUc.UflSff[style*="#c2e9d7"] {
   background-color: #d7f8ec !important;
 }
-.g3dbUc.UflSff[style*="rgb(182, 217, 199)" i], .g3dbUc.UflSff[style*="#b6d9c7" i] {
+.g3dbUc.UflSff[style*="rgb(182, 217, 199)"], .g3dbUc.UflSff[style*="#b6d9c7"] {
   background-color: #dcf1db !important;
 }
-.g3dbUc.UflSff[style*="rgb(252, 236, 190)" i], .g3dbUc.UflSff[style*="#fcecbe" i] {
+.g3dbUc.UflSff[style*="rgb(252, 236, 190)"], .g3dbUc.UflSff[style*="#fcecbe"] {
   background-color: #fef3cd !important;
 }
-.g3dbUc.UflSff[style*="rgb(252, 203, 188)" i], .g3dbUc.UflSff[style*="#fccbbc" i] {
+.g3dbUc.UflSff[style*="rgb(252, 203, 188)"], .g3dbUc.UflSff[style*="#fccbbc"] {
   background-color: #ffead6 !important;
 }
-.g3dbUc.UflSff[style*="rgb(248, 216, 213)" i], .g3dbUc.UflSff[style*="#f8d8d5" i] {
+.g3dbUc.UflSff[style*="rgb(248, 216, 213)"], .g3dbUc.UflSff[style*="#f8d8d5"] {
   background-color: #ffdbd7 !important;
 }
-.g3dbUc.UflSff[style*="rgb(242, 179, 179)" i], .g3dbUc.UflSff[style*="#f2b3b3" i] {
+.g3dbUc.UflSff[style*="rgb(242, 179, 179)"], .g3dbUc.UflSff[style*="#f2b3b3"] {
   background-color: #f8d3d4 !important;
 }
-.g3dbUc.UflSff[style*="rgb(221, 189, 230)" i], .g3dbUc.UflSff[style*="#ddbde6" i] {
+.g3dbUc.UflSff[style*="rgb(221, 189, 230)"], .g3dbUc.UflSff[style*="#ddbde6"] {
   background-color: #f4e6ff !important;
 }
-.g3dbUc.UflSff[style*="rgb(208, 208, 208)" i], .g3dbUc.UflSff[style*="#d0d0d0" i] {
+.g3dbUc.UflSff[style*="rgb(208, 208, 208)"], .g3dbUc.UflSff[style*="#d0d0d0"] {
   background-color: #f6f6f6 !important;
 }
 
@@ -91,7 +91,7 @@
   padding-left: 4px !important;
 }
 
-.zhRc7[aria-hidden="true"] {
+.zhRc7[aria-hidden=true] {
   opacity: 0;
 }
 
