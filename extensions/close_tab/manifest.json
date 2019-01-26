@@ -1,4 +1,9 @@
 {
+  "applications": {
+    "gecko": {
+      "id": "extension@example.com"
+    }
+  },
   "background": {
     "scripts": [
       "js/background.js"
