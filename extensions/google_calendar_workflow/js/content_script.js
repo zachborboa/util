@@ -30,7 +30,7 @@ function insertButtons(referenceNode, onclickAction, where, alternateReferenceNo
         ['DONE',    '✓',  ['jfk-button', 'jfk-button-default' ]],
         ['NOPE',    '✗',  ['jfk-button', 'jfk-button-standard']],
         ['OKAY',    '▣',  ['jfk-button', 'jfk-button-standard']],
-        ['AWESOME', 'ツ', ['jfk-button', 'jfk-button-standard']],
+        ['AWESOME', 'ツ',  ['jfk-button', 'jfk-button-standard']],
     ];
     for (var i in buttonLabels) {
         var buttonLabel = buttonLabels[i][0];

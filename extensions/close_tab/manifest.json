@@ -1,7 +1,7 @@
 {
   "applications": {
     "gecko": {
-      "id": "extension@example.com"
+      "id": "close-tab@example.com"
     }
   },
   "background": {
