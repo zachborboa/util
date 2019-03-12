@@ -1,4 +1,9 @@
 {
+  "applications": {
+    "gecko": {
+      "id": "hacker-news@example.com"
+    }
+  },
   "content_scripts": [
     {
       "js": [
