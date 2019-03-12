@@ -4,6 +4,11 @@
       "id": "hacker-news@example.com"
     }
   },
+  "background": {
+    "scripts": [
+      "js/background.js"
+    ]
+  },
   "content_scripts": [
     {
       "js": [
@@ -14,6 +19,14 @@
         "https://news.ycombinator.com/ask",
         "https://news.ycombinator.com/best",
         "https://news.ycombinator.com/news*"
+      ]
+    },
+    {
+      "js": [
+        "js/content_script_item_navigation.js"
+      ],
+      "matches": [
+        "https://news.ycombinator.com/item?id=*"
       ]
     }
   ],
