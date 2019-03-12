@@ -42,9 +42,9 @@ Gives you more control over your events in Google Calendar.
 
 Fix Google Docs.
 
-### Always Paste
+### Hacker News
 
-Always Paste prevents sites from disabling paste via javascript.
+Enhancements for https://news.ycombinator.com/.
 
 ### Keep Tabs Open
 
@@ -65,6 +65,10 @@ Log all requests to the background page.
 ### Smart Referrer
 
 Send referrers only from the same origin.
+
+### Tab Counter
+
+Display how many tabs are open.
 
 ### Tab Counter
 

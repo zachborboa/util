@@ -34,7 +34,7 @@
       ]
     }
   ],
-  "description": "",
+  "description": "Enhancements for https://news.ycombinator.com/.",
   "manifest_version": 2,
   "name": "Hacker News",
   "version": "0.0.1"
