@@ -12,7 +12,9 @@
   "content_scripts": [
     {
       "js": [
-        "js/content_script_colorscale.js"
+        "js/content_script_common.js",
+        "js/content_script_colorscale.js",
+        "js/content_script_navigation.js"
       ],
       "matches": [
         "https://news.ycombinator.com/",
@@ -23,6 +25,7 @@
     },
     {
       "js": [
+        "js/content_script_common.js",
         "js/content_script_item_navigation.js"
       ],
       "matches": [
