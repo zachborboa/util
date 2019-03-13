@@ -1,0 +1,8 @@
+.comment {
+  border: 1px solid transparent;
+  border-radius: 2px;
+}
+.comment:hover {
+  border-color: #ccc;
+  background-color: rgba(0, 0, 0, 0.05);
+}

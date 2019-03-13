@@ -25,6 +25,9 @@
       ]
     },
     {
+      "css": [
+        "css/style_item.css"
+      ],
       "js": [
         "js/content_script_common.js",
         "js/content_script_item_navigation.js"
