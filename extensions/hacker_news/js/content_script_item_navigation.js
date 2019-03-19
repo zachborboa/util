@@ -3,9 +3,8 @@ function documentClick(event) {
 
     // Open non-javascript links clicked in background tabs.
     var targetClickedIsAnchor = target.nodeName === 'A';
-    var anchorUrl = target.getAttribute('href');
-    if (targetClickedIsAnchor && anchorUrl !== 'javascript:void(0)') {
-        openBackgroundTab(anchorUrl);
+    if (targetClickedIsAnchor && target.href && target.href !== 'javascript:void(0)') {
+        openBackgroundTab(target.href);
         event.preventDefault();
         return;
     }
