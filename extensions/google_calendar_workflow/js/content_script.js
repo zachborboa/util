@@ -232,6 +232,7 @@ document.onclick = function(event) {
 
             var lastNewEventBubbleMetaItem = document.createElement('div');
             lastNewEventBubbleMetaItem.classList.add(...lastEventBubbleMetaItem.classList);
+            lastNewEventBubbleMetaItem.classList.add('_gcw-last-event-bubble-meta');
             insertAfter(lastNewEventBubbleMetaItem, newEventBubbleMetaItem);
 
             var onclickAction = function(myButton, myEventTitlePrefix) {
