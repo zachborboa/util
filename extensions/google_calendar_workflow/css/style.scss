@@ -30,10 +30,20 @@
     opacity: 0;
 }
 
-// Increase contrast for current calendar day.
-.ef2wWc {
-    background-color: rgba(255, 165, 0, 0.4) !important;
-    outline: 3px solid rgba(0, 0, 0, .75);
+// Decrease contrast for column headers.
+.PhLhOd {
+    background-color: #f3f5f5;
+}
+
+.t8qpF {
+    // Decrease contrast for calendar event days.
+    background-color: #f3f5f5;
+
+    // Increase contrast for current calendar day.
+    &.ef2wWc {
+        background-color: #fff !important;
+        outline: 3px solid rgba(0, 0, 0, .75);
+    }
 }
 
 // Modify toast message.
