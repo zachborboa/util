@@ -125,10 +125,16 @@ div.wgVzIb {
     max-height: initial !important;
 }
 
-// Allow more text of a calendar event's title to appear.
+// Modify calendar event popup.
 .jefcFd {
+    // Allow more text of a calendar event's title to appear.
     max-width: initial !important;
     width: 600px !important;
+
+    // Underline links.
+    a {
+        text-decoration: underline;
+    }
 }
 
 // Fix calendar event color selector appearing under a popup.
