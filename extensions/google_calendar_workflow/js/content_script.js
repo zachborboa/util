@@ -63,7 +63,7 @@ function insertButtons(referenceNode, onclickAction, where, alternateReferenceNo
         DEBUG && console.log('buttonClassNames:', buttonClassNames);
 
         var button = document.createElement('button');
-        button.innerText = buttonLabel;
+        button.innerHTML = '<u>' + buttonLabel[0] + '</u>' + buttonLabel.slice(1);
         button.classList.add(...buttonClassNames);
 
         (function(myButton, myEventTitlePrefix) {
