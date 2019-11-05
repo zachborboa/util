@@ -1,5 +1,39 @@
-const PRIORITY_EVENT_TITLE_PREFIXES = ['-', '1.', '2.', '3.', '4.', '5.', null];
 /* const */ DEBUG = false;
+
+const BUTTON_LABELS = [
+    // buttonLabel, eventTitlePrefix, buttonClassNames.
+    ['-',       '-',  ['jfk-button', 'jfk-button-standard', 'button-dash']],
+    ['1',       '1.', ['jfk-button', 'jfk-button-standard', 'button-1']],
+    ['2',       '2.', ['jfk-button', 'jfk-button-standard', 'button-2']],
+    ['3',       '3.', ['jfk-button', 'jfk-button-standard', 'button-3']],
+    ['4',       '4.', ['jfk-button', 'jfk-button-standard', 'button-4']],
+    ['5',       '5.', ['jfk-button', 'jfk-button-standard', 'button-5']],
+    ['X',       null, ['jfk-button', 'jfk-button-standard', 'button-x']],
+    ['DONE',    '✓',  ['jfk-button', 'jfk-button-default',  'button-d']],
+    ['NOPE',    '✗',  ['jfk-button', 'jfk-button-standard', 'button-n']],
+    ['OKAY',    '▣',  ['jfk-button', 'jfk-button-standard', 'button-o']],
+    ['AWESOME', 'ツ',  ['jfk-button', 'jfk-button-standard', 'button-a']],
+];
+
+const BUTTON_SELECTORS = {
+    '-': '.button-dash',
+    '1': '.button-1',
+    '2': '.button-2',
+    '3': '.button-3',
+    '4': '.button-4',
+    '5': '.button-5',
+    'x': '.button-x',
+    'd': '.button-d',
+    'n': '.button-n',
+    'o': '.button-o',
+    'a': '.button-a',
+};
+
+const KEYCODE = {
+    'DASH': 189,
+};
+
+const PRIORITY_EVENT_TITLE_PREFIXES = ['-', '1.', '2.', '3.', '4.', '5.', null];
 
 function dispatchEvent(obj, event) {
     var evt = new Event(
@@ -18,28 +52,14 @@ function insertAfter(newNode, referenceNode) {
 
 function insertButtons(referenceNode, onclickAction, where, alternateReferenceNode) {
     var insertTarget = referenceNode;
-    var buttonLabels = [
-        // buttonLabel, eventTitlePrefix, buttonClassNames.
-        ['-',       '-',  ['jfk-button', 'jfk-button-standard']],
-        ['1',       '1.', ['jfk-button', 'jfk-button-standard']],
-        ['2',       '2.', ['jfk-button', 'jfk-button-standard']],
-        ['3',       '3.', ['jfk-button', 'jfk-button-standard']],
-        ['4',       '4.', ['jfk-button', 'jfk-button-standard']],
-        ['5',       '5.', ['jfk-button', 'jfk-button-standard']],
-        ['X',       null, ['jfk-button', 'jfk-button-standard']],
-        ['DONE',    '✓',  ['jfk-button', 'jfk-button-default' ]],
-        ['NOPE',    '✗',  ['jfk-button', 'jfk-button-standard']],
-        ['OKAY',    '▣',  ['jfk-button', 'jfk-button-standard']],
-        ['AWESOME', 'ツ',  ['jfk-button', 'jfk-button-standard']],
-    ];
-    for (var i in buttonLabels) {
-        var buttonLabel = buttonLabels[i][0];
+    for (var i in BUTTON_LABELS) {
+        var buttonLabel = BUTTON_LABELS[i][0];
         DEBUG && console.log('buttonLabel:', buttonLabel);
 
-        var eventTitlePrefix = buttonLabels[i][1];
+        var eventTitlePrefix = BUTTON_LABELS[i][1];
         DEBUG && console.log('eventTitlePrefix:', eventTitlePrefix);
 
-        var buttonClassNames = buttonLabels[i][2];
+        var buttonClassNames = BUTTON_LABELS[i][2];
         DEBUG && console.log('buttonClassNames:', buttonClassNames);
 
         var button = document.createElement('button');
@@ -131,10 +151,47 @@ function clickButton(clickedData) {
     var saveButton = document.querySelector('[aria-label="Save"]');
     setTimeout(function() {
         saveButton.click();
-    }, 500);
+    }, 700);
 
     DEBUG && console.groupEnd();
 }
+
+function handleKeyEvent(event) {
+    DEBUG && console.info('handleKeyEvent');
+    var character = String.fromCharCode(event.which);
+    if (!event.shiftKey) {
+        character = character.toLowerCase();
+    }
+    if (event.which === KEYCODE.DASH) {
+        character = '-';
+    }
+    DEBUG && console.log('character:', character);
+
+    // Ignore events with modifiers.
+    if (event.shiftKey) {
+        return;
+    }
+    if (event.altKey) {
+        return;
+    }
+    if (event.ctrlKey) {
+        return;
+    }
+    if (event.metaKey) {
+        return;
+    }
+
+    // Take requested action when event bubble is open and a keyboard shortcut matching the key pressed is found.
+    if (eventBubbleShown && character in BUTTON_SELECTORS) {
+        event.preventDefault();
+
+        var buttonSelector = BUTTON_SELECTORS[character];
+        var buttonToClick = document.querySelector(buttonSelector);
+        buttonToClick.click();
+    }
+}
+
+document.addEventListener('keydown', handleKeyEvent);
 
 var buttonClickedData;
 (function(){
@@ -178,6 +235,7 @@ var buttonClickedData;
     }, 1000);
 })();
 
+var eventBubbleShown = false;
 document.onclick = function(event) {
     DEBUG && console.group('element clicked');
     DEBUG && console.log('element clicked:', event.target);
@@ -214,9 +272,11 @@ document.onclick = function(event) {
             var eventBubble = document.querySelector('#xDetDlg[data-eventid="' + eventId + '"]');
             DEBUG && console.log('eventBubble:', eventBubble);
             if (!eventBubble) {
+                eventBubbleShown = false;
                 setTimeout(modifyEventBubble, 500, attempt);
                 return;
             }
+            eventBubbleShown = true;
 
             var editEventButton = eventBubble.querySelector('[data-tooltip="Edit event"]');
             var eventEditable = editEventButton ? true : false;
