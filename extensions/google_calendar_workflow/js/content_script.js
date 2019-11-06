@@ -182,12 +182,15 @@ function handleKeyEvent(event) {
     }
 
     // Take requested action when event bubble is open and a keyboard shortcut matching the key pressed is found.
-    if (eventBubbleShown && character in BUTTON_SELECTORS) {
+    var eventBubble = document.querySelector('#xDetDlg[data-eventid]')
+    if (eventBubble && character in BUTTON_SELECTORS) {
         event.preventDefault();
 
         var buttonSelector = BUTTON_SELECTORS[character];
         var buttonToClick = document.querySelector(buttonSelector);
-        buttonToClick.click();
+        if (buttonToClick) {
+            buttonToClick.click();
+        }
     }
 }
 
@@ -235,7 +238,6 @@ var buttonClickedData;
     }, 1000);
 })();
 
-var eventBubbleShown = false;
 document.onclick = function(event) {
     DEBUG && console.group('element clicked');
     DEBUG && console.log('element clicked:', event.target);
@@ -272,11 +274,9 @@ document.onclick = function(event) {
             var eventBubble = document.querySelector('#xDetDlg[data-eventid="' + eventId + '"]');
             DEBUG && console.log('eventBubble:', eventBubble);
             if (!eventBubble) {
-                eventBubbleShown = false;
                 setTimeout(modifyEventBubble, 500, attempt);
                 return;
             }
-            eventBubbleShown = true;
 
             var editEventButton = eventBubble.querySelector('[data-tooltip="Edit event"]');
             var eventEditable = editEventButton ? true : false;
