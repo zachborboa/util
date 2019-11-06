@@ -119,9 +119,9 @@ function clickButton(clickedData) {
     // Remove leading ~ character.
     calendarEventTitle = calendarEventTitle.replace(/^~ /, '');
 
-    var buttonLabel = clickedData.button.innerText;
-    DEBUG && console.log('buttonLabel:', buttonLabel);
-    if (buttonLabel === 'DONE') {
+    var eventTitlePrefix = clickedData['eventTitlePrefix'];
+    DEBUG && console.log('eventTitlePrefix:', eventTitlePrefix);
+    if (eventTitlePrefix === '✓') {
         // Remove leading "Tentative: ".
         calendarEventTitle = calendarEventTitle.replace(/^Tentative: /, '');
     }
@@ -131,7 +131,6 @@ function clickButton(clickedData) {
     // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
     // "1. My Event"
     // "My Event"
-    var eventTitlePrefix = clickedData['eventTitlePrefix'];
     var newCalendarEventTitle = calendarEventTitle;
     if (eventTitlePrefix !== null) {
         newCalendarEventTitle = eventTitlePrefix + ' ' + calendarEventTitle;
