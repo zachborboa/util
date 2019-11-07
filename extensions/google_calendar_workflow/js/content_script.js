@@ -33,6 +33,7 @@ const KEYCODE = {
     'DASH': 189,
 };
 
+const COMPLETED_EVENT_TITLE_PREFIXES = ['✓', '✗', '▣', 'ツ'];
 const PRIORITY_EVENT_TITLE_PREFIXES = ['-', '1.', '2.', '3.', '4.', '5.', null];
 
 function dispatchEvent(obj, event) {
@@ -142,6 +143,28 @@ function clickButton(clickedData) {
     }
     DEBUG && console.log('newCalendarEventTitle:', newCalendarEventTitle);
     eventTitle.value = newCalendarEventTitle;
+
+    // Move event to the current move-to date if marked completed.
+    if (COMPLETED_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
+        DEBUG && console.log('event marked completed');
+        var moveToDateInput = document.querySelector('._move-to-date-input');
+        if (moveToDateInput.value) {
+            DEBUG && console.log('moving event to', moveToDateInput.value);
+            setTimeout(function() {
+                startDateInput.focus();
+                startDateInput.value = moveToDateInput.value;
+
+                setTimeout(function() {
+                    dispatchEvent(startDateInput, 'input');
+                    endDateInput.focus();
+
+                    setTimeout(function() {
+                        dispatchEvent(endDateInput, 'input');
+                    }, 100);
+                }, 100);
+            }, 100);
+        }
+    }
 
     setTimeout(function() {
         dispatchEvent(eventTitle, 'input');
@@ -310,3 +333,21 @@ document.onclick = function(event) {
     }
     DEBUG && console.groupEnd();
 };
+
+var moveToDateContainer = document.createElement('div');
+moveToDateContainer.classList.add('_move-to-date-container');
+moveToDateContainer.style.position = 'absolute';
+moveToDateContainer.style.right = '165px';
+moveToDateContainer.style.top = '50px';
+moveToDateContainer.style.zIndex = '1000';
+
+var moveToDateInput = document.createElement('input');
+moveToDateInput.classList.add('_move-to-date-input');
+moveToDateInput.placeholder = 'Move-to Date';
+moveToDateInput.style.textAlign = 'center';
+// TODO: Figure out how to determine what move to date to use.
+moveToDateInput.value = 'Oct 16, 2019'; // TESTING
+
+moveToDateContainer.appendChild(moveToDateInput);
+document.body.appendChild(moveToDateContainer);
+DEBUG && console.log('moveToDateContainer:', moveToDateContainer);
