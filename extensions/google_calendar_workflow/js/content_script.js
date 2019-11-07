@@ -1,5 +1,7 @@
 /* const */ DEBUG = false;
 
+// TODO: Use a JavaScript class.
+
 const BUTTON_LABELS = [
     // buttonLabel, eventTitlePrefix, buttonClassNames.
     ['-',       '-',  ['jfk-button', 'jfk-button-standard', 'button-dash']],
