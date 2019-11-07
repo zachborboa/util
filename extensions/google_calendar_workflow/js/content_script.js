@@ -180,6 +180,51 @@ function clickButton(clickedData) {
     DEBUG && console.groupEnd();
 }
 
+function updateMoveToDate() {
+    DEBUG && console.info('updateMoveToDate');
+    // Find oldest date with a non-full number of events on the calendar day.
+
+    var calendarGridRows = document.querySelectorAll('[data-view-heading] [role="presentation"] [role="row"]');
+    DEBUG && console.log('calendarGridRows found:', calendarGridRows.length);
+    if (!calendarGridRows.length) {
+        return;
+    }
+
+    // Iterate rows top to bottom.
+    var cellEventCount;
+    for (var i = 0; i < calendarGridRows.length; i++) {
+        var row = calendarGridRows[i];
+        DEBUG && console.log('row', i, row);
+
+        // Iterate cells right to left.
+        var cells = row.querySelectorAll('[role="gridcell"]');
+        DEBUG && console.log('cells', cells);
+        for (var j = cells.length - 1; j >= 0; j--) {
+            var cell = cells[j];
+            DEBUG && console.log('cell', j, cell);
+
+            var cellEvents = cell.querySelectorAll('[data-eventid]');
+            DEBUG && console.log('cellEvents found:', cellEvents.length);
+            if (cellEventCount === undefined) {
+                cellEventCount = cellEvents.length;
+            } else if (cellEvents.length < cellEventCount) {
+                DEBUG && console.log('move to date found');
+                // "October 17".
+                var monthDate = cell.querySelector('h2').innerText.match(/ events?, .*day, (.*?)$/)[1];
+                DEBUG && console.log('monthDate:', monthDate);
+
+                // "October 17, 2019".
+                var monthDateYear = monthDate + ', ' + (new Date()).getFullYear();
+                DEBUG && console.log('monthDateYear:', monthDateYear);
+
+                var moveToDateInput = document.querySelector('._move-to-date-input');
+                moveToDateInput.value = monthDateYear;
+                return;
+            }
+        }
+    }
+}
+
 function handleKeyEvent(event) {
     DEBUG && console.info('handleKeyEvent');
     var character = String.fromCharCode(event.which);
@@ -215,6 +260,8 @@ function handleKeyEvent(event) {
         if (buttonToClick) {
             buttonToClick.click();
         }
+    } else if (character === 'j' || character === 'k') {
+        setTimeout(updateMoveToDate, 3000);
     }
 }
 
@@ -347,9 +394,9 @@ var moveToDateInput = document.createElement('input');
 moveToDateInput.classList.add('_move-to-date-input');
 moveToDateInput.placeholder = 'Move-to Date';
 moveToDateInput.style.textAlign = 'center';
-// TODO: Figure out how to determine what move to date to use.
-moveToDateInput.value = 'Oct 16, 2019'; // TESTING
 
 moveToDateContainer.appendChild(moveToDateInput);
 document.body.appendChild(moveToDateContainer);
 DEBUG && console.log('moveToDateContainer:', moveToDateContainer);
+
+setTimeout(updateMoveToDate, 5000);
