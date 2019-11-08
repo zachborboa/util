@@ -175,6 +175,7 @@ function clickButton(clickedData) {
     var saveButton = document.querySelector('[aria-label="Save"]');
     setTimeout(function() {
         saveButton.click();
+        setTimeout(updateMoveToDate, 2000);
     }, 700);
 
     DEBUG && console.groupEnd();
