@@ -206,6 +206,11 @@ function updateMoveToDate() {
             var cellEvents = cell.querySelectorAll('[data-eventid]');
             var cellEventsFound = cellEvents.length
             DEBUG && console.log('cellEventsFound:', cellEventsFound);
+            var moreCellEvents = cell.querySelector('[data-opens-day-overview]');
+            if (moreCellEvents) {
+                cellEventsFound += parseInt(moreCellEvents.innerText.match(/(\d+) more/)[1]);
+                DEBUG && console.log('cellEventsFound:', cellEventsFound);
+            }
             if (cellEventCount === undefined) {
                 cellEventCount = cellEventsFound;
             } else if (cellEventsFound < cellEventCount) {
