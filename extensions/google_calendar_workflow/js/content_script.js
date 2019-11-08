@@ -204,10 +204,11 @@ function updateMoveToDate() {
             DEBUG && console.log('cell', j, cell);
 
             var cellEvents = cell.querySelectorAll('[data-eventid]');
-            DEBUG && console.log('cellEvents found:', cellEvents.length);
+            var cellEventsFound = cellEvents.length
+            DEBUG && console.log('cellEventsFound:', cellEventsFound);
             if (cellEventCount === undefined) {
-                cellEventCount = cellEvents.length;
-            } else if (cellEvents.length < cellEventCount) {
+                cellEventCount = cellEventsFound;
+            } else if (cellEventsFound < cellEventCount) {
                 DEBUG && console.log('move to date found');
                 // "October 17".
                 var monthDate = cell.querySelector('h2').innerText.match(/ events?, .*day, (.*?)$/)[1];
