@@ -181,13 +181,22 @@ function clickButton(clickedData) {
     DEBUG && console.groupEnd();
 }
 
-function updateMoveToDate() {
+function updateMoveToDate(attempt) {
     DEBUG && console.info('updateMoveToDate');
+    attempt = attempt || 1;
+    if (attempt >= 5) {
+        return;
+    } else {
+        attempt += 1;
+    }
+    DEBUG && console.log('attempt:', attempt);
+
     // Find oldest date with a non-full number of events on the calendar day.
 
     var calendarGridRows = document.querySelectorAll('[data-view-heading] [role="presentation"] [role="row"]');
     DEBUG && console.log('calendarGridRows found:', calendarGridRows.length);
     if (!calendarGridRows.length) {
+        setTimeout(updateMoveToDate, 5000, attempt);
         return;
     }
 
