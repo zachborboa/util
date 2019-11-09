@@ -162,9 +162,10 @@ function clickButton(clickedData) {
 
                     setTimeout(function() {
                         dispatchEvent(endDateInput, 'input');
-                    }, 100);
-                }, 100);
-            }, 100);
+                        eventTitle.focus();
+                    }, 200);
+                }, 200);
+            }, 200);
         }
     }
 
@@ -175,8 +176,8 @@ function clickButton(clickedData) {
     var saveButton = document.querySelector('[aria-label="Save"]');
     setTimeout(function() {
         saveButton.click();
-        setTimeout(updateMoveToDate, 2000);
-    }, 700);
+        setTimeout(updateMoveToDate, 1000);
+    }, 800);
 
     DEBUG && console.groupEnd();
 }
