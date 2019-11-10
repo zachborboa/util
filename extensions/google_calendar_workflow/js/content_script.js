@@ -4,7 +4,7 @@ const DEBUG = false;
 const TEST_ENV = 'TEST';
 const PROD_ENV = 'PROD';
 
-// TODO: Use a JavaScript class.
+// TODO: Clean up by using JavaScript classes.
 
 const BUTTON_LABELS = [
     // buttonLabel, eventTitlePrefix, buttonClassNames.
@@ -210,6 +210,7 @@ function updateMoveToDate(attempt) {
         'env': PROD_ENV,
     });
     var topCell = moveToDate.findTopCell(calendarGridRows);
+    // Update move to date input value only when a top cell is found.
     if (topCell !== undefined) {
         var cellDate = moveToDate.getCellDate(topCell);
         var moveToDateInput = document.querySelector('._move-to-date-input');
@@ -436,6 +437,7 @@ class GoogleCalendarMoveToDate {
     }
 
     findTopCell(cells) {
+        // Find first top-right most cell in current view containing a non-full number of events.
         this.debug && console.info('findTopCell');
         this.debug && console.log('cells:', cells);
         var topCell;
@@ -449,6 +451,7 @@ class GoogleCalendarMoveToDate {
             this.debug && console.log('row:', row);
 
             var rowCells = this.findCellsInRow(row);
+            // Check right to left.
             for (var cellIndex = rowCells.length - 1; cellIndex >= 0; cellIndex--) {
                 this.debug && console.log('cellIndex:', cellIndex);
                 var cell = rowCells[cellIndex];
