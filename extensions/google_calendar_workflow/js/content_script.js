@@ -1,4 +1,8 @@
+'use strict';
+
 const DEBUG = false;
+const TEST_ENV = 'TEST';
+const PROD_ENV = 'PROD';
 
 // TODO: Use a JavaScript class.
 
@@ -201,44 +205,15 @@ function updateMoveToDate(attempt) {
         return;
     }
 
-    // Iterate rows top to bottom.
-    var cellEventCount;
-    for (var i = 0; i < calendarGridRows.length; i++) {
-        var row = calendarGridRows[i];
-        DEBUG && console.log('row', i, row);
-
-        // Iterate cells right to left.
-        var cells = row.querySelectorAll('[role="gridcell"]');
-        DEBUG && console.log('cells', cells);
-        for (var j = cells.length - 1; j >= 0; j--) {
-            var cell = cells[j];
-            DEBUG && console.log('cell', j, cell);
-
-            var cellEvents = cell.querySelectorAll('[data-eventid]');
-            var cellEventsFound = cellEvents.length
-            DEBUG && console.log('cellEventsFound:', cellEventsFound);
-            var moreCellEvents = cell.querySelector('[data-opens-day-overview]');
-            if (moreCellEvents) {
-                cellEventsFound += parseInt(moreCellEvents.innerText.match(/(\d+) more/)[1]);
-                DEBUG && console.log('cellEventsFound:', cellEventsFound);
-            }
-            if (cellEventCount === undefined) {
-                cellEventCount = cellEventsFound;
-            } else if (cellEventsFound < cellEventCount) {
-                DEBUG && console.log('move to date found');
-                // "October 17".
-                var monthDate = cell.querySelector('h2').innerText.match(/ events?, .*day, (.*?)$/)[1];
-                DEBUG && console.log('monthDate:', monthDate);
-
-                // "October 17, 2019".
-                var monthDateYear = monthDate + ', ' + (new Date()).getFullYear();
-                DEBUG && console.log('monthDateYear:', monthDateYear);
-
-                var moveToDateInput = document.querySelector('._move-to-date-input');
-                moveToDateInput.value = monthDateYear;
-                return;
-            }
-        }
+    var moveToDate = new GoogleCalendarMoveToDate({
+        'debug': DEBUG,
+        'env': PROD_ENV,
+    });
+    var topCell = moveToDate.findTopCell(calendarGridRows);
+    if (topCell !== undefined) {
+        var cellDate = moveToDate.getCellDate(topCell);
+        var moveToDateInput = document.querySelector('._move-to-date-input');
+        moveToDateInput.value = cellDate;
     }
 }
 
@@ -417,3 +392,106 @@ document.body.appendChild(moveToDateContainer);
 DEBUG && console.log('moveToDateContainer:', moveToDateContainer);
 
 setTimeout(updateMoveToDate, 5000);
+
+class GoogleCalendarMoveToDate {
+    // Maximum number of events to keep in a cell.
+    #MAX_EVENTS_PER_CELL = 14;
+
+    constructor(options) {
+        this.options = options;
+        this.env = options.env;
+        this.debug = options.debug ? true : false;
+    }
+
+    findCellsInRow(row) {
+        this.debug && console.info('findCellsInRow');
+        this.debug && console.log('row:', row);
+        var rowCells;
+        if (this.env === PROD_ENV) {
+            rowCells = row.querySelectorAll('[role="gridcell"]');
+        } else if (this.env === TEST_ENV) {
+            rowCells = row;
+        }
+        this.debug && console.log('rowCells:', rowCells);
+        return rowCells;
+    }
+
+    countEventsInCell(cell) {
+        this.debug && console.info('countEventsInCell');
+        this.debug && console.log('cell:', cell);
+        var cellEventsFound;
+        if (this.env === PROD_ENV) {
+            var cellEvents = cell.querySelectorAll('[data-eventid]');
+            cellEventsFound = cellEvents.length;
+            var moreCellEvents = cell.querySelector('[data-opens-day-overview]');
+            if (moreCellEvents) {
+                cellEventsFound += parseInt(moreCellEvents.innerText.match(/(\d+) more/)[1]);
+            }
+        } else if (this.env === TEST_ENV) {
+            var cellEvents = cell;
+            cellEventsFound = cellEvents.length;
+        }
+        this.debug && console.log('cellEventsFound:', cellEventsFound);
+        return cellEventsFound;
+    }
+
+    findTopCell(cells) {
+        this.debug && console.info('findTopCell');
+        this.debug && console.log('cells:', cells);
+        var topCell;
+
+        // Check top to bottom.
+        outer_loop:
+        for (var rowIndex = 0; rowIndex < cells.length; rowIndex++) {
+            this.debug && console.log('rowIndex:', rowIndex);
+
+            var row = cells[rowIndex];
+            this.debug && console.log('row:', row);
+
+            var rowCells = this.findCellsInRow(row);
+            for (var cellIndex = rowCells.length - 1; cellIndex >= 0; cellIndex--) {
+                this.debug && console.log('cellIndex:', cellIndex);
+                var cell = rowCells[cellIndex];
+                this.debug && console.log('cell:', cell);
+
+                var cellEventsFound = this.countEventsInCell(cell);
+                if (cellEventsFound < this.#MAX_EVENTS_PER_CELL) {
+                    if (this.env === PROD_ENV) {
+                        topCell = cell;
+                    } else if (this.env === TEST_ENV) {
+                        topCell = [rowIndex, cellIndex];
+                    }
+                    break outer_loop;
+                } else {
+                    this.debug && console.log('ELSE');
+                }
+            }
+        }
+
+        this.debug && console.log('topCell:', topCell);
+        return topCell;
+    }
+
+    getCellDate(cell) {
+        this.debug && console.info('getCellDate');
+        this.debug && console.log('cell:', cell);
+        var cellDate;
+        if (this.env === PROD_ENV) {
+            // "October 17".
+            var monthDate = cell.querySelector('h2').innerText.match(/ events?, .*day, (.*?)$/)[1];
+            this.debug && console.log('monthDate:', monthDate);
+
+            // "October 17, 2019".
+            var monthDateYear = monthDate + ', ' + (new Date()).getFullYear();
+            this.debug && console.log('monthDateYear:', monthDateYear);
+
+            cellDate = monthDateYear;
+        } else if (this.env === TEST_ENV) {
+            var rowIndex = cell[0];
+            var cellIndex = cell[1];
+            cellDate = this.options.cellDates[rowIndex][cellIndex];
+        }
+        this.debug && console.log('cellDate:', cellDate);
+        return cellDate;
+    }
+}
