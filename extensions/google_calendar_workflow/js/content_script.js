@@ -153,24 +153,7 @@ function clickButton(clickedData) {
     // Move event to the current move-to date if marked completed.
     if (COMPLETED_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
         DEBUG && console.log('event marked completed');
-        var moveToDateInput = document.querySelector('._move-to-date-input');
-        if (moveToDateInput.value) {
-            DEBUG && console.log('moving event to', moveToDateInput.value);
-            setTimeout(function() {
-                startDateInput.focus();
-                startDateInput.value = moveToDateInput.value;
-
-                setTimeout(function() {
-                    dispatchEvent(startDateInput, 'input');
-                    endDateInput.focus();
-
-                    setTimeout(function() {
-                        dispatchEvent(endDateInput, 'input');
-                        eventTitle.focus();
-                    }, 200);
-                }, 200);
-            }, 200);
-        }
+        moveEventToMoveToDate();
     }
 
     setTimeout(function() {
@@ -218,6 +201,40 @@ function updateMoveToDate(attempt) {
     }
 }
 
+function clickEventBubbleEditButton() {
+    console.info('clickEventBubbleEditButton');
+    var editEventButton = document.querySelector('[aria-label="Edit event"]');
+    DEBUG && console.log('editEventButton:', editEventButton);
+    editEventButton.click();
+}
+
+function moveEventToMoveToDate() {
+    console.info('moveEventToMoveToDate');
+    clickEventBubbleEditButton();
+
+    var moveToDateInput = document.querySelector('._move-to-date-input');
+    if (moveToDateInput.value) {
+        DEBUG && console.log('moving event to', moveToDateInput.value);
+        setTimeout(function() {
+            var startDateInput = document.querySelector('[aria-label="Start date"]');
+            var endDateInput = document.querySelector('[aria-label="End date"]');
+            startDateInput.focus();
+            startDateInput.value = moveToDateInput.value;
+
+            setTimeout(function() {
+                dispatchEvent(startDateInput, 'input');
+                endDateInput.focus();
+                endDateInput.value = moveToDateInput.value;
+
+                setTimeout(function() {
+                    dispatchEvent(endDateInput, 'input');
+                    endDateInput.blur();
+                }, 200);
+            }, 200);
+        }, 200);
+    }
+}
+
 function handleKeyEvent(event) {
     DEBUG && console.info('handleKeyEvent');
     var character = String.fromCharCode(event.which);
@@ -253,6 +270,8 @@ function handleKeyEvent(event) {
         if (buttonToClick) {
             buttonToClick.click();
         }
+    } else if (eventBubble && character === 'm') {
+        moveEventToMoveToDate();
     } else if (character === 'j' || character === 'k') {
         setTimeout(updateMoveToDate, 3000);
     }
@@ -364,10 +383,7 @@ document.onclick = function(event) {
                     'button': myButton,
                     'eventTitlePrefix': myEventTitlePrefix,
                 };
-
-                var editEventButton = document.querySelector('[aria-label="Edit event"]');
-                DEBUG && console.log('editEventButton:', editEventButton);
-                editEventButton.click();
+                clickEventBubbleEditButton();
             };
             insertButtons(newEventBubbleMetaItem, onclickAction, 'inside', lastNewEventBubbleMetaItem);
         }
