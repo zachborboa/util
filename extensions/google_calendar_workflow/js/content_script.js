@@ -202,16 +202,14 @@ function updateMoveToDate(attempt) {
 }
 
 function clickEventBubbleEditButton() {
-    console.info('clickEventBubbleEditButton');
+    DEBUG && console.info('clickEventBubbleEditButton');
     var editEventButton = document.querySelector('[aria-label="Edit event"]');
     DEBUG && console.log('editEventButton:', editEventButton);
     editEventButton.click();
 }
 
 function moveEventToMoveToDate() {
-    console.info('moveEventToMoveToDate');
-    clickEventBubbleEditButton();
-
+    DEBUG && console.info('moveEventToMoveToDate');
     var moveToDateInput = document.querySelector('._move-to-date-input');
     if (moveToDateInput.value) {
         DEBUG && console.log('moving event to', moveToDateInput.value);
@@ -271,6 +269,7 @@ function handleKeyEvent(event) {
             buttonToClick.click();
         }
     } else if (eventBubble && character === 'm') {
+        clickEventBubbleEditButton();
         moveEventToMoveToDate();
     } else if (character === 'j' || character === 'k') {
         setTimeout(updateMoveToDate, 3000);
