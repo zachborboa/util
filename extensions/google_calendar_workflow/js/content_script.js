@@ -148,23 +148,19 @@ function clickButton(clickedData) {
         }
     }
     DEBUG && console.log('newCalendarEventTitle:', newCalendarEventTitle);
+    eventTitle.focus();
     eventTitle.value = newCalendarEventTitle;
-
-    // Move event to the current move-to date if marked completed.
-    if (COMPLETED_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
-        DEBUG && console.log('event marked completed');
-        moveEventToMoveToDate();
-    }
-
     setTimeout(function() {
         dispatchEvent(eventTitle, 'input');
     }, 200);
 
-    var saveButton = document.querySelector('[aria-label="Save"]');
-    setTimeout(function() {
-        saveButton.click();
-        setTimeout(updateMoveToDate, 1000);
-    }, 800);
+    // Move event to the current move-to date if marked completed.
+    if (COMPLETED_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
+        DEBUG && console.log('event marked completed');
+        moveEventToMoveToDate(eventPageClickSaveButton);
+    } else {
+        eventPageClickSaveButton();
+    }
 
     DEBUG && console.groupEnd();
 }
@@ -201,6 +197,15 @@ function updateMoveToDate(attempt) {
     }
 }
 
+function eventPageClickSaveButton() {
+    DEBUG && console.info('eventPageClickSaveButton');
+    setTimeout(function() {
+        var saveButton = document.querySelector('[aria-label="Save"]');
+        saveButton.click();
+        setTimeout(updateMoveToDate, 1000);
+    }, 3000);
+}
+
 function clickEventBubbleEditButton() {
     DEBUG && console.info('clickEventBubbleEditButton');
     var editEventButton = document.querySelector('[aria-label="Edit event"]');
@@ -208,28 +213,39 @@ function clickEventBubbleEditButton() {
     editEventButton.click();
 }
 
-function moveEventToMoveToDate() {
+function moveEventToMoveToDate(callback) {
     DEBUG && console.info('moveEventToMoveToDate');
     var moveToDateInput = document.querySelector('._move-to-date-input');
     if (moveToDateInput.value) {
         DEBUG && console.log('moving event to', moveToDateInput.value);
         setTimeout(function() {
+            var eventTitle = document.querySelector('[aria-label="Title"]');
             var startDateInput = document.querySelector('[aria-label="Start date"]');
             var endDateInput = document.querySelector('[aria-label="End date"]');
-            startDateInput.focus();
-            startDateInput.value = moveToDateInput.value;
 
+            startDateInput.focus();
             setTimeout(function() {
-                dispatchEvent(startDateInput, 'input');
-                endDateInput.focus();
-                endDateInput.value = moveToDateInput.value;
+                startDateInput.value = moveToDateInput.value;
 
                 setTimeout(function() {
-                    dispatchEvent(endDateInput, 'input');
-                    endDateInput.blur();
-                }, 200);
-            }, 200);
-        }, 200);
+                    dispatchEvent(startDateInput, 'input');
+                    endDateInput.focus();
+
+                    setTimeout(function() {
+                        endDateInput.value = moveToDateInput.value;
+
+                        setTimeout(function() {
+                            dispatchEvent(endDateInput, 'input');
+                            eventTitle.focus();
+
+                            if (callback) {
+                                callback();
+                            }
+                        }, 1000);
+                    }, 1000);
+                }, 1000);
+            }, 1000);
+        }, 1000);
     }
 }
 
@@ -270,7 +286,7 @@ function handleKeyEvent(event) {
         }
     } else if (eventBubble && character === 'm') {
         clickEventBubbleEditButton();
-        moveEventToMoveToDate();
+        moveEventToMoveToDate(eventPageClickSaveButton);
     } else if (character === 'j' || character === 'k') {
         setTimeout(updateMoveToDate, 3000);
     }
