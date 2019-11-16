@@ -203,7 +203,7 @@ function eventPageClickSaveButton() {
         var saveButton = document.querySelector('[aria-label="Save"]');
         saveButton.click();
         setTimeout(updateMoveToDate, 1000);
-    }, 3000);
+    }, 1000);
 }
 
 function clickEventBubbleEditButton() {
