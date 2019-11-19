@@ -165,6 +165,7 @@ function clickButton(clickedData) {
     DEBUG && console.groupEnd();
 }
 
+var moveToDate;
 function updateMoveToDate(attempt) {
     DEBUG && console.info('updateMoveToDate');
     attempt = attempt || 1;
@@ -184,16 +185,11 @@ function updateMoveToDate(attempt) {
         return;
     }
 
-    var moveToDate = new GoogleCalendarMoveToDate({
-        'debug': DEBUG,
-        'env': PROD_ENV,
-    });
-    var topCell = moveToDate.findTopCell(calendarGridRows);
-    // Update move to date input value only when a top cell is found.
-    if (topCell !== undefined) {
-        var cellDate = moveToDate.getCellDate(topCell);
+    // Update move to date input value only when a top cell date is found.
+    var topCellDate = moveToDate.getTopCellDate(calendarGridRows);
+    if (topCellDate !== undefined) {
         var moveToDateInput = document.querySelector('._move-to-date-input');
-        moveToDateInput.value = cellDate;
+        moveToDateInput.value = topCellDate;
     }
 }
 
@@ -429,6 +425,9 @@ class GoogleCalendarMoveToDate {
     // Maximum number of events to keep in a cell.
     #MAX_EVENTS_PER_CELL = 14;
 
+    // Oldest available cell date that has been found and should be used.
+    topCellDate;
+
     constructor(options) {
         this.options = options;
         this.env = options.env;
@@ -528,4 +527,38 @@ class GoogleCalendarMoveToDate {
         this.debug && console.log('cellDate:', cellDate);
         return cellDate;
     }
+
+    getTopCellDate(calendarGridRows) {
+        this.debug && console.info('getTopCellDate');
+
+        // Calculate if cell date is older than the current top cell date only when a top cell is found.
+        var topCell = this.findTopCell(calendarGridRows);
+        if (topCell !== undefined) {
+            var cellDate = moveToDate.getCellDate(topCell);
+            if (this.topCellDate === undefined) {
+                this.debug && console.log('using newly calculated cellDate:', cellDate);
+                this.topCellDate = cellDate;
+            } else {
+                this.debug && console.log('comparing cellDate %s to current topCellDate %s', cellDate, this.topCellDate);
+                if (this._getDateComparisonObject(cellDate) < this._getDateComparisonObject(this.topCellDate)) {
+                    this.debug && console.log('updating current topCellDate');
+                    this.topCellDate = cellDate;
+                } else {
+                    this.debug && console.log('keeping current topCellDate');
+                }
+            }
+        }
+
+        this.debug && console.log('topCellDate:', this.topCellDate);
+        return this.topCellDate;
+    }
+
+    _getDateComparisonObject(date) {
+        return new Date(date).getTime();
+    }
 }
+
+moveToDate = new GoogleCalendarMoveToDate({
+    'debug': DEBUG,
+    'env': PROD_ENV,
+});
