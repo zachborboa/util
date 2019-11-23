@@ -468,14 +468,14 @@ class GoogleCalendarMoveToDate {
 
     findTopCell(cells) {
         // Find first top-right most cell in current view containing a non-full number of events.
-        this.debug && console.info('findTopCell');
+        this.debug && console.group('findTopCell');
         this.debug && console.log('cells:', cells);
         var topCell;
 
         // Check top to bottom.
         outer_loop:
         for (var rowIndex = 0; rowIndex < cells.length; rowIndex++) {
-            this.debug && console.log('rowIndex:', rowIndex);
+            this.debug && console.group('rowIndex:', rowIndex);
 
             var row = cells[rowIndex];
             this.debug && console.log('row:', row);
@@ -494,14 +494,19 @@ class GoogleCalendarMoveToDate {
                     } else if (this.env === TEST_ENV) {
                         topCell = [rowIndex, cellIndex];
                     }
+
+                    this.debug && console.groupEnd();
                     break outer_loop;
                 } else {
                     this.debug && console.log('ELSE');
                 }
             }
+
+            this.debug && console.groupEnd();
         }
 
         this.debug && console.log('topCell:', topCell);
+        this.debug && console.groupEnd();
         return topCell;
     }
 
