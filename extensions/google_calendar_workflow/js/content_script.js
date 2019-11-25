@@ -181,7 +181,7 @@ function updateMoveToDate(attempt) {
     var calendarGridRows = document.querySelectorAll('[data-view-heading] [role="presentation"] [role="row"]');
     DEBUG && console.log('calendarGridRows found:', calendarGridRows.length);
     if (!calendarGridRows.length) {
-        setTimeout(updateMoveToDate, 5000, attempt);
+        setTimeout(updateMoveToDate, 2000, attempt);
         return;
     }
 
@@ -198,8 +198,8 @@ function eventPageClickSaveButton() {
     setTimeout(function() {
         var saveButton = document.querySelector('[aria-label="Save"]');
         saveButton.click();
-        setTimeout(updateMoveToDate, 1000);
-    }, 1000);
+        setTimeout(updateMoveToDate, 500);
+    }, 500);
 }
 
 function clickEventBubbleEditButton() {
@@ -235,13 +235,13 @@ function moveEventToMoveToDate(callback) {
                             eventTitle.focus();
 
                             if (callback) {
-                                callback();
+                                setTimeout(callback, 1000);
                             }
-                        }, 1000);
-                    }, 1000);
-                }, 1000);
-            }, 1000);
-        }, 1000);
+                        }, 500);
+                    }, 500);
+                }, 500);
+            }, 500);
+        }, 500);
     }
 }
 
