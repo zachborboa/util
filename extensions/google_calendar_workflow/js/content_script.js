@@ -488,13 +488,25 @@ class GoogleCalendarMoveToDate {
                 this.debug && console.log('cell:', cell);
 
                 var cellEventsFound = this.countEventsInCell(cell);
-                if (cellEventsFound < this.#MAX_EVENTS_PER_CELL) {
-                    if (this.env === PROD_ENV) {
-                        topCell = cell;
-                    } else if (this.env === TEST_ENV) {
-                        topCell = [rowIndex, cellIndex];
-                    }
 
+                if (this.env === PROD_ENV) {
+                    cell = cell;
+                } else if (this.env === TEST_ENV) {
+                    cell = [rowIndex, cellIndex];
+                }
+
+                // Determine if current top cell should be cleared now that it has the maximum number of events per
+                // cell.
+                if (this.topCellDate !== undefined &&
+                    cellEventsFound === this.#MAX_EVENTS_PER_CELL) {
+                    var cellDate = moveToDate.getCellDate(cell);
+                    if (cellDate === this.topCellDate) {
+                        this.topCellDate = undefined;
+                    }
+                }
+
+                if (cellEventsFound < this.#MAX_EVENTS_PER_CELL) {
+                    topCell = cell;
                     this.debug && console.groupEnd();
                     break outer_loop;
                 } else {
