@@ -155,4 +155,6 @@ class GoogleCalendarMoveToDate {
     }
 }
 
-module.exports = GoogleCalendarMoveToDate
+if (typeof(window) === 'undefined') {
+    module.exports = GoogleCalendarMoveToDate
+}

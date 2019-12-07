@@ -1,8 +1,6 @@
 'use strict';
 
 const DEBUG = false;
-const TEST_ENV = 'TEST';
-const PROD_ENV = 'PROD';
 
 // TODO: Clean up by using JavaScript classes.
 
