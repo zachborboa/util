@@ -13,7 +13,7 @@
       ]
     }
   ],
-  "description": "Gives you more control over your events in Google Calendar.",
+  "description": "Allows one to keep a list of things to do, prioritize that list, and execute on it in Google Calendar.",
   "manifest_version": 2,
   "name": "Google Calendar Workflow",
   "version": "0.0.1"
