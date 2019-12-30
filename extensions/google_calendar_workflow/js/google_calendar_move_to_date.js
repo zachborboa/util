@@ -28,6 +28,11 @@ class GoogleCalendarMoveToDate {
         return rowCells;
     }
 
+    clearTopCellDate() {
+        this.debug && console.info('clearTopCellDate');
+        this.topCellDate = undefined;
+    }
+
     countEventsInCell(cell) {
         this.debug && console.info('countEventsInCell');
         this.debug && console.log('cell:', cell);

@@ -195,6 +195,7 @@ function updateMaxEventsPerCell(maxEventsPerCell) {
     DEBUG && console.info('updateMaxEventsPerCell');
     DEBUG && console.log('maxEventsPerCell:', maxEventsPerCell);
     moveToDate.setOption('maxEventsPerCell', maxEventsPerCell);
+    moveToDate.clearTopCellDate();
     updateMoveToDate();
 }
 
