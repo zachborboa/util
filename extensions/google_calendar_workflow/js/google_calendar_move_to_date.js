@@ -3,7 +3,7 @@ const PROD_ENV = 'PROD';
 
 class GoogleCalendarMoveToDate {
     // Maximum number of events to keep in a cell.
-    #MAX_EVENTS_PER_CELL = 14;
+    #DEFAULT_MAX_EVENTS_PER_CELL = 14;
 
     // Oldest available cell date that has been found and should be used.
     topCellDate;
@@ -78,14 +78,14 @@ class GoogleCalendarMoveToDate {
                 // Determine if current top cell should be cleared now that it has the maximum number of events per
                 // cell.
                 if (this.topCellDate !== undefined &&
-                    cellEventsFound === this.#MAX_EVENTS_PER_CELL) {
+                    cellEventsFound === this.#DEFAULT_MAX_EVENTS_PER_CELL) {
                     var cellDate = this.getCellDate(cell);
                     if (cellDate === this.topCellDate) {
                         this.topCellDate = undefined;
                     }
                 }
 
-                if (cellEventsFound < this.#MAX_EVENTS_PER_CELL) {
+                if (cellEventsFound < this.#DEFAULT_MAX_EVENTS_PER_CELL) {
                     topCell = cell;
                     this.debug && console.groupEnd();
                     break outer_loop;
