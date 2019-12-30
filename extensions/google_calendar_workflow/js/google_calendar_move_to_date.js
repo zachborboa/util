@@ -155,6 +155,10 @@ class GoogleCalendarMoveToDate {
         return this.topCellDate;
     }
 
+    setOption(option, value) {
+        this.options[option] = value;
+    }
+
     _getDateComparisonObject(date) {
         return new Date(date).getTime();
     }

@@ -191,6 +191,13 @@ function updateMoveToDate(attempt) {
     }
 }
 
+function updateMaxEventsPerCell(maxEventsPerCell) {
+    DEBUG && console.info('updateMaxEventsPerCell');
+    DEBUG && console.log('maxEventsPerCell:', maxEventsPerCell);
+    moveToDate.setOption('maxEventsPerCell', maxEventsPerCell);
+    updateMoveToDate();
+}
+
 function eventPageClickSaveButton() {
     DEBUG && console.info('eventPageClickSaveButton');
     setTimeout(function() {
@@ -408,12 +415,37 @@ moveToDateContainer.style.right = '165px';
 moveToDateContainer.style.top = '50px';
 moveToDateContainer.style.zIndex = '1000';
 
+var moveToDateRadioSeven = document.createElement('input');
+moveToDateRadioSeven.addEventListener('change', function(event) {
+    updateMaxEventsPerCell(event.target.value);
+});
+moveToDateRadioSeven.name = 'max-events-per-cell';
+moveToDateRadioSeven.type = 'radio';
+moveToDateRadioSeven.value = '7';
+var moveToDateRadioSevenLabel = document.createElement('label');
+moveToDateRadioSevenLabel.appendChild(moveToDateRadioSeven);
+moveToDateRadioSevenLabel.appendChild(document.createTextNode('7 Days'));
+moveToDateContainer.appendChild(moveToDateRadioSevenLabel);
+
+var moveToDateRadioFourteen = document.createElement('input');
+moveToDateRadioFourteen.addEventListener('change', function(event) {
+    updateMaxEventsPerCell(event.target.value);
+});
+moveToDateRadioFourteen.checked = 'checked';
+moveToDateRadioFourteen.name = 'max-events-per-cell';
+moveToDateRadioFourteen.type = 'radio';
+moveToDateRadioFourteen.value = '14';
+var moveToDateRadioFourteenLabel = document.createElement('label');
+moveToDateRadioFourteenLabel.appendChild(moveToDateRadioFourteen);
+moveToDateRadioFourteenLabel.appendChild(document.createTextNode('14 Days'));
+moveToDateContainer.appendChild(moveToDateRadioFourteenLabel);
+
 var moveToDateInput = document.createElement('input');
 moveToDateInput.classList.add('_move-to-date-input');
 moveToDateInput.placeholder = 'Move-to Date';
 moveToDateInput.style.textAlign = 'center';
-
 moveToDateContainer.appendChild(moveToDateInput);
+
 document.body.appendChild(moveToDateContainer);
 DEBUG && console.log('moveToDateContainer:', moveToDateContainer);
 
