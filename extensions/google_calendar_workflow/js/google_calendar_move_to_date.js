@@ -124,8 +124,11 @@ class GoogleCalendarMoveToDate {
             monthDate = monthDate.substr(0, 3) + ' ' + monthDate.split(' ')[1];
             this.debug && console.log('monthDate:', monthDate);
 
+            // "2019".
+            var calendarYear = (new Date()).getFullYear();
+
             // "Oct 17, 2019".
-            var monthDateYear = monthDate + ', ' + (new Date()).getFullYear();
+            var monthDateYear = monthDate + ', ' + calendarYear;
             this.debug && console.log('monthDateYear:', monthDateYear);
 
             cellDate = monthDateYear;
