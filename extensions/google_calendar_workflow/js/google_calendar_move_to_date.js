@@ -113,8 +113,11 @@ class GoogleCalendarMoveToDate {
         this.debug && console.log('cell:', cell);
         var cellDate;
         if (this.env === PROD_ENV) {
+            // "7 events, Thursday, October 17".
+            var cellDescription = cell.querySelector('h2').innerText;
+
             // "October 17".
-            var monthDate = cell.querySelector('h2').innerText.match(/ events?, .*day, (.*?)$/)[1];
+            var monthDate = cellDescription.match(/ events?, .*day, (.*?)$/)[1];
             this.debug && console.log('monthDate:', monthDate);
 
             // "Oct 17".
