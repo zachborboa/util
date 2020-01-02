@@ -108,6 +108,14 @@ class GoogleCalendarMoveToDate {
         return topCell;
     }
 
+    getCalendarYear() {
+        this.debug && console.info('getCalendarYear');
+        // "2019".
+        var calendarYear = (new Date()).getFullYear();
+        this.debug && console.log('calendarYear:', calendarYear);
+        return calendarYear;
+    }
+
     getCellDate(cell) {
         this.debug && console.info('getCellDate');
         this.debug && console.log('cell:', cell);
@@ -124,11 +132,8 @@ class GoogleCalendarMoveToDate {
             monthDate = monthDate.substr(0, 3) + ' ' + monthDate.split(' ')[1];
             this.debug && console.log('monthDate:', monthDate);
 
-            // "2019".
-            var calendarYear = (new Date()).getFullYear();
-
             // "Oct 17, 2019".
-            var monthDateYear = monthDate + ', ' + calendarYear;
+            var monthDateYear = monthDate + ', ' + this.getCalendarYear();
             this.debug && console.log('monthDateYear:', monthDateYear);
 
             cellDate = monthDateYear;
