@@ -7,6 +7,7 @@ const DEBUG = false;
 const BUTTON_LABELS = [
     // buttonLabel, eventTitlePrefix, buttonClassNames.
     ['-',       '-',  ['jfk-button', 'jfk-button-standard', 'button-dash']],
+    ['0',       '0.', ['jfk-button', 'jfk-button-standard', 'button-0']],
     ['1',       '1.', ['jfk-button', 'jfk-button-standard', 'button-1']],
     ['2',       '2.', ['jfk-button', 'jfk-button-standard', 'button-2']],
     ['3',       '3.', ['jfk-button', 'jfk-button-standard', 'button-3']],
@@ -21,6 +22,7 @@ const BUTTON_LABELS = [
 
 const BUTTON_SELECTORS = {
     '-': '.button-dash',
+    '0': '.button-0',
     '1': '.button-1',
     '2': '.button-2',
     '3': '.button-3',
@@ -38,7 +40,7 @@ const KEYCODE = {
 };
 
 const COMPLETED_EVENT_TITLE_PREFIXES = ['✓', '✗', '▣', 'ツ'];
-const PRIORITY_EVENT_TITLE_PREFIXES = ['-', '1.', '2.', '3.', '4.', '5.', null];
+const PRIORITY_EVENT_TITLE_PREFIXES = ['-', '0.', '1.', '2.', '3.', '4.', '5.', null];
 
 function dispatchEvent(obj, event) {
     var evt = new Event(
