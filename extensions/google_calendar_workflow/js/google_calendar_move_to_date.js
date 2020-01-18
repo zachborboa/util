@@ -111,9 +111,12 @@ class GoogleCalendarMoveToDate {
     getCalendarYear() {
         this.debug && console.info('getCalendarYear');
 
+        var url = window.location.toString();
+        this.debug && console.log('url:', url);
+
         // Fetch calendar year from url (e.g. 2019 in "https://calendar.google.com/calendar/r/customweek/2019/12/9" and
         // not 2020 using "(new Date()).getFullYear()").
-        var calendarYear = window.location.toString().match(/calendar\/r\/[a-z]+\/(\d\d\d\d)\//)[1];
+        var calendarYear = url.match(/calendar\/r\/[a-z]+\/(\d\d\d\d)\//)[1];
 
         this.debug && console.log('calendarYear:', calendarYear);
         return calendarYear;
