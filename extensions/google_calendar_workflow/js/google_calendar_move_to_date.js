@@ -154,21 +154,26 @@ class GoogleCalendarMoveToDate {
 
     getTopCellDate(calendarGridRows) {
         this.debug && console.info('getTopCellDate');
-
-        // Calculate if cell date is older than the current top cell date only when a top cell is found.
-        var topCell = this.findTopCell(calendarGridRows);
-        if (topCell !== undefined) {
-            var cellDate = this.getCellDate(topCell);
-            if (this.topCellDate === undefined) {
-                this.debug && console.log('using newly calculated cellDate:', cellDate);
-                this.topCellDate = cellDate;
-            } else {
-                this.debug && console.log('comparing cellDate %s to current topCellDate %s', cellDate, this.topCellDate);
-                if (this._getDateComparisonObject(cellDate) < this._getDateComparisonObject(this.topCellDate)) {
-                    this.debug && console.log('updating current topCellDate');
+        // Use date from input when in manual mode.
+        if (this.options.maxEventsPerCell === 'manual') {
+            var moveToDateInput = this.options.moveToDateInput;
+            this.topCellDate = moveToDateInput.value;
+        } else {
+            // Calculate if cell date is older than the current top cell date only when a top cell is found.
+            var topCell = this.findTopCell(calendarGridRows);
+            if (topCell !== undefined) {
+                var cellDate = this.getCellDate(topCell);
+                if (this.topCellDate === undefined) {
+                    this.debug && console.log('using newly calculated cellDate:', cellDate);
                     this.topCellDate = cellDate;
                 } else {
-                    this.debug && console.log('keeping current topCellDate');
+                    this.debug && console.log('comparing cellDate %s to current topCellDate %s', cellDate, this.topCellDate);
+                    if (this._getDateComparisonObject(cellDate) < this._getDateComparisonObject(this.topCellDate)) {
+                        this.debug && console.log('updating current topCellDate');
+                        this.topCellDate = cellDate;
+                    } else {
+                        this.debug && console.log('keeping current topCellDate');
+                    }
                 }
             }
         }

@@ -418,6 +418,18 @@ moveToDateContainer.style.right = '165px';
 moveToDateContainer.style.top = '50px';
 moveToDateContainer.style.zIndex = '1000';
 
+var moveToDateRadioManual = document.createElement('input');
+moveToDateRadioManual.addEventListener('change', function(event) {
+    updateMaxEventsPerCell(event.target.value);
+});
+moveToDateRadioManual.name = 'max-events-per-cell';
+moveToDateRadioManual.type = 'radio';
+moveToDateRadioManual.value = 'manual';
+var moveToDateRadioManualLabel = document.createElement('label');
+moveToDateRadioManualLabel.appendChild(moveToDateRadioManual);
+moveToDateRadioManualLabel.appendChild(document.createTextNode('Manual'));
+moveToDateContainer.appendChild(moveToDateRadioManualLabel);
+
 var moveToDateRadioSeven = document.createElement('input');
 moveToDateRadioSeven.addEventListener('change', function(event) {
     updateMaxEventsPerCell(event.target.value);
@@ -458,4 +470,5 @@ setTimeout(updateMoveToDate, 5000);
 moveToDate = new GoogleCalendarMoveToDate({
     'debug': DEBUG,
     'env': PROD_ENV,
+    'moveToDateInput': moveToDateInput,
 });
