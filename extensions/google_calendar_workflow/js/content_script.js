@@ -439,7 +439,7 @@ moveToDateRadioSeven.type = 'radio';
 moveToDateRadioSeven.value = '7';
 var moveToDateRadioSevenLabel = document.createElement('label');
 moveToDateRadioSevenLabel.appendChild(moveToDateRadioSeven);
-moveToDateRadioSevenLabel.appendChild(document.createTextNode('7 Days'));
+moveToDateRadioSevenLabel.appendChild(document.createTextNode('7 Events'));
 moveToDateContainer.appendChild(moveToDateRadioSevenLabel);
 
 var moveToDateRadioFourteen = document.createElement('input');
@@ -452,7 +452,7 @@ moveToDateRadioFourteen.type = 'radio';
 moveToDateRadioFourteen.value = '14';
 var moveToDateRadioFourteenLabel = document.createElement('label');
 moveToDateRadioFourteenLabel.appendChild(moveToDateRadioFourteen);
-moveToDateRadioFourteenLabel.appendChild(document.createTextNode('14 Days'));
+moveToDateRadioFourteenLabel.appendChild(document.createTextNode('14 Events'));
 moveToDateContainer.appendChild(moveToDateRadioFourteenLabel);
 
 var moveToDateInput = document.createElement('input');
