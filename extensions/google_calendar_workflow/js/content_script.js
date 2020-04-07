@@ -210,6 +210,13 @@ function eventPageClickSaveButton() {
     }, 500);
 }
 
+function clickEventBubbleDeleteButton() {
+    DEBUG && console.info('clickEventBubbleDeleteButton');
+    var deleteEventButton = document.querySelector('[aria-label="Delete event"]');
+    DEBUG && console.log('deleteEventButton:', deleteEventButton);
+    deleteEventButton.click();
+}
+
 function clickEventBubbleEditButton() {
     DEBUG && console.info('clickEventBubbleEditButton');
     var editEventButton = document.querySelector('[aria-label="Edit event"]');
@@ -255,19 +262,10 @@ function moveEventToMoveToDate(callback) {
 
 function handleKeyEvent(event) {
     DEBUG && console.info('handleKeyEvent');
-    var character = String.fromCharCode(event.which);
-    if (!event.shiftKey) {
-        character = character.toLowerCase();
-    }
-    if (event.which === KEYCODE.DASH) {
-        character = '-';
-    }
+    var character = event.key;
     DEBUG && console.log('character:', character);
 
     // Ignore events with modifiers.
-    if (event.shiftKey) {
-        return;
-    }
     if (event.altKey) {
         return;
     }
@@ -288,6 +286,8 @@ function handleKeyEvent(event) {
         if (buttonToClick) {
             buttonToClick.click();
         }
+    } else if (eventBubble && character === '#') {
+        clickEventBubbleDeleteButton();
     } else if (eventBubble && character === 'm') {
         clickEventBubbleEditButton();
         moveEventToMoveToDate(eventPageClickSaveButton);
