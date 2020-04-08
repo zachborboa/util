@@ -6,3 +6,40 @@
   border-color: #ccc;
   background-color: rgba(0, 0, 0, 0.05);
 }
+
+._hn-nav {
+  bottom: 1em;
+  display: table;
+  position: fixed;
+  right: 1em;
+}
+._hn-nav ._hn-arrow-wrapper {
+  display: table-row;
+}
+._hn-nav ._hn-arrow-wrapper ._hn-arrow {
+  color: #666665;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+._hn-nav ._hn-arrow-wrapper ._hn-arrow button {
+  font-size: 300%;
+  height: 100px;
+  width: 100px;
+}
+._hn-nav ._hn-arrow-wrapper ._hn-page-up {
+  background-color: blue;
+  border-bottom-width: 4px;
+  border-bottom-color: #ccc;
+}
+._hn-nav ._hn-arrow-wrapper ._hn-page-down {
+  background-color: green;
+  border-top-width: 4px;
+  border-top-color: #ccc;
+}
+
+@media only screen and (min-width: 500px) {
+  ._hn-nav {
+    display: none;
+  }
+}

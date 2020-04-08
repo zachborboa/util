@@ -7,3 +7,48 @@
     border: 1px solid transparent;
     border-radius: 2px;
 }
+
+._hn-nav {
+    bottom: 1em;
+    display: table;
+    position: fixed;
+    right: 1em;
+
+    ._hn-arrow-wrapper {
+        display: table-row;
+
+        ._hn-arrow {
+            color: #666665;
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+
+            button {
+                font-size: 300%;
+                height: 100px;
+                width: 100px;
+            }
+        }
+
+        ._hn-page-up {
+            background-color: blue;
+
+            border-bottom-width: 4px;
+            border-bottom-color: #ccc;
+        }
+
+        ._hn-page-down {
+            background-color: green;
+
+            border-top-width: 4px;
+            border-top-color: #ccc;
+        }
+    }
+}
+
+// Style for browsers larger than 500px.
+@media only screen and (min-width: 500px) {
+    ._hn-nav {
+        display: none;
+    }
+}

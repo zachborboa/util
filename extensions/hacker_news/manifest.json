@@ -30,7 +30,8 @@
       ],
       "js": [
         "js/content_script_common.js",
-        "js/content_script_item_navigation.js"
+        "js/content_script_item_navigation.js",
+        "js/content_script_item_page_navigation.js"
       ],
       "matches": [
         "https://news.ycombinator.com/item?id=*"
