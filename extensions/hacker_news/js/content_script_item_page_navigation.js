@@ -39,4 +39,3 @@ pageNavigationWrapper.appendChild(pageUpButtonWrapper);
 pageNavigationWrapper.appendChild(pageDownButtonWrapper);
 
 document.body.appendChild(pageNavigationWrapper);
-

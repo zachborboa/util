@@ -15,6 +15,11 @@
     right: 1em;
 
     ._hn-arrow-wrapper {
+        &:nth-child(1) {
+            position: relative;
+            top: 2px;
+        }
+
         display: table-row;
 
         ._hn-arrow {
@@ -24,6 +29,12 @@
             vertical-align: middle;
 
             button {
+                &:hover {
+                    background-color: rgba(0, 0, 0, .1);
+                }
+
+                background-color: transparent;
+                border: 2px dashed #333;
                 font-size: 300%;
                 height: 100px;
                 width: 100px;
@@ -31,15 +42,11 @@
         }
 
         ._hn-page-up {
-            background-color: blue;
-
             border-bottom-width: 4px;
             border-bottom-color: #ccc;
         }
 
         ._hn-page-down {
-            background-color: green;
-
             border-top-width: 4px;
             border-top-color: #ccc;
         }
