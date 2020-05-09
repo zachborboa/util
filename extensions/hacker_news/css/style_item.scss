@@ -23,7 +23,6 @@
         display: table-row;
 
         ._hn-arrow {
-            color: #666665;
             display: table-cell;
             text-align: center;
             vertical-align: middle;
@@ -34,7 +33,9 @@
                 }
 
                 background-color: transparent;
-                border: 2px dashed #333;
+                border-color: transparent;
+                border-style: dashed;
+                color: rgba(0, 0, 0, .2);
                 font-size: 300%;
                 height: 100px;
                 width: 100px;
@@ -42,13 +43,16 @@
         }
 
         ._hn-page-up {
-            border-bottom-width: 4px;
-            border-bottom-color: #ccc;
+            button {
+                border-right-color: rgba(0, 0, 0, .2);
+                border-bottom-color: rgba(0, 0, 0, .2);
+            }
         }
 
         ._hn-page-down {
-            border-top-width: 4px;
-            border-top-color: #ccc;
+            button {
+                border-right-color: rgba(0, 0, 0, .2);
+            }
         }
     }
 }

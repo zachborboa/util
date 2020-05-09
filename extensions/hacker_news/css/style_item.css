@@ -21,14 +21,15 @@
   top: 2px;
 }
 ._hn-nav ._hn-arrow-wrapper ._hn-arrow {
-  color: #666665;
   display: table-cell;
   text-align: center;
   vertical-align: middle;
 }
 ._hn-nav ._hn-arrow-wrapper ._hn-arrow button {
   background-color: transparent;
-  border: 2px dashed #333;
+  border-color: transparent;
+  border-style: dashed;
+  color: rgba(0, 0, 0, 0.2);
   font-size: 300%;
   height: 100px;
   width: 100px;
@@ -36,13 +37,12 @@
 ._hn-nav ._hn-arrow-wrapper ._hn-arrow button:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
-._hn-nav ._hn-arrow-wrapper ._hn-page-up {
-  border-bottom-width: 4px;
-  border-bottom-color: #ccc;
+._hn-nav ._hn-arrow-wrapper ._hn-page-up button {
+  border-right-color: rgba(0, 0, 0, 0.2);
+  border-bottom-color: rgba(0, 0, 0, 0.2);
 }
-._hn-nav ._hn-arrow-wrapper ._hn-page-down {
-  border-top-width: 4px;
-  border-top-color: #ccc;
+._hn-nav ._hn-arrow-wrapper ._hn-page-down button {
+  border-right-color: rgba(0, 0, 0, 0.2);
 }
 
 @media only screen and (min-width: 500px) {
