@@ -189,7 +189,7 @@ function updateMoveToDate(attempt) {
     var topCellDate = moveToDate.getTopCellDate(calendarGridRows);
     if (topCellDate !== undefined) {
         var moveToDateInput = document.querySelector('._move-to-date-input');
-        moveToDateInput.value = topCellDate;
+        moveToDateInput.value = moveToDate.getInputDateFormattedDate(topCellDate);
     }
 }
 
@@ -236,14 +236,15 @@ function moveEventToMoveToDate(callback) {
 
             startDateInput.focus();
             setTimeout(function() {
-                startDateInput.value = moveToDateInput.value;
+                var eventDateInputFormattedDate = moveToDate.getEventDateFormattedDate(moveToDateInput.value);
+                startDateInput.value = eventDateInputFormattedDate;
 
                 setTimeout(function() {
                     dispatchEvent(startDateInput, 'input');
                     endDateInput.focus();
 
                     setTimeout(function() {
-                        endDateInput.value = moveToDateInput.value;
+                        endDateInput.value = eventDateInputFormattedDate;
 
                         setTimeout(function() {
                             dispatchEvent(endDateInput, 'input');
@@ -427,6 +428,7 @@ moveToDateContainer.style.zIndex = '1000';
 var moveToDateRadioManual = document.createElement('input');
 moveToDateRadioManual.addEventListener('change', function(event) {
     updateMaxEventsPerCell(event.target.value);
+    moveToDateInput.disabled = false;
 });
 moveToDateRadioManual.name = 'max-events-per-cell';
 moveToDateRadioManual.type = 'radio';
@@ -439,6 +441,7 @@ moveToDateContainer.appendChild(moveToDateRadioManualLabel);
 var moveToDateRadioSeven = document.createElement('input');
 moveToDateRadioSeven.addEventListener('change', function(event) {
     updateMaxEventsPerCell(event.target.value);
+    moveToDateInput.disabled = true;
 });
 moveToDateRadioSeven.name = 'max-events-per-cell';
 moveToDateRadioSeven.type = 'radio';
@@ -451,6 +454,7 @@ moveToDateContainer.appendChild(moveToDateRadioSevenLabel);
 var moveToDateRadioFourteen = document.createElement('input');
 moveToDateRadioFourteen.addEventListener('change', function(event) {
     updateMaxEventsPerCell(event.target.value);
+    moveToDateInput.disabled = true;
 });
 moveToDateRadioFourteen.checked = 'checked';
 moveToDateRadioFourteen.name = 'max-events-per-cell';
@@ -463,8 +467,10 @@ moveToDateContainer.appendChild(moveToDateRadioFourteenLabel);
 
 var moveToDateInput = document.createElement('input');
 moveToDateInput.classList.add('_move-to-date-input');
+moveToDateInput.disabled = true;
 moveToDateInput.placeholder = 'Move-to Date';
 moveToDateInput.style.textAlign = 'center';
+moveToDateInput.type = 'date';
 moveToDateContainer.appendChild(moveToDateInput);
 
 document.body.appendChild(moveToDateContainer);

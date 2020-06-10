@@ -186,6 +186,17 @@ class GoogleCalendarMoveToDate {
         this.options[option] = value;
     }
 
+    getInputDateFormattedDate(date) {
+        var inputDate = new Date(date);
+        return inputDate.toISOString().slice(0, 10);
+    }
+
+    getEventDateFormattedDate(date) {
+        var eventDate = new Date(date);
+        return eventDate.toLocaleString(
+            'default', { month: 'short' }) + ' ' + eventDate.getUTCDate() + ', ' + eventDate.getUTCFullYear();
+    }
+
     _getDateComparisonObject(date) {
         return new Date(date).getTime();
     }
