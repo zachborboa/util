@@ -299,43 +299,49 @@ function handleKeyEvent(event) {
 document.addEventListener('keydown', handleKeyEvent);
 
 var buttonClickedData;
-(function(){
+(function() {
+    function pathnameChanged(pathname) {
+        DEBUG && console.info('pathnameChanged');
+        DEBUG && console.log('pathname:', pathname);
+
+        if (pathname.match(/^\/calendar\/r\/eventedit\//)) {
+            DEBUG && console.log('on event edit page');
+            if (buttonClickedData) {
+                clickButton(buttonClickedData);
+                buttonClickedData = null;
+            } else {
+                // Add action buttons to calendar event edit page.
+                DEBUG && console.log('adding buttons');
+                var onclickAction = function(myButton, myEventTitlePrefix) {
+                    buttonClickedData = {
+                        'button': myButton,
+                        'eventTitlePrefix': myEventTitlePrefix,
+                    };
+                    clickButton(buttonClickedData);
+                    buttonClickedData = null;
+                };
+
+                var saveButton = document.querySelector('[aria-label="Save"]');
+
+                var buttonWrapper = document.createElement('div');
+                buttonWrapper.style.left = '350px';
+                buttonWrapper.style.position = 'absolute';
+                buttonWrapper.style.top = '65px';
+                buttonWrapper.style.width = '350px';
+                buttonWrapper.style.zIndex = '1';
+
+                insertAfter(buttonWrapper, saveButton);
+                insertButtons(buttonWrapper, onclickAction, 'inside');
+            }
+        }
+    }
+
     var pathname = window.location.pathname;
     setInterval(function() {
         if (pathname !== window.location.pathname) {
             DEBUG && console.log('pathname changed');
             pathname = window.location.pathname;
-            if (pathname.match(/^\/calendar\/r\/eventedit\//)) {
-                DEBUG && console.log('on event edit page');
-
-                if (buttonClickedData) {
-                    clickButton(buttonClickedData);
-                    buttonClickedData = null;
-                } else {
-                    // Add action buttons to calendar event edit page.
-                    DEBUG && console.log('adding buttons');
-                    var onclickAction = function(myButton, myEventTitlePrefix) {
-                        buttonClickedData = {
-                            'button': myButton,
-                            'eventTitlePrefix': myEventTitlePrefix,
-                        };
-                        clickButton(buttonClickedData);
-                        buttonClickedData = null;
-                    };
-
-                    var saveButton = document.querySelector('[aria-label="Save"]');
-
-                    var buttonWrapper = document.createElement('div');
-                    buttonWrapper.style.left = '350px';
-                    buttonWrapper.style.position = 'absolute';
-                    buttonWrapper.style.top = '65px';
-                    buttonWrapper.style.width = '350px';
-                    buttonWrapper.style.zIndex = '1';
-
-                    insertAfter(buttonWrapper, saveButton);
-                    insertButtons(buttonWrapper, onclickAction, 'inside');
-                }
-            }
+            setTimeout(pathnameChanged, 1000, pathname);
         }
     }, 1000);
 })();
