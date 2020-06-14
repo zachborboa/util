@@ -229,7 +229,12 @@ function moveEventToMoveToDate(callback) {
     var moveToDateInput = document.querySelector('._move-to-date-input');
     if (moveToDateInput.value) {
         DEBUG && console.log('moving event to', moveToDateInput.value);
-        setTimeout(function() {
+
+        Promise.all([
+            waitUntilElementExists('[aria-label="Title"]'),
+            waitUntilElementExists('[aria-label="Start date"]'),
+            waitUntilElementExists('[aria-label="End date"]'),
+        ]).then(function() {
             var eventTitle = document.querySelector('[aria-label="Title"]');
             var startDateInput = document.querySelector('[aria-label="Start date"]');
             var endDateInput = document.querySelector('[aria-label="End date"]');
@@ -257,7 +262,7 @@ function moveEventToMoveToDate(callback) {
                     }, 500);
                 }, 500);
             }, 500);
-        }, 500);
+        });
     }
 }
 
