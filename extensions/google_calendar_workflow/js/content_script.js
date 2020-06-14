@@ -99,70 +99,76 @@ function clickButton(clickedData) {
     DEBUG && console.log('clickedData:', clickedData);
     DEBUG && console.log('button clicked');
 
-    // Today.
-    var date = new Date();
-    var monthName = date.toLocaleString('en-us', { 'month': 'short' });
-    var todayFormattedDate = monthName + ' ' + date.getDate() + ', ' + date.getFullYear();
+    Promise.all([
+        waitUntilElementExists('[aria-label="Start date"]'),
+        waitUntilElementExists('[aria-label="End date"]'),
+        waitUntilElementExists('[aria-label="Title"]'),
+    ]).then(function() {
+        // Today.
+        var date = new Date();
+        var monthName = date.toLocaleString('en-us', { 'month': 'short' });
+        var todayFormattedDate = monthName + ' ' + date.getDate() + ', ' + date.getFullYear();
 
-    // Event date.
-    var startDateInput = document.querySelector('[aria-label="Start date"]');
-    var endDateInput = document.querySelector('[aria-label="End date"]');
-    var eventDate = startDateInput.value;
-    if (endDateInput.value !== startDateInput.value) {
-        eventDate += ' - ' + endDateInput.value;
-    }
-    DEBUG && console.log('eventDate:', eventDate);
-
-    var eventTitle = document.querySelector('[aria-label="Title"]');
-    var calendarEventTitle = eventTitle.value;
-    DEBUG && console.log('before calendarEventTitle:', calendarEventTitle);
-
-    // Remove leading number (e.g. "1. " in "1. My Calendar Event").
-    calendarEventTitle = calendarEventTitle.replace(/^\d+\. /, '');
-    // Remove leading ! character.
-    calendarEventTitle = calendarEventTitle.replace(/^! /, '');
-    // Remove leading - character.
-    calendarEventTitle = calendarEventTitle.replace(/^- /, '');
-    // Remove leading ~ character.
-    calendarEventTitle = calendarEventTitle.replace(/^~ /, '');
-
-    var eventTitlePrefix = clickedData['eventTitlePrefix'];
-    DEBUG && console.log('eventTitlePrefix:', eventTitlePrefix);
-    if (eventTitlePrefix === '✓') {
-        // Remove leading "Tentative: ".
-        calendarEventTitle = calendarEventTitle.replace(/^Tentative: /, '');
-    }
-
-    DEBUG && console.log(' after calendarEventTitle:', calendarEventTitle);
-
-    // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
-    // "1. My Event"
-    // "My Event"
-    var newCalendarEventTitle = calendarEventTitle;
-    if (eventTitlePrefix !== null) {
-        newCalendarEventTitle = eventTitlePrefix + ' ' + calendarEventTitle;
-        if (! PRIORITY_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
-            newCalendarEventTitle += ';' +
-                ' ' + todayFormattedDate + ';' +
-                ' event date: ' + eventDate;
+        // Event date.
+        var startDateInput = document.querySelector('[aria-label="Start date"]');
+        var endDateInput = document.querySelector('[aria-label="End date"]');
+        var eventDate = startDateInput.value;
+        if (endDateInput.value !== startDateInput.value) {
+            eventDate += ' - ' + endDateInput.value;
         }
-    }
-    DEBUG && console.log('newCalendarEventTitle:', newCalendarEventTitle);
-    eventTitle.focus();
-    eventTitle.value = newCalendarEventTitle;
-    setTimeout(function() {
-        dispatchEvent(eventTitle, 'input');
-    }, 200);
+        DEBUG && console.log('eventDate:', eventDate);
 
-    // Move event to the current move-to date if marked completed.
-    if (COMPLETED_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
-        DEBUG && console.log('event marked completed');
-        moveEventToMoveToDate(eventPageClickSaveButton);
-    } else {
-        eventPageClickSaveButton();
-    }
+        var eventTitle = document.querySelector('[aria-label="Title"]');
+        var calendarEventTitle = eventTitle.value;
+        DEBUG && console.log('before calendarEventTitle:', calendarEventTitle);
 
-    DEBUG && console.groupEnd();
+        // Remove leading number (e.g. "1. " in "1. My Calendar Event").
+        calendarEventTitle = calendarEventTitle.replace(/^\d+\. /, '');
+        // Remove leading ! character.
+        calendarEventTitle = calendarEventTitle.replace(/^! /, '');
+        // Remove leading - character.
+        calendarEventTitle = calendarEventTitle.replace(/^- /, '');
+        // Remove leading ~ character.
+        calendarEventTitle = calendarEventTitle.replace(/^~ /, '');
+
+        var eventTitlePrefix = clickedData['eventTitlePrefix'];
+        DEBUG && console.log('eventTitlePrefix:', eventTitlePrefix);
+        if (eventTitlePrefix === '✓') {
+            // Remove leading "Tentative: ".
+            calendarEventTitle = calendarEventTitle.replace(/^Tentative: /, '');
+        }
+
+        DEBUG && console.log(' after calendarEventTitle:', calendarEventTitle);
+
+        // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
+        // "1. My Event"
+        // "My Event"
+        var newCalendarEventTitle = calendarEventTitle;
+        if (eventTitlePrefix !== null) {
+            newCalendarEventTitle = eventTitlePrefix + ' ' + calendarEventTitle;
+            if (! PRIORITY_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
+                newCalendarEventTitle += ';' +
+                    ' ' + todayFormattedDate + ';' +
+                    ' event date: ' + eventDate;
+            }
+        }
+        DEBUG && console.log('newCalendarEventTitle:', newCalendarEventTitle);
+        eventTitle.focus();
+        eventTitle.value = newCalendarEventTitle;
+        setTimeout(function() {
+            dispatchEvent(eventTitle, 'input');
+        }, 200);
+
+        // Move event to the current move-to date if marked completed.
+        if (COMPLETED_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
+            DEBUG && console.log('event marked completed');
+            moveEventToMoveToDate(eventPageClickSaveButton);
+        } else {
+            eventPageClickSaveButton();
+        }
+
+        DEBUG && console.groupEnd();
+    });
 }
 
 var moveToDate;
@@ -347,9 +353,9 @@ var buttonClickedData;
         if (pathname !== window.location.pathname) {
             DEBUG && console.log('pathname changed');
             pathname = window.location.pathname;
-            setTimeout(pathnameChanged, 1000, pathname);
+            pathnameChanged(pathname);
         }
-    }, 1000);
+    }, 500);
 })();
 
 document.onclick = function(event) {
