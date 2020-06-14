@@ -209,11 +209,11 @@ function updateMaxEventsPerCell(maxEventsPerCell) {
 
 function eventPageClickSaveButton() {
     DEBUG && console.info('eventPageClickSaveButton');
-    setTimeout(function() {
-        var saveButton = document.querySelector('[aria-label="Save"]');
+    waitUntilElementExists('[aria-label="Save"]')
+    .then((saveButton) => {
         saveButton.click();
         setTimeout(updateMoveToDate, 500);
-    }, 500);
+    });
 }
 
 function clickEventBubbleDeleteButton() {
@@ -262,7 +262,7 @@ function moveEventToMoveToDate(callback) {
                             eventTitle.focus();
 
                             if (callback) {
-                                setTimeout(callback, 1000);
+                                callback();
                             }
                         }, 500);
                     }, 500);
