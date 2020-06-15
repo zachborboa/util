@@ -103,22 +103,23 @@ function clickButton(clickedData) {
         waitUntilElementExists('[aria-label="Start date"]'),
         waitUntilElementExists('[aria-label="End date"]'),
         waitUntilElementExists('[aria-label="Title"]'),
-    ]).then(function() {
+    ]).then(function([
+        startDateInput,
+        endDateInput,
+        eventTitle,
+    ]) {
         // Today.
         var date = new Date();
         var monthName = date.toLocaleString('en-us', { 'month': 'short' });
         var todayFormattedDate = monthName + ' ' + date.getDate() + ', ' + date.getFullYear();
 
         // Event date.
-        var startDateInput = document.querySelector('[aria-label="Start date"]');
-        var endDateInput = document.querySelector('[aria-label="End date"]');
         var eventDate = startDateInput.value;
         if (endDateInput.value !== startDateInput.value) {
             eventDate += ' - ' + endDateInput.value;
         }
         DEBUG && console.log('eventDate:', eventDate);
 
-        var eventTitle = document.querySelector('[aria-label="Title"]');
         var calendarEventTitle = eventTitle.value;
         DEBUG && console.log('before calendarEventTitle:', calendarEventTitle);
 
@@ -240,11 +241,11 @@ function moveEventToMoveToDate(callback) {
             waitUntilElementExists('[aria-label="Title"]'),
             waitUntilElementExists('[aria-label="Start date"]'),
             waitUntilElementExists('[aria-label="End date"]'),
-        ]).then(function() {
-            var eventTitle = document.querySelector('[aria-label="Title"]');
-            var startDateInput = document.querySelector('[aria-label="Start date"]');
-            var endDateInput = document.querySelector('[aria-label="End date"]');
-
+        ]).then(function([
+            eventTitle,
+            startDateInput,
+            endDateInput,
+        ]) {
             startDateInput.focus();
             setTimeout(function() {
                 var eventDateInputFormattedDate = moveToDate.getEventDateFormattedDate(moveToDateInput.value);
