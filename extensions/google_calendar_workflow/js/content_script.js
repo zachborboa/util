@@ -238,37 +238,26 @@ function moveEventToMoveToDate(callback) {
         DEBUG && console.log('moving event to', moveToDateInput.value);
 
         Promise.all([
-            waitUntilElementExists('[aria-label="Title"]'),
             waitUntilElementExists('[aria-label="Start date"]'),
             waitUntilElementExists('[aria-label="End date"]'),
+            waitUntilElementExists('[aria-label="Title"]'),
         ]).then(function([
-            eventTitle,
             startDateInput,
             endDateInput,
+            eventTitle,
         ]) {
-            startDateInput.focus();
-            setTimeout(function() {
-                var eventDateInputFormattedDate = moveToDate.getEventDateFormattedDate(moveToDateInput.value);
-                startDateInput.value = eventDateInputFormattedDate;
+            var eventDateInputFormattedDate = moveToDate.getEventDateFormattedDate(moveToDateInput.value);
 
-                setTimeout(function() {
-                    dispatchEvent(startDateInput, 'input');
-                    endDateInput.focus();
-
-                    setTimeout(function() {
-                        endDateInput.value = eventDateInputFormattedDate;
-
-                        setTimeout(function() {
-                            dispatchEvent(endDateInput, 'input');
-                            eventTitle.focus();
-
-                            if (callback) {
-                                callback();
-                            }
-                        }, 500);
-                    }, 500);
-                }, 500);
-            }, 500);
+            Promise.resolve()
+            .then(() => setInputValue(startDateInput, eventDateInputFormattedDate))
+            .then(() => setInputValue(endDateInput, eventDateInputFormattedDate))
+            .then(() => eventTitle.focus())
+            .then(() => {
+                console.log('all done');
+                if (callback) {
+                    callback();
+                }
+            });
         });
     }
 }
