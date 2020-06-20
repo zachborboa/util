@@ -3,35 +3,37 @@ function setInputValue(input, value) {
     console.log('input:', input);
     console.log('value:', value);
     return new Promise((resolve, reject) => {
-        input.focus();
-        console.log('focused');
-        if (input.value === value) {
-            console.log('value matches. resolving.');
-            resolve();
-            return;
-        }
-
-        console.log('value does not match (current value: "%s")', input.value);
+        // Avoid resolving immediately even if input's value already matches.
+        // Input's value may be changed shortly after checking due to a delayed
+        // update.
         setTimeout(() => {
+            // Focus input before checking if the input's value is the desired
+            // value. The value might be updated when another input loses focus.
+            input.focus();
+            console.log('focused');
+
             if (input.value === value) {
-                console.log('value now matches. resolving.');
+                console.log('value matches without updating. resolving.');
                 resolve();
                 return;
-            }
+            } else {
+                console.log('value does not match (current value: "%s")', input.value);
 
-            input.value = value;
-            console.log('value set (value="%s")', input.value);
-
-            setTimeout(() => {
-                dispatchEvent(input, 'input');
-                console.log('input event sent');
+                input.value = value;
+                console.log('value set (value="%s")', input.value);
 
                 setTimeout(() => {
-                    console.log('resolved');
-                    resolve();
-                }, 250);
-            }, 250);
-        }, 10);
+                    dispatchEvent(input, 'input');
+                    console.log('input event sent');
+
+                    console.log('value is now "%s"', input.value);
+                    setTimeout(() => {
+                        console.log('resolved');
+                        resolve();
+                    }, 100);
+                }, 100);
+            }
+        }, 100);
     });
 }
 
