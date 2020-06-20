@@ -158,17 +158,17 @@ function clickButton(clickedData) {
         eventTitle.value = newCalendarEventTitle;
         setTimeout(function() {
             dispatchEvent(eventTitle, 'input');
+
+            // Move event to the current move-to date if marked completed.
+            if (COMPLETED_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
+                DEBUG && console.log('event marked completed');
+                moveEventToMoveToDate(eventPageClickSaveButton);
+            } else {
+                eventPageClickSaveButton();
+            }
+
+            DEBUG && console.groupEnd();
         }, 200);
-
-        // Move event to the current move-to date if marked completed.
-        if (COMPLETED_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
-            DEBUG && console.log('event marked completed');
-            moveEventToMoveToDate(eventPageClickSaveButton);
-        } else {
-            eventPageClickSaveButton();
-        }
-
-        DEBUG && console.groupEnd();
     });
 }
 
