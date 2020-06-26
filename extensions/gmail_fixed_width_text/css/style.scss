@@ -9,16 +9,4 @@
         font-family: $font-family;
         font-size: $font-size;
     }
-
-    // Prevent tiny inline font (e.g. <span style="font-size:x-small"></span>).
-    span[style] {
-        font-size: $font-size !important;
-    }
-
-    // Limit email image size. (e.g. <img alt="" width="4096" height="2160" src="" />).
-    img[width] {
-        height: auto;
-        max-height: 100%;
-        max-width: 768px !important;
-    }
 }

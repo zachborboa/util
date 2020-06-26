@@ -7,11 +7,3 @@
   font-family: consolas, monospace !important;
   font-size: medium;
 }
-.ii span[style] {
-  font-size: medium !important;
-}
-.ii img[width] {
-  height: auto;
-  max-height: 100%;
-  max-width: 768px !important;
-}

@@ -97,3 +97,12 @@ div > .akj.aND .s {
 div > .aCl .akj {
   padding-right: 0 !important;
 }
+
+.ii span[style] {
+  font-size: medium !important;
+}
+.ii img[width] {
+  height: auto;
+  max-height: 100%;
+  max-width: 768px !important;
+}
