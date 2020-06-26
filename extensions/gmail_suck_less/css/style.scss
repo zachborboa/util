@@ -130,8 +130,11 @@ div > .aCl .akj {
         font-size: medium !important;
     }
 
-    // Limit email image size. (e.g. <img alt="" width="4096" height="2160" src="" />).
-    img[width] {
+    // Limit email image size. (e.g.
+    // <img alt="" width="4096" height="2160" src="" />
+    // <img alt="" src="1600x900.png" />).
+    // ).
+    img {
         height: auto;
         max-height: 100%;
         max-width: 768px !important;
