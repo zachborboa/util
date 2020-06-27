@@ -5,5 +5,5 @@
 .ii div,
 .ii font {
   font-family: consolas, monospace !important;
-  font-size: medium;
+  font-size: medium !important;
 }
