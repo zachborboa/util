@@ -191,10 +191,16 @@ class GoogleCalendarMoveToDate {
         return inputDate.toISOString().slice(0, 10);
     }
 
-    getEventDateFormattedDate(date) {
-        var eventDate = new Date(date);
-        return eventDate.toLocaleString(
-            'default', { month: 'short' }) + ' ' + eventDate.getUTCDate() + ', ' + eventDate.getUTCFullYear();
+    getEventDateFormattedDate(dateString) {
+        // Converts a date string from "2020-06-01" to "Jun 1, 2020".
+        var eventDate = new Date((
+            new Date(dateString)
+        ).toUTCString().slice(0, -4));
+        return (
+            eventDate.toLocaleString('en-US', { month: 'short', timeZone: 'America/Los_Angeles' }) + ' ' +
+            eventDate.getDate() + ', ' +
+            eventDate.getFullYear()
+        );
     }
 
     _getDateComparisonObject(date) {
