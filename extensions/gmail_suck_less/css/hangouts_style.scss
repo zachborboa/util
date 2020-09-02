@@ -1,0 +1,5 @@
+// Add visual separators between chat messages (similar to Hangouts on Android).
+.Mu:nth-child(n+2) {
+    border-top: 2px solid #eceff1;
+    padding-top: 6px;
+}

@@ -1,0 +1,4 @@
+.Mu:nth-child(n+2) {
+  border-top: 2px solid #eceff1;
+  padding-top: 6px;
+}
