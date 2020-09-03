@@ -1,5 +1,12 @@
 // Add visual separators between chat messages (similar to Hangouts on Android).
 .Mu:nth-child(n+2) {
-    border-top: 2px solid #eceff1;
-    padding-top: 6px;
+    // Add border above all second and subsequent messages to separate messages
+    // from the same user.
+    border-top: 6px solid #eceff1;
+
+    // Undo margin so that top border fills full width.
+    margin: 0;
+
+    // Add padding back after margin was removed.
+    padding: 6px 9px;
 }
