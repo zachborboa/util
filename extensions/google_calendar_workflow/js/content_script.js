@@ -306,7 +306,7 @@ var buttonClickedData;
         DEBUG && console.info('pathnameChanged');
         DEBUG && console.log('pathname:', pathname);
 
-        if (pathname.match(/^\/calendar\/r\/eventedit\//)) {
+        if (pathname.match(/\/eventedit\//)) {
             DEBUG && console.log('on event edit page');
             if (buttonClickedData) {
                 clickButton(buttonClickedData);
@@ -335,6 +335,8 @@ var buttonClickedData;
                 insertAfter(buttonWrapper, saveButton);
                 insertButtons(buttonWrapper, onclickAction, 'inside');
             }
+        } else {
+            DEBUG && console.log('NOT on event edit page');
         }
     }
 
