@@ -22,7 +22,7 @@ Provides quick icon access to your Chrome downloads.
 
 ### Extensions Button
 
-Provides quick icon access to your Chrome extensions.
+Provides quick icon access to your Chrome extensions and display how many tabs are open.
 
 ### Gmail Fixed Width Text
 
@@ -63,10 +63,6 @@ Log all requests to the background page.
 ### Smart Referrer
 
 Send referrers only from the same origin.
-
-### Tab Counter
-
-Display how many tabs are open.
 
 ### Tab Counter
 

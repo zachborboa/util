@@ -8,7 +8,7 @@
     "default_icon": "img/icon-32x32.png",
     "default_title": "Extensions"
   },
-  "description": "Provides quick icon access to your Chrome extensions.",
+  "description": "Provides quick icon access to your Chrome extensions and display how many tabs are open.",
   "icons": {
     "128": "img/icon-128x128.png",
     "16": "img/icon-16x16.png",
