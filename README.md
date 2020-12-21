@@ -36,7 +36,7 @@ Make Gmail suck less.
 
 ### Google Calendar Workflow
 
-Gives you more control over your events in Google Calendar.
+Allows one to keep a list of things to do, prioritize that list, and execute on it in Google Calendar.
 
 ### Google Docs Fixes
 
