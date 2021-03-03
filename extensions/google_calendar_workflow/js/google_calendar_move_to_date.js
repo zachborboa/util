@@ -196,15 +196,22 @@ class GoogleCalendarMoveToDate {
     }
 
     getEventDateFormattedDate(dateString) {
+        this.debug && console.info('getEventDateFormattedDate');
+        this.debug && console.log('dateString:', dateString);
+
         // Converts a date string from "2020-06-01" to "Jun 1, 2020".
-        var eventDate = new Date((
-            new Date(dateString)
-        ).toUTCString().slice(0, -4));
-        return (
-            eventDate.toLocaleString('en-US', { month: 'short', timeZone: 'America/Los_Angeles' }) + ' ' +
-            eventDate.getDate() + ', ' +
+        // Converts a date string from "2021-02-01" to "Feb 1, 2021".
+        var eventDate = new Date(dateString);
+        this.debug && console.log('eventDate:', eventDate, typeof eventDate);
+
+        var eventDateFormatted = (
+            eventDate.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }) + ' ' +
+            eventDate.getUTCDate() + ', ' +
             eventDate.getFullYear()
         );
+        this.debug && console.log('eventDateFormatted:', eventDateFormatted);
+
+        return eventDateFormatted;
     }
 
     _getDateComparisonObject(date) {
