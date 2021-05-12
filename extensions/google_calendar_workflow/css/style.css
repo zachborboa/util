@@ -103,8 +103,10 @@
   background-color: #f3f5f5;
 }
 .t8qpF.ef2wWc {
-  background-color: #fff !important;
-  outline: 3px solid rgba(0, 0, 0, 0.75);
+  background-color: transparent !important;
+  border: 10px solid rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  z-index: 3;
 }
 
 div.wgVzIb {
