@@ -48,7 +48,7 @@
         // Use border as using outline displays inconsistent border widths.
         border-color: rgba(0, 0, 0, .25);
         border-style: solid;
-        border-width: 10px;
+        border-width: 10px 10px 4px 10px;
 
         // Allow clicking through to the events.
         pointer-events: none;
