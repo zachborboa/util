@@ -146,7 +146,15 @@ function clickButton(clickedData) {
         // "My Event"
         var newCalendarEventTitle = calendarEventTitle;
         if (eventTitlePrefix !== null) {
-            newCalendarEventTitle = eventTitlePrefix + ' ' + calendarEventTitle;
+
+            // Remove leading "- " when the dash hotkey is pressed the current
+            // event title already starts with a dash (toggle the dash prefix).
+            if (eventTitlePrefix === '-' && eventTitle.value.startsWith('- ')) {
+                newCalendarEventTitle = calendarEventTitle;
+            } else {
+                newCalendarEventTitle = eventTitlePrefix + ' ' + calendarEventTitle;
+            }
+
             if (! PRIORITY_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
                 newCalendarEventTitle += ';' +
                     ' ' + todayFormattedDate + ';' +
