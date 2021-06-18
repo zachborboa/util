@@ -106,3 +106,12 @@ div > .aCl .akj {
   max-height: 100%;
   max-width: 768px !important;
 }
+
+.nn {
+  min-width: 190px !important;
+  width: 190px !important;
+}
+.nn .aCl {
+  min-width: 210px !important;
+  width: 210px !important;
+}

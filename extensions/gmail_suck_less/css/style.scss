@@ -140,3 +140,14 @@ div > .aCl .akj {
         max-width: 768px !important;
     }
 }
+
+// Decrease width of right chat sidebar.
+.nn {
+    min-width: 190px !important;
+    width: 190px !important;
+
+    .aCl {
+        min-width: 210px !important;
+        width: 210px !important;
+    }
+}
