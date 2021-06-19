@@ -142,7 +142,8 @@ div > .aCl .akj {
 }
 
 // Decrease width of right chat sidebar.
-.nn {
+// Target last of 3 columns (1st=inbox, sent, etc.; 2nd=thread list; 3rd=chat).
+.bkL > .no > .nn:nth-child(3) {
     min-width: 190px !important;
     width: 190px !important;
 
