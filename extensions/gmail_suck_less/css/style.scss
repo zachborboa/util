@@ -141,6 +141,8 @@ div > .aCl .akj {
     }
 }
 
+/* Disabled as chat position has been set to the left side of the inbox.
+
 // Decrease width of right chat sidebar.
 // Target last of 3 columns (1st=inbox, sent, etc.; 2nd=thread list; 3rd=chat).
 .bkL > .no > .nn:nth-child(3) {
@@ -152,3 +154,4 @@ div > .aCl .akj {
         width: 210px !important;
     }
 }
+*/
