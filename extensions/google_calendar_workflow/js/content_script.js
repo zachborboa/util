@@ -40,7 +40,6 @@ class GoogleCalendarWorkflow {
         this.options = options;
         this.debug = options.debug ? true : false;
 
-        this.eventBubbleEventId = '';
         this.buttonClickedData = {};
         this.moveToDateValue = '';
 
@@ -115,12 +114,18 @@ class GoogleCalendarWorkflow {
             return;
         }
 
-        var eventBubble = document.querySelector('#xDetDlg[data-eventid="' + this.eventBubbleEventId + '"]');
+        if (document.querySelector('._gcw-last-event-bubble-meta')) {
+            this.debug && console.warn('event bubble meta already modified');
+            this.debug && console.groupEnd();
+            return;
+        }
+
+        var eventBubble = document.querySelector('#xDetDlg[data-eventid]');
         // this.debug && console.log('eventBubble:', eventBubble);
         if (!eventBubble) {
             setTimeout(() => {
-                this.modifyEventBubble();
-            }, 500, attempt);
+                this.modifyEventBubble(attempt);
+            }, 500);
             this.debug && console.log('will try again soon');
             this.debug && console.groupEnd();
             return;
@@ -158,53 +163,16 @@ class GoogleCalendarWorkflow {
         this.insertButtons(newEventBubbleMetaItem, onclickAction, 'inside', lastNewEventBubbleMetaItem);
 
         setTimeout(() => {
-            if (!document.body.contains(lastNewEventBubbleMetaItem)) {
+            if (!document.querySelector('._gcw-last-event-bubble-meta')) {
                 this.debug && console.warn('event bubble meta item disappeared');
+                this.debug && console.groupEnd();
                 this.modifyEventBubble();
             }
         }, 1000);
     }
 
     lookForEventBubble() {
-        // this.debug && console.group('element clicked');
-        // this.debug && console.log('element clicked:', event.target);
-
-        var target = event.target;
-        if (!target) {
-            // this.debug && console.log('no target');
-            // this.debug && console.groupEnd();
-            return;
-        }
-
-        var eventIdFound = false;
-        for (var i = 0; i < 5; i++) {
-            if (!target) {
-                break;
-
-            // Ignore event bubble.
-            } else if (target.getAttribute('id') === 'xDetDlg') {
-                break;
-
-            } else if (target.getAttribute('data-eventid')) {
-                eventIdFound = true;
-                break;
-            }
-
-            target = target.parentElement;
-        }
-        // this.debug && console.log('target:', target);
-
-        if (!eventIdFound) {
-            // this.debug && console.log('event id not found');
-            // this.debug && console.groupEnd();
-            return;
-        }
-
-        this.eventBubbleEventId = target.getAttribute('data-eventid');
-        // this.debug && console.log('event id found:', this.eventBubbleEventId);
         this.modifyEventBubble();
-
-        // this.debug && console.groupEnd();
     }
 
     eventPageClickSaveButton() {
