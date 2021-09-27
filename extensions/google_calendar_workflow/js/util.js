@@ -1,3 +1,14 @@
+function dispatchEvent(obj, event) {
+    var evt = new Event(
+        event,
+        {
+            target: obj,
+            bubbles: true,
+        }
+    );
+    obj.dispatchEvent(evt);
+}
+
 function setInputValue(input, value) {
     console.info('setInputValue');
     console.log('input:', input);
@@ -17,10 +28,10 @@ function setInputValue(input, value) {
                 resolve();
                 return;
             } else {
-                console.log('value does not match (current value: "%s")', input.value);
+                console.log('value does not match (desired value: "%s", current input value: "%s")', value, input.value);
 
                 input.value = value;
-                console.log('value set (value="%s")', input.value);
+                console.log('value set (current input value: "%s")', input.value);
 
                 setTimeout(() => {
                     dispatchEvent(input, 'input');
