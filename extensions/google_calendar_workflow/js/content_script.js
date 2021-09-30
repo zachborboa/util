@@ -323,7 +323,12 @@ class GoogleCalendarWorkflow {
         // Move.
         } else if (eventBubble && character === 'm') {
             this.clickEventBubbleEditButton();
-            this.moveEventToMoveToDate(this.eventPageClickSaveButton);
+
+            this.waitUntilOnEventEditPage()
+            .then(() => {
+                var callback = this.eventPageClickSaveButton.bind(this);
+                this.moveEventToMoveToDate(callback);
+            });
 
         // Update move-to date.
         } else if (character === 'j' || character === 'k') {
@@ -371,7 +376,6 @@ class GoogleCalendarWorkflow {
                 endDateInput,
                 eventTitleInput,
             ]) => {
-                this.debug && console.log('on event edit page');
                 this.debug && console.log('button:', button);
 
                 var buttonLabel = button.getAttribute('data-label');
