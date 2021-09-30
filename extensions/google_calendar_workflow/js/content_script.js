@@ -1,21 +1,41 @@
 'use strict';
 
 class GoogleCalendarWorkflow {
-    BUTTON_LABELS = [
-        // buttonLabel, eventTitlePrefix, buttonClassNames.
-        ['-',       '-',  ['jfk-button', 'jfk-button-standard', 'button-dash']],
-        ['0',       '0.', ['jfk-button', 'jfk-button-standard', 'button-0']],
-        ['1',       '1.', ['jfk-button', 'jfk-button-standard', 'button-1']],
-        ['2',       '2.', ['jfk-button', 'jfk-button-standard', 'button-2']],
-        ['3',       '3.', ['jfk-button', 'jfk-button-standard', 'button-3']],
-        ['4',       '4.', ['jfk-button', 'jfk-button-standard', 'button-4']],
-        ['5',       '5.', ['jfk-button', 'jfk-button-standard', 'button-5']],
-        ['X',       null, ['jfk-button', 'jfk-button-standard', 'button-x']],
-        ['DONE',    '✓',  ['jfk-button', 'jfk-button-default',  'button-d']],
-        ['NOPE',    '✗',  ['jfk-button', 'jfk-button-standard', 'button-n']],
-        ['OKAY',    '▣',  ['jfk-button', 'jfk-button-standard', 'button-o']],
-        ['AWESOME', 'ツ',  ['jfk-button', 'jfk-button-standard', 'button-a']],
+    FIRST_ROW_BUTTONS = [
+        // button label, button action, button classes
+        ['-', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-dash']],
+        ['0', 'add-prefix',    ['jfk-button', 'jfk-button-standard', 'button-0']],
+        ['1', 'add-prefix',    ['jfk-button', 'jfk-button-standard', 'button-1']],
+        ['2', 'add-prefix',    ['jfk-button', 'jfk-button-standard', 'button-2']],
+        ['3', 'add-prefix',    ['jfk-button', 'jfk-button-standard', 'button-3']],
+        ['4', 'add-prefix',    ['jfk-button', 'jfk-button-standard', 'button-4']],
+        ['5', 'add-prefix',    ['jfk-button', 'jfk-button-standard', 'button-5']],
+        ['X', 'remove-prefix', ['jfk-button', 'jfk-button-standard', 'button-x']],
     ];
+
+    SECOND_ROW_BUTTONS = [
+        // button label, button action, button classes
+        ['DONE',    'mark-completed', ['jfk-button', 'jfk-button-default',  'button-d']],
+        ['NOPE',    'mark-completed', ['jfk-button', 'jfk-button-standard', 'button-n']],
+        ['OKAY',    'mark-completed', ['jfk-button', 'jfk-button-standard', 'button-o']],
+        ['AWESOME', 'mark-completed', ['jfk-button', 'jfk-button-standard', 'button-a']],
+    ];
+
+    BUTTON_LABEL_TO_EVENT_TITLE_PREFIX = {
+        // button label, event title prefix
+        '-': '-',
+        '0': '0.',
+        '1': '1.',
+        '2': '2.',
+        '3': '3.',
+        '4': '4.',
+        '5': '5.',
+        'X': null,
+        'DONE': '✓',
+        'NOPE': '✗',
+        'OKAY': '▣',
+        'AWESOME': 'ツ',
+    };
 
     BUTTON_SELECTORS = {
         '-': '.button-dash',
@@ -32,9 +52,12 @@ class GoogleCalendarWorkflow {
         'a': '.button-a',
     };
 
-    PRIORITY_EVENT_TITLE_PREFIXES = ['-', '0.', '1.', '2.', '3.', '4.', '5.', null];
-
-    COMPLETED_EVENT_TITLE_PREFIXES = ['✓', '✗', '▣', 'ツ'];
+    COMPLETED_EVENT_TITLE_PREFIXES = [
+        '✓',
+        '✗',
+        '▣',
+        'ツ',
+    ];
 
     constructor(options) {
         this.options = options;
@@ -42,6 +65,7 @@ class GoogleCalendarWorkflow {
 
         this.buttonClickedData = {};
         this.moveToDateValue = '';
+        this.findEventBubbleInterval;
 
         this.addEventListeners();
         this.moveToDateInput = this.addMoveToDateField();
@@ -57,48 +81,57 @@ class GoogleCalendarWorkflow {
         referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
     }
 
-    insertButtons(referenceNode, onclickAction, where, alternateReferenceNode) {
-        var insertTarget = referenceNode;
-        for (var i in this.BUTTON_LABELS) {
-            var buttonLabel = this.BUTTON_LABELS[i][0];
-            // this.debug && console.log('buttonLabel:', buttonLabel);
-
-            var eventTitlePrefix = this.BUTTON_LABELS[i][1];
-            // this.debug && console.log('eventTitlePrefix:', eventTitlePrefix);
-
-            var buttonClassNames = this.BUTTON_LABELS[i][2];
-            // this.debug && console.log('buttonClassNames:', buttonClassNames);
-
-            var button = document.createElement('button');
-            button.innerHTML = '<u>' + buttonLabel[0] + '</u>' + buttonLabel.slice(1);
-            button.classList.add(...buttonClassNames);
-
-            (function(myButton, myEventTitlePrefix) {
-                myButton.onclick = function() {
-                    // this.debug && console.log('myButton.onclick');
-                    onclickAction(myButton, myEventTitlePrefix);
-                };
-            }(button, eventTitlePrefix));
-
-            // this.debug && console.log('inserting button', button, where, insertTarget);
-            if (where === 'after') {
-                this.insertAfter(button, insertTarget);
-                insertTarget = button;
-            } else if (where === 'inside') {
-                if (alternateReferenceNode && !this.PRIORITY_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
-                    alternateReferenceNode.appendChild(button);
-                } else {
-                    referenceNode.appendChild(button);
-                }
-            }
-        }
-    }
-
     clickEventBubbleEditButton() {
         this.debug && console.info('clickEventBubbleEditButton');
         var editEventButton = document.querySelector('[aria-label="Edit event"]');
         // this.debug && console.log('editEventButton:', editEventButton);
         editEventButton.click();
+    }
+
+    getEventActionContainer() {
+        var eventActionContainer = document.querySelector('.gcw-container');
+        return eventActionContainer;
+    }
+
+    showEventActionContainer(eventActionContainer) {
+        this.debug && console.log('showEventActionContainer');
+        eventActionContainer = eventActionContainer || this.getEventActionContainer();
+        if (eventActionContainer) {
+            eventActionContainer.style.display = '';
+        }
+    }
+
+    hideEventActionContainer(eventActionContainer) {
+        this.debug && console.log('hideEventActionContainer');
+        eventActionContainer = eventActionContainer || this.getEventActionContainer();
+        if (eventActionContainer) {
+            eventActionContainer.style.display = 'none';
+        }
+    }
+
+    getEventBubble() {
+        var eventBubble = document.querySelector('#xDetDlg[data-eventid]');
+        return eventBubble;
+    }
+
+    updateEventBubbleMetaPosition(eventBubble, eventActionContainer) {
+        eventBubble = eventBubble || this.getEventBubble();
+        eventActionContainer = eventActionContainer || this.getEventActionContainer();
+
+        var eventBubbleVisible = eventBubble && isVisible(eventBubble);
+        if (eventBubble && eventBubbleVisible && eventActionContainer) {
+            var eventBubbleRect = eventBubble.getBoundingClientRect();
+            var top = (eventBubbleRect.y + eventBubbleRect.height);
+            var left = eventBubbleRect.x;
+            // console.log(top, left);
+            if (top && left) {
+                eventActionContainer.style.top = top + 'px';
+                eventActionContainer.style.left = left + 'px';
+                this.showEventActionContainer(eventActionContainer);
+            }
+        } else if ((!eventBubble || !eventBubbleVisible) && eventActionContainer)  {
+            this.hideEventActionContainer(eventActionContainer);
+        }
     }
 
     modifyEventBubble(attempt) {
@@ -114,15 +147,11 @@ class GoogleCalendarWorkflow {
             return;
         }
 
-        if (document.querySelector('._gcw-last-event-bubble-meta')) {
-            this.debug && console.warn('event bubble meta already modified');
-            this.debug && console.groupEnd();
-            return;
-        }
-
-        var eventBubble = document.querySelector('#xDetDlg[data-eventid]');
-        // this.debug && console.log('eventBubble:', eventBubble);
+        var eventBubble = this.getEventBubble();
         if (!eventBubble) {
+            // Hide event action buttons when there is no event bubble.
+            this.hideEventActionContainer();
+
             setTimeout(() => {
                 this.modifyEventBubble(attempt);
             }, 500);
@@ -142,37 +171,66 @@ class GoogleCalendarWorkflow {
         this.debug && console.log('will modify event bubble');
         this.debug && console.groupEnd();
 
-        var lastEventBubbleMetaItem = document.querySelector('#xDtlDlgCt > div:last-child');
+        var eventActionContainer = this.getEventActionContainer();
+        if (!eventActionContainer) {
+            eventActionContainer = document.createElement('div');
+            eventActionContainer.classList.add('gcw-container');
+            this.debug && console.log('new event bubble meta item:', eventActionContainer);
 
-        var newEventBubbleMetaItem = document.createElement('div');
-        newEventBubbleMetaItem.classList.add(...lastEventBubbleMetaItem.classList);
-        this.insertAfter(newEventBubbleMetaItem, lastEventBubbleMetaItem);
-
-        var lastNewEventBubbleMetaItem = document.createElement('div');
-        lastNewEventBubbleMetaItem.classList.add(...lastEventBubbleMetaItem.classList);
-        lastNewEventBubbleMetaItem.classList.add('_gcw-last-event-bubble-meta');
-        this.insertAfter(lastNewEventBubbleMetaItem, newEventBubbleMetaItem);
-
-        var onclickAction = (myButton, myEventTitlePrefix) => {
-            this.buttonClickedData = {
-                'button': myButton,
-                'eventTitlePrefix': myEventTitlePrefix,
-            };
-            this.clickEventBubbleEditButton();
-        };
-        this.insertButtons(newEventBubbleMetaItem, onclickAction, 'inside', lastNewEventBubbleMetaItem);
-
-        setTimeout(() => {
-            if (!document.querySelector('._gcw-last-event-bubble-meta')) {
-                this.debug && console.warn('event bubble meta item disappeared');
-                this.debug && console.groupEnd();
-                this.modifyEventBubble();
+            var firstRowEventActions = document.createElement('div');
+            for (var i in this.FIRST_ROW_BUTTONS) {
+                var buttonLabel = this.FIRST_ROW_BUTTONS[i][0];
+                var buttonAction = this.FIRST_ROW_BUTTONS[i][1];
+                var buttonClassNames = this.FIRST_ROW_BUTTONS[i][2];
+                var button = document.createElement('button');
+                button.classList.add(...buttonClassNames);
+                button.innerHTML = '<u>' + buttonLabel[0] + '</u>' + buttonLabel.slice(1);
+                button.setAttribute('data-action', buttonAction);
+                button.setAttribute('data-label', buttonLabel);
+                firstRowEventActions.appendChild(button);
             }
-        }, 1000);
+            eventActionContainer.appendChild(firstRowEventActions);
+
+            var secondRowEventActions = document.createElement('div');
+            for (var i in this.SECOND_ROW_BUTTONS) {
+                var buttonLabel = this.SECOND_ROW_BUTTONS[i][0];
+                var buttonAction = this.SECOND_ROW_BUTTONS[i][1];
+                var buttonClassNames = this.SECOND_ROW_BUTTONS[i][2];
+                var button = document.createElement('button');
+                button.classList.add(...buttonClassNames);
+                button.innerHTML = '<u>' + buttonLabel[0] + '</u>' + buttonLabel.slice(1);
+                button.setAttribute('data-action', buttonAction);
+                button.setAttribute('data-label', buttonLabel);
+                secondRowEventActions.appendChild(button);
+            }
+            eventActionContainer.appendChild(secondRowEventActions);
+
+            eventActionContainer.style.position = 'absolute';
+            eventActionContainer.style.top = '0';
+            eventActionContainer.style.left = '0';
+            eventActionContainer.style.zIndex = '9999';
+            document.body.appendChild(eventActionContainer);
+        }
+
+        this.updateEventBubbleMetaPosition(eventBubble, eventActionContainer);
     }
 
     lookForEventBubble() {
         this.modifyEventBubble();
+
+        // Stop any existing check to update event bubble position.
+        clearInterval(this.findEventBubbleInterval);
+
+        // Update event bubble position for the next few seconds.
+        var eventBubble = this.getEventBubble();
+        var eventActionContainer = this.getEventActionContainer();
+        this.findEventBubbleInterval = setInterval(() => {
+            this.updateEventBubbleMetaPosition(eventBubble, eventActionContainer);
+        }, 50);
+
+        setTimeout(() => {
+            clearInterval(this.findEventBubbleInterval);
+        }, 3000);
     }
 
     eventPageClickSaveButton() {
@@ -184,131 +242,6 @@ class GoogleCalendarWorkflow {
                 this.updateMoveToDate();
             }, 500);
         });
-    }
-
-    clickButton(clickedData) {
-        this.debug && console.group('clickButton');
-        this.debug && console.log('clickedData:', clickedData);
-        this.debug && console.log('button clicked');
-
-        Promise.all([
-            waitUntilElementExists('[aria-label="Start date"]'),
-            waitUntilElementExists('[aria-label="End date"]'),
-            waitUntilElementExists('[aria-label="Title"]'),
-        ]).then(([
-            startDateInput,
-            endDateInput,
-            eventTitle,
-        ]) => {
-            // Today.
-            var date = new Date();
-            var monthName = date.toLocaleString('en-us', { 'month': 'short' });
-            var todayFormattedDate = monthName + ' ' + date.getDate() + ', ' + date.getFullYear();
-
-            // Event date.
-            var eventDate = startDateInput.value;
-            if (endDateInput.value !== startDateInput.value) {
-                eventDate += ' - ' + endDateInput.value;
-            }
-            this.debug && console.log('eventDate:', eventDate);
-
-            var calendarEventTitle = eventTitle.value;
-            this.debug && console.log('before calendarEventTitle:', calendarEventTitle);
-
-            // Remove leading number (e.g. "1. " in "1. My Calendar Event").
-            calendarEventTitle = calendarEventTitle.replace(/^\d+\. /, '');
-            // Remove leading ! character.
-            calendarEventTitle = calendarEventTitle.replace(/^! /, '');
-            // Remove leading - character.
-            calendarEventTitle = calendarEventTitle.replace(/^- /, '');
-            // Remove leading ~ character.
-            calendarEventTitle = calendarEventTitle.replace(/^~ /, '');
-
-            var eventTitlePrefix = clickedData['eventTitlePrefix'];
-            this.debug && console.log('eventTitlePrefix:', eventTitlePrefix);
-            if (eventTitlePrefix === '✓') {
-                // Remove leading "Tentative: ".
-                calendarEventTitle = calendarEventTitle.replace(/^Tentative: /, '');
-            }
-
-            this.debug && console.log(' after calendarEventTitle:', calendarEventTitle);
-
-            // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
-            // "1. My Event"
-            // "My Event"
-            var newCalendarEventTitle = calendarEventTitle;
-            if (eventTitlePrefix !== null) {
-
-                // Remove leading "- " when the dash hotkey is pressed the current
-                // event title already starts with a dash (toggle the dash prefix).
-                if (eventTitlePrefix === '-' && eventTitle.value.startsWith('- ')) {
-                    newCalendarEventTitle = calendarEventTitle;
-                } else {
-                    newCalendarEventTitle = eventTitlePrefix + ' ' + calendarEventTitle;
-                }
-
-                if (!this.PRIORITY_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
-                    newCalendarEventTitle += ';' +
-                        ' ' + todayFormattedDate + ';' +
-                        ' event date: ' + eventDate;
-                }
-            }
-            this.debug && console.log('newCalendarEventTitle:', newCalendarEventTitle);
-            eventTitle.focus();
-            eventTitle.value = newCalendarEventTitle;
-            setTimeout(() => {
-                dispatchEvent(eventTitle, 'input');
-
-                // Move event to the current move-to date if marked completed.
-                if (this.COMPLETED_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix)) {
-                    this.debug && console.log('event marked completed');
-                    var callback = this.eventPageClickSaveButton.bind(this);
-                    this.moveEventToMoveToDate(callback);
-                } else {
-                    this.eventPageClickSaveButton();
-                }
-
-                this.debug && console.groupEnd();
-            }, 200);
-        });
-    }
-
-    pathnameChanged(pathname) {
-        this.debug && console.info('pathnameChanged');
-        this.debug && console.log('pathname:', pathname);
-
-        if (pathname.match(/\/eventedit\//)) {
-            this.debug && console.log('on event edit page');
-            if (this.buttonClickedData) {
-                this.clickButton(this.buttonClickedData);
-                this.buttonClickedData = null;
-            } else {
-                // Add action buttons to calendar event edit page.
-                this.debug && console.log('adding buttons');
-                var onclickAction = (myButton, myEventTitlePrefix) => {
-                    this.buttonClickedData = {
-                        'button': myButton,
-                        'eventTitlePrefix': myEventTitlePrefix,
-                    };
-                    this.clickButton(this.buttonClickedData);
-                    this.buttonClickedData = null;
-                };
-
-                var saveButton = document.querySelector('[aria-label="Save"]');
-
-                var buttonWrapper = document.createElement('div');
-                buttonWrapper.style.left = '350px';
-                buttonWrapper.style.position = 'absolute';
-                buttonWrapper.style.top = '65px';
-                buttonWrapper.style.width = '350px';
-                buttonWrapper.style.zIndex = '1';
-
-                this.insertAfter(buttonWrapper, saveButton);
-                this.insertButtons(buttonWrapper, onclickAction, 'inside');
-            }
-        } else {
-            this.debug && console.log('NOT on event edit page');
-        }
     }
 
     clickEventBubbleDeleteButton() {
@@ -335,17 +268,18 @@ class GoogleCalendarWorkflow {
         ]).then(([
             startDateInput,
             endDateInput,
-            eventTitle,
+            eventTitleInput,
         ]) => {
             var eventDateInputFormattedDate = this.moveToDate.getEventDateFormattedDate(moveToDateInput.value);
 
             Promise.resolve()
             .then(() => setInputValue(startDateInput, eventDateInputFormattedDate))
             .then(() => setInputValue(endDateInput, eventDateInputFormattedDate))
-            .then(() => eventTitle.focus())
+            .then(() => eventTitleInput.focus())
             .then(() => {
-                console.log('all done');
+                this.debug && console.log('all done');
                 if (callback) {
+                    this.debug && console.log('calling callback');
                     callback();
                 }
             });
@@ -368,21 +302,30 @@ class GoogleCalendarWorkflow {
             return;
         }
 
+        var eventBubble = this.getEventBubble();
+
         // Take requested action when event bubble is open and a keyboard shortcut matching the key pressed is found.
-        var eventBubble = document.querySelector('#xDetDlg[data-eventid]')
         if (eventBubble && character in this.BUTTON_SELECTORS) {
             event.preventDefault();
 
             var buttonSelector = this.BUTTON_SELECTORS[character];
+            this.debug && console.log('button selector:', buttonSelector);
             var buttonToClick = document.querySelector(buttonSelector);
+            this.debug && console.log('button to click:', buttonToClick);
             if (buttonToClick) {
                 buttonToClick.click();
             }
+
+        // Delete.
         } else if (eventBubble && character === '#') {
             this.clickEventBubbleDeleteButton();
+
+        // Move.
         } else if (eventBubble && character === 'm') {
             this.clickEventBubbleEditButton();
             this.moveEventToMoveToDate(this.eventPageClickSaveButton);
+
+        // Update move-to date.
         } else if (character === 'j' || character === 'k') {
             setTimeout(() => {
                 this.updateMoveToDate();
@@ -390,19 +333,148 @@ class GoogleCalendarWorkflow {
         }
     }
 
-    addEventListeners() {
-        document.addEventListener('click', () => {
-            this.lookForEventBubble();
-        }, false);
+    waitUntilOnEventEditPage() {
+        this.debug && console.log('waiting until on edit event page');
+        return new Promise((resolve, reject) => {
+            Promise.all([
+                waitUntilElementExists('[aria-label="Start date"]'),
+                waitUntilElementExists('[aria-label="End date"]'),
+                waitUntilElementExists('[aria-label="Title"]'),
+            ]).then(([
+                startDateInput,
+                endDateInput,
+                eventTitleInput,
+            ]) => {
+                this.debug && console.log('now on edit event page');
+                resolve([
+                    startDateInput,
+                    endDateInput,
+                    eventTitleInput,
+                ]);
+            });
+        });
+    }
 
-        var pathname = window.location.pathname;
-        setInterval(() => {
-            if (pathname !== window.location.pathname) {
-                this.debug && console.log('pathname changed');
-                pathname = window.location.pathname;
-                this.pathnameChanged(pathname);
-            }
-        }, 500);
+    handleButtonClick(event) {
+        // console.log('target:', event.target);
+        var action = event.target.getAttribute('data-action');
+        if (action !== null) {
+            this.debug && console.log('action: "%s"', action);
+
+            var button = event.target;
+
+            this.clickEventBubbleEditButton();
+
+            this.waitUntilOnEventEditPage()
+            .then(([
+                startDateInput,
+                endDateInput,
+                eventTitleInput,
+            ]) => {
+                this.debug && console.log('on event edit page');
+                this.debug && console.log('button:', button);
+
+                var buttonLabel = button.getAttribute('data-label');
+                this.debug && console.log('buttonLabel:', buttonLabel);
+
+                var eventTitlePrefix = this.BUTTON_LABEL_TO_EVENT_TITLE_PREFIX[buttonLabel];
+                this.debug && console.log('eventTitlePrefix:', eventTitlePrefix);
+
+                var eventCompleted = this.COMPLETED_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix);
+                this.debug && console.log('eventCompleted:', eventCompleted);
+
+                var originalCalendarEventTitle = eventTitleInput.value;
+                this.debug && console.log('originalCalendarEventTitle:', originalCalendarEventTitle);
+
+                var newCalendarEventTitle = originalCalendarEventTitle;
+
+                // Remove leading number (e.g. "1. " in "1. My Calendar Event").
+                newCalendarEventTitle = newCalendarEventTitle.replace(/^\d+\. /, '');
+
+                // Remove leading ! character.
+                newCalendarEventTitle = newCalendarEventTitle.replace(/^! /, '');
+
+                // Remove leading ~ character.
+                newCalendarEventTitle = newCalendarEventTitle.replace(/^~ /, '');
+
+                // Remove leading "Tentative: " when event is marked done.
+                if (eventTitlePrefix === '✓') {
+                    newCalendarEventTitle = newCalendarEventTitle.replace(/^Tentative: /, '');
+                }
+
+                if (action === 'add-prefix') {
+                    // Append event title prefix.
+                    // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
+                    // "1. My Event"
+                    if (eventTitlePrefix !== null) {
+                        newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
+                    }
+
+                } else if (action === 'toggle-prefix') {
+                    // Remove leading "- " when the dash hotkey is pressed the
+                    // current event title already starts with a dash to toggle
+                    // the dash prefix.
+                    if (eventTitlePrefix === '-' && newCalendarEventTitle.startsWith('- ')) {
+                        newCalendarEventTitle = newCalendarEventTitle.substr('- '.length);
+                    } else {
+                        newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
+                    }
+                }
+
+                // Format today.
+                var date = new Date();
+                var monthName = date.toLocaleString('en-us', { 'month': 'short' });
+                var todayFormattedDate = monthName + ' ' + date.getDate() + ', ' + date.getFullYear();
+                this.debug && console.log('todayFormattedDate:', todayFormattedDate);
+
+                // Format event date as a date or a date range.
+                var eventDate;
+                if (endDateInput.value !== startDateInput.value) {
+                    eventDate = startDateInput.value + ' - ' + endDateInput.value;
+                } else {
+                    eventDate = startDateInput.value;
+                }
+                this.debug && console.log('eventDate:', eventDate);
+
+                // Append today's date and the original calendar event date to
+                // the new calendar event title when the event is marked
+                // completed (done, nope, okay, awesome).
+                if (eventCompleted) {
+                    newCalendarEventTitle += ';' +
+                        ' ' + todayFormattedDate + ';' +
+                        ' event date: ' + eventDate;
+                }
+
+                this.debug && console.log('newCalendarEventTitle:', newCalendarEventTitle);
+
+                // Update calendar event.
+                eventTitleInput.focus();
+                eventTitleInput.value = newCalendarEventTitle;
+
+                setTimeout(() => {
+                    dispatchEvent(eventTitleInput, 'input');
+
+                    // Move event to the current move-to date if marked completed.
+                    if (eventCompleted) {
+                        var callback = this.eventPageClickSaveButton.bind(this);
+                        this.moveEventToMoveToDate(callback);
+                    } else {
+                        this.eventPageClickSaveButton();
+                    }
+                }, 200);
+            });
+        }
+    }
+
+    handleClick(event) {
+        this.lookForEventBubble();
+        this.handleButtonClick(event);
+    }
+
+    addEventListeners() {
+        document.addEventListener('click', (event) => {
+            this.handleClick(event);
+        }, false);
 
         document.addEventListener('keydown', (event) => {
             this.handleKeyEvent(event);

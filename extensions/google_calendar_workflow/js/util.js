@@ -64,3 +64,7 @@ function waitUntilElementExists(selector, baseElement) {
         setTimeout(check, 100);
     });
 }
+
+function isVisible(obj) {
+  return obj.offsetWidth > 0 && obj.offsetHeight > 0;
+}
