@@ -402,13 +402,12 @@ class GoogleCalendarWorkflow {
                     newCalendarEventTitle = newCalendarEventTitle.replace(/^Tentative: /, '');
                 }
 
-                if (action === 'add-prefix') {
+                if ((action === 'add-prefix' || action === 'mark-completed') &&
+                    eventTitlePrefix !== null) {
                     // Append event title prefix.
                     // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
                     // "1. My Event"
-                    if (eventTitlePrefix !== null) {
-                        newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
-                    }
+                    newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
 
                 } else if (action === 'toggle-prefix') {
                     // Remove leading "- " when the dash hotkey is pressed the
