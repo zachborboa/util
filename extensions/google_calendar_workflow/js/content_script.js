@@ -66,6 +66,7 @@ class GoogleCalendarWorkflow {
         this.buttonClickedData = {};
         this.moveToDateValue = '';
         this.findEventBubbleInterval;
+        this.handleMouseMoveInterval;
 
         this.addEventListeners();
         this.moveToDateInput = this.addMoveToDateField();
@@ -474,6 +475,13 @@ class GoogleCalendarWorkflow {
         this.handleButtonClick(event);
     }
 
+    handleMouseMove(event) {
+        clearInterval(this.handleMouseMoveInterval);
+        this.handleMouseMoveInterval = setTimeout(() => {
+            this.lookForEventBubble();
+        }, 100);
+    }
+
     addEventListeners() {
         document.addEventListener('click', (event) => {
             this.handleClick(event);
@@ -482,6 +490,10 @@ class GoogleCalendarWorkflow {
         document.addEventListener('keydown', (event) => {
             this.handleKeyEvent(event);
         }, false);
+
+        document.addEventListener('mousemove', (event) => {
+            this.handleMouseMove(event);
+        });
     }
 
     updateMoveToDate(attempt) {
