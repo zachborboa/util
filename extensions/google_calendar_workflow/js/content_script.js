@@ -69,13 +69,23 @@ class GoogleCalendarWorkflow {
         this.handleMouseMoveInterval;
 
         this.addEventListeners();
-        this.moveToDateInput = this.addMoveToDateField();
+
+        this.moveToDateRadioManual;
+        this.moveToDateRadioSeven;
+        this.moveToDateRadioFourteen;
+        this.moveToDateInput;
+        this.addMoveToDateField();
 
         this.moveToDate = new GoogleCalendarMoveToDate({
             'debug': this.debug,
             'env': PROD_ENV,
             'moveToDateInput': this.moveToDateInput,
         });
+
+        setTimeout(() => {
+            this.updateMoveToDate();
+            this.restoreUserSettings();
+        }, 5000);
     }
 
     insertAfter(newNode, referenceNode) {
@@ -254,13 +264,12 @@ class GoogleCalendarWorkflow {
 
     moveEventToMoveToDate(callback) {
         this.debug && console.info('moveEventToMoveToDate');
-        var moveToDateInput = document.querySelector('._move-to-date-input');
-        if (moveToDateInput.value === '') {
+        if (this.moveToDateInput.value === '') {
             this.debug && console.warn('move to date empty');
             return;
         }
 
-        this.debug && console.log('moving event to', moveToDateInput.value);
+        this.debug && console.log('moving event to', this.moveToDateInput.value);
 
         Promise.all([
             waitUntilElementExists('[aria-label="Start date"]'),
@@ -271,7 +280,7 @@ class GoogleCalendarWorkflow {
             endDateInput,
             eventTitleInput,
         ]) => {
-            var eventDateInputFormattedDate = this.moveToDate.getEventDateFormattedDate(moveToDateInput.value);
+            var eventDateInputFormattedDate = this.moveToDate.getEventDateFormattedDate(this.moveToDateInput.value);
 
             Promise.resolve()
             .then(() => setInputValue(startDateInput, eventDateInputFormattedDate))
@@ -537,6 +546,41 @@ class GoogleCalendarWorkflow {
         this.updateMoveToDate();
     }
 
+    saveUserSettings() {
+        this.debug && console.info('saveUserSettings');
+
+        localStorage.setItem('settings', JSON.stringify({
+            'manual': this.moveToDateRadioManual.checked,
+            'seven': this.moveToDateRadioSeven.checked,
+            'fourteen': this.moveToDateRadioFourteen.checked,
+            'moveToDate': this.moveToDateInput.value,
+        }));
+    }
+
+    restoreUserSettings() {
+        this.debug && console.info('restoreUserSettings');
+
+        var userSettings = localStorage.getItem('settings');
+        if (userSettings !== null) {
+            var parsedUserSettings = JSON.parse(userSettings);
+            this.debug && console.log('existing user settings found:', parsedUserSettings);
+
+            if (parsedUserSettings['manual']) {
+                this.moveToDateRadioManual.click();
+            }
+
+            if (parsedUserSettings['seven']) {
+                this.moveToDateRadioSeven.click();
+            }
+
+            if (parsedUserSettings['fourteen']) {
+                this.moveToDateRadioFourteen.click();
+            }
+
+            this.moveToDateInput.value = parsedUserSettings['moveToDate'];
+        }
+    }
+
     addMoveToDateField() {
         this.debug && console.info('addMoveToDateField');
 
@@ -551,6 +595,7 @@ class GoogleCalendarWorkflow {
         moveToDateRadioManual.addEventListener('change', (event) => {
             this.updateMaxEventsPerCell(event.target.value);
             this.moveToDateInput.disabled = false;
+            this.saveUserSettings();
         });
         moveToDateRadioManual.name = 'max-events-per-cell';
         moveToDateRadioManual.type = 'radio';
@@ -559,11 +604,13 @@ class GoogleCalendarWorkflow {
         moveToDateRadioManualLabel.appendChild(moveToDateRadioManual);
         moveToDateRadioManualLabel.appendChild(document.createTextNode('Manual'));
         moveToDateContainer.appendChild(moveToDateRadioManualLabel);
+        this.moveToDateRadioManual = moveToDateRadioManual;
 
         var moveToDateRadioSeven = document.createElement('input');
         moveToDateRadioSeven.addEventListener('change', (event) => {
             this.updateMaxEventsPerCell(event.target.value);
             this.moveToDateInput.disabled = true;
+            this.saveUserSettings();
         });
         moveToDateRadioSeven.name = 'max-events-per-cell';
         moveToDateRadioSeven.type = 'radio';
@@ -572,11 +619,13 @@ class GoogleCalendarWorkflow {
         moveToDateRadioSevenLabel.appendChild(moveToDateRadioSeven);
         moveToDateRadioSevenLabel.appendChild(document.createTextNode('7 Events'));
         moveToDateContainer.appendChild(moveToDateRadioSevenLabel);
+        this.moveToDateRadioSeven = moveToDateRadioSeven;
 
         var moveToDateRadioFourteen = document.createElement('input');
         moveToDateRadioFourteen.addEventListener('change', (event) => {
             this.updateMaxEventsPerCell(event.target.value);
             this.moveToDateInput.disabled = true;
+            this.saveUserSettings();
         });
         moveToDateRadioFourteen.checked = 'checked';
         moveToDateRadioFourteen.name = 'max-events-per-cell';
@@ -586,23 +635,22 @@ class GoogleCalendarWorkflow {
         moveToDateRadioFourteenLabel.appendChild(moveToDateRadioFourteen);
         moveToDateRadioFourteenLabel.appendChild(document.createTextNode('14 Events'));
         moveToDateContainer.appendChild(moveToDateRadioFourteenLabel);
+        this.moveToDateRadioFourteen = moveToDateRadioFourteen;
 
         var moveToDateInput = document.createElement('input');
+        moveToDateInput.addEventListener('change', (event) => {
+            this.saveUserSettings();
+        });
         moveToDateInput.classList.add('_move-to-date-input');
         moveToDateInput.disabled = true;
         moveToDateInput.placeholder = 'Move-to Date';
         moveToDateInput.style.textAlign = 'center';
         moveToDateInput.type = 'date';
         moveToDateContainer.appendChild(moveToDateInput);
+        this.moveToDateInput = moveToDateInput;
 
         document.body.appendChild(moveToDateContainer);
         this.debug && console.log('moveToDateContainer:', moveToDateContainer);
-
-        setTimeout(() => {
-            this.updateMoveToDate();
-        }, 5000);
-
-        return moveToDateInput;
     }
 }
 
