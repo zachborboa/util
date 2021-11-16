@@ -301,6 +301,10 @@ class GoogleCalendarWorkflow {
         var character = event.key;
         // this.debug && console.log('character:', character);
 
+        if (event.getModifierState('CapsLock')) {
+            console.warn('caps lock is on');
+        }
+
         // Ignore events with modifiers.
         if (event.altKey) {
             return;
