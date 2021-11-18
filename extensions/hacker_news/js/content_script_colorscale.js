@@ -1,7 +1,15 @@
 // Colorscale.
 
 /**
- * Item score must meet this value to be highlighted. Use 0-100.
+ * Desired minimum number of items that should be highlighted. Should be less
+ * than the number of items that are expected to be on the page (e.g. less than
+ * 30 when there are 30 items per page).
+ */
+const MIN_HIGHLIGHTED_ENTRY_COUNT = 5;
+
+/**
+ * Item score must meet this value to be highlighted. Use a value starting from
+ * 0 up to 100.
  */
 const MIN_SCORE_HIGHLIGHT_THRESHOLD = 15;
 
@@ -48,22 +56,75 @@ function colorscaleNodes(nodes, valueRegex) {
         }
     }
 
+    // Determine the maximum number to use to ensure that at least a reasonable
+    // number of entries are highlighted.
+    var maxValueForThreshold = maxValue;
+
+    var attemptCount = 0;
+    var maxAttempts = 1000;
+    do {
+        attemptCount += 1;
+
+        var highlightedCount = 0;
+
+        // Ensure that at least N number of items are highlighted. This helps
+        // avoid only a few items being highighted (e.g. when there are 1 or 2
+        // really popular items).
+        for (const nodePair of nodePairs) {
+            var node = nodePair[0];
+            var nodeValue = nodePair[1];
+            var relativeValueForThreshold = nodeValue / maxValueForThreshold * 100;
+
+            node.style.color = '#000';
+
+            // Count number of entries that would be highlighted (as it meets the
+            // minimum score to be highlighted).
+            if (relativeValueForThreshold >= MIN_SCORE_HIGHLIGHT_THRESHOLD) {
+                highlightedCount += 1;
+            }
+        }
+
+        // Lower the maximum value to use as the minimum number of entries that
+        // would have been highlighted wouldn't be reached using the current
+        // maximum value.
+        if (highlightedCount < MIN_HIGHLIGHTED_ENTRY_COUNT) {
+            maxValueForThreshold -= 10;
+        }
+
+        // Stop adjusting the maximum value when the desired minimum number of
+        // entries will be highlighted.
+        if (highlightedCount >= MIN_HIGHLIGHTED_ENTRY_COUNT) {
+            break;
+        }
+
+        if (maxValueForThreshold <= 0) {
+            maxValueForThreshold = maxValue;
+            break;
+        }
+
+    } while (attemptCount < maxAttempts);
+
+
     for (const nodePair of nodePairs) {
         var node = nodePair[0];
         var nodeValue = nodePair[1];
-        var relativeValue = nodeValue / maxValue * 100;
+        var relativeValueForThreshold = nodeValue / maxValueForThreshold * 100;
+        var relativeValueForColor = nodeValue / maxValue * 100;
+
+        node.style.color = '#000';
 
         // Skip highlighting items that don't meet the scoring threshold.
-        if (relativeValue < MIN_SCORE_HIGHLIGHT_THRESHOLD) {
+        if (relativeValueForThreshold < MIN_SCORE_HIGHLIGHT_THRESHOLD) {
+            node.style.backgroundColor = '';
             continue;
-        } else if (relativeValue < 50) {
+        } else if (relativeValueForThreshold < 50) {
             var start = GREEN;
             var end = YELLOW;
-            var interpolationValue = relativeValue;
+            var interpolationValue = relativeValueForColor;
         } else {
             var start = YELLOW;
             var end = RED;
-            var interpolationValue = relativeValue % 51;
+            var interpolationValue = relativeValueForColor % 51;
         }
 
         var startColors = start.getColors();
@@ -71,7 +132,6 @@ function colorscaleNodes(nodes, valueRegex) {
         var R = Interpolate(startColors.r, endColors.r, 50, interpolationValue);
         var G = Interpolate(startColors.g, endColors.g, 50, interpolationValue);
         var B = Interpolate(startColors.b, endColors.b, 50, interpolationValue);
-        node.style.color = '#000';
         node.style.backgroundColor = 'rgb(' + R + ',' + G + ',' + B + ')';
     }
 }
