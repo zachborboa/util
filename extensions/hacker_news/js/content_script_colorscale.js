@@ -1,11 +1,5 @@
+console.clear();
 // Colorscale.
-
-/**
- * Desired minimum number of items that should be highlighted. Should be less
- * than the number of items that are expected to be on the page (e.g. less than
- * 30 when there are 30 items per page).
- */
-const MIN_HIGHLIGHTED_ENTRY_COUNT = 5;
 
 /**
  * Item score must meet this value to be highlighted. Use a value starting from
@@ -43,72 +37,11 @@ function Color(_r, _g, _b) {
     };
 }
 
-function colorscaleNodes(nodes, valueRegex) {
-    // Find max value and gather (node, value) pairs.
-    let maxValue = 0;
-    let nodePairs = [];
-    for (const node of nodes) {
-        var match = node.innerText.match(valueRegex);
-        if (match !== null) {
-            var nodeValue = parseInt(match);
-            maxValue = Math.max(maxValue, nodeValue);
-            nodePairs.push([node, nodeValue]);
-        }
-    }
-
-    // Determine the maximum number to use to ensure that at least a reasonable
-    // number of entries are highlighted.
-    var maxValueForThreshold = maxValue;
-
-    var attemptCount = 0;
-    var maxAttempts = 1000;
-    do {
-        attemptCount += 1;
-
-        var highlightedCount = 0;
-
-        // Ensure that at least N number of items are highlighted. This helps
-        // avoid only a few items being highighted (e.g. when there are 1 or 2
-        // really popular items).
-        for (const nodePair of nodePairs) {
-            var node = nodePair[0];
-            var nodeValue = nodePair[1];
-            var relativeValueForThreshold = nodeValue / maxValueForThreshold * 100;
-
-            node.style.color = '#000';
-
-            // Count number of entries that would be highlighted (as it meets the
-            // minimum score to be highlighted).
-            if (relativeValueForThreshold >= MIN_SCORE_HIGHLIGHT_THRESHOLD) {
-                highlightedCount += 1;
-            }
-        }
-
-        // Lower the maximum value to use as the minimum number of entries that
-        // would have been highlighted wouldn't be reached using the current
-        // maximum value.
-        if (highlightedCount < MIN_HIGHLIGHTED_ENTRY_COUNT) {
-            maxValueForThreshold -= 10;
-        }
-
-        // Stop adjusting the maximum value when the desired minimum number of
-        // entries will be highlighted.
-        if (highlightedCount >= MIN_HIGHLIGHTED_ENTRY_COUNT) {
-            break;
-        }
-
-        if (maxValueForThreshold <= 0) {
-            maxValueForThreshold = maxValue;
-            break;
-        }
-
-    } while (attemptCount < maxAttempts);
-
-
-    for (const nodePair of nodePairs) {
+function highlightNodes(nodePairsToHighlight, maxValue) {
+    for (const nodePair of nodePairsToHighlight) {
         var node = nodePair[0];
         var nodeValue = nodePair[1];
-        var relativeValueForThreshold = nodeValue / maxValueForThreshold * 100;
+        var relativeValueForThreshold = nodeValue / maxValue * 100;
         var relativeValueForColor = nodeValue / maxValue * 100;
 
         node.style.color = '#000';
@@ -136,12 +69,45 @@ function colorscaleNodes(nodes, valueRegex) {
     }
 }
 
+function colorscaleNodes(nodes, valueRegex) {
+    // Gather list of node values and (node, value) pairs.
+    let nodeValues = [];
+    let nodePairs = [];
+    for (const node of nodes) {
+        var match = node.innerText.match(valueRegex);
+        if (match !== null) {
+            var nodeValue = parseInt(match);
+            nodeValues.push(nodeValue);
+            nodePairs.push([node, nodeValue]);
+        }
+    }
+
+    var sortedNodePairs = [...nodePairs].sort((a, b) => a[1] - b[1]).reverse();
+
+    // Exclude a few of the top entries from dominating the coloring by
+    // highlighting them separately.
+
+    // Highlight top entries using the maximum value.
+    var maxValue = sortedNodePairs[0][1];
+    highlightNodes(sortedNodePairs.slice(0, 2), maxValue);
+
+    // Highlight all other entries using the adjusted maximum value.
+    var adjustedMaxValue = sortedNodePairs.slice(2)[0][1];
+    highlightNodes(sortedNodePairs.slice(2), adjustedMaxValue);
+}
+
 // Add colorscale to submission scores.
 var submissionScores = document.querySelectorAll('.score');
 var valueRegex = /(\d+) points/;
 colorscaleNodes(submissionScores, valueRegex);
 
 // Add colorscale to submission comment scores.
-var commentLinks = document.querySelectorAll('a[href^=item]:nth-child(2n+0)');
+var commentLinkSelector;
+if (window.location.pathname === '/ask') {
+    commentLinkSelector = 'a[href^=item]:nth-child(3n+2)';
+} else {
+    commentLinkSelector = 'a[href^=item]:nth-child(2n+0)';
+}
+var commentLinks = document.querySelectorAll(commentLinkSelector);
 var valueRegex = /(\d+)\xa0comments/;
 colorscaleNodes(commentLinks, valueRegex);
