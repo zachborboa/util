@@ -592,7 +592,7 @@ class GoogleCalendarWorkflow {
         moveToDateContainer.classList.add('_move-to-date-container');
         moveToDateContainer.style.position = 'absolute';
         moveToDateContainer.style.right = '165px';
-        moveToDateContainer.style.top = '50px';
+        moveToDateContainer.style.top = '37px';
         moveToDateContainer.style.zIndex = '1000';
 
         var moveToDateRadioManual = document.createElement('input');

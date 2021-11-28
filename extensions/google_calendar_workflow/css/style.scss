@@ -170,3 +170,17 @@ div.wgVzIb {
     // Orginal value: "padding-right: 8px;"
     padding-right: 2px !important;
 }
+
+// Increase available space for displaying calendar days.
+.gb_pa:not(.gb_qa) .gb_Fd {
+    // Decrease height of top bar (containing hamburger menu, logo, Today
+    // button, previous/next arrows, settings button, etc.) to make more room
+    // for the calendar.
+    padding: 0 !important;
+}
+.SGWAac {
+    // Increase height of calendar body.
+    // Changed from:
+    // height: calc(100% - 64px);
+    height: calc(100% - 48px) !important;
+}
