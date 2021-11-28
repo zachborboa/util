@@ -120,9 +120,26 @@ class GoogleCalendarMoveToDate {
         // "https://calendar.google.com/calendar/r/customweek/2019/12/9" and
         // "https://calendar.google.com/calendar/u/0/r/customweek/2019/8/19"
         // ).
-        var calendarYear = pathname.match(/\/(\d\d\d\d)\//)[1];
+        var matchResult = pathname.match(/\/(\d\d\d\d)\//);
+        var calendarYear;
+        if (matchResult === null) {
 
-        this.debug && console.log('calendarYear:', calendarYear);
+            // Attempt to fetch calendar year from current page.
+            var currentMonthAndYearNode = document.querySelector('.rSoRzd');
+            if (currentMonthAndYearNode && currentMonthAndYearNode.innerText.match(/ (\d\d\d\d)$/)) {
+                calendarYear = currentMonthAndYearNode.innerText.match(/ (\d\d\d\d)$/)[1];
+            }
+
+        } else {
+            calendarYear = matchResult[1];
+        }
+
+        if (calendarYear) {
+            this.debug && console.log('calendarYear:', calendarYear);
+        } else {
+            this.debug && console.warn('calendar year not found');
+        }
+
         return calendarYear;
     }
 
