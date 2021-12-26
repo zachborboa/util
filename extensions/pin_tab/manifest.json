@@ -8,15 +8,6 @@
     "default_icon": "img/icon-48x48.png",
     "default_title": "Pin Tab"
   },
-  "commands": {
-    "Ctrl+Shift+X": {
-      "description": "Ctrl+Shift+X.",
-      "suggested_key": {
-        "default": "Ctrl+Shift+X",
-        "mac": "Command+Shift+X"
-      }
-    }
-  },
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "description": "Automatically pin tabs based on url patterns and quickly pin and unpin your tabs.",
   "icons": {
