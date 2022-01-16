@@ -216,16 +216,11 @@ class GoogleCalendarMoveToDate {
         this.debug && console.info('getEventDateFormattedDate');
         this.debug && console.log('dateString:', dateString);
 
-        // Converts a date string from "2020-06-01" to "Jun 1, 2020".
-        // Converts a date string from "2021-02-01" to "Feb 1, 2021".
-        var eventDate = new Date(dateString);
-        this.debug && console.log('eventDate:', eventDate, typeof eventDate);
-
-        var eventDateFormatted = (
-            eventDate.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }) + ' ' +
-            eventDate.getUTCDate() + ', ' +
-            eventDate.getFullYear()
-        );
+        // This function previously formatted a date from "2021-02-01" to
+        // "Feb 1, 2021". This is no longer needed as the input field accepts
+        // dates like "2021-02-01" and formats the date into something like
+        // "Feb 1, 2021" when the input field loses focus.
+        var eventDateFormatted = dateString;
         this.debug && console.log('eventDateFormatted:', eventDateFormatted);
 
         return eventDateFormatted;
