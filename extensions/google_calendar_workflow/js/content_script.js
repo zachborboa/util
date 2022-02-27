@@ -30,6 +30,10 @@ class GoogleCalendarWorkflow {
         '3': '3.',
         '4': '4.',
         '5': '5.',
+        '6': '6.',
+        '7': '7.',
+        '8': '8.',
+        '9': '9.',
         'X': null,
         'DONE': '✓',
         'NOPE': '✗',
@@ -45,6 +49,10 @@ class GoogleCalendarWorkflow {
         '3': '.button-3',
         '4': '.button-4',
         '5': '.button-5',
+        '6': '',
+        '7': '',
+        '8': '',
+        '9': '',
         'x': '.button-x',
         'd': '.button-d',
         'n': '.button-n',
@@ -323,11 +331,27 @@ class GoogleCalendarWorkflow {
             event.preventDefault();
 
             var buttonSelector = this.BUTTON_SELECTORS[character];
+
+            // Handle simulated button click without an existing button button
+            // (e.g. for buttons 6, 7, 8, 9).
+            if (buttonSelector === '') {
+
+                var label = character;
+                var action = 'add-prefix';
+                var eventTitlePrefix = this.BUTTON_LABEL_TO_EVENT_TITLE_PREFIX[label];
+                this.updateCalendarEventTitle(label, action, eventTitlePrefix);
+
+            // Handle button click (e.g. for buttons -, 0, 1, 2, 3, 4, 5, x, d,
+            // n, o, a).
+            } else {
+
             this.debug && console.log('button selector:', buttonSelector);
             var buttonToClick = document.querySelector(buttonSelector);
             this.debug && console.log('button to click:', buttonToClick);
             if (buttonToClick) {
                 buttonToClick.click();
+            }
+
             }
 
         // Delete.
@@ -374,13 +398,15 @@ class GoogleCalendarWorkflow {
         });
     }
 
-    handleButtonClick(event) {
-        // console.log('target:', event.target);
-        var action = event.target.getAttribute('data-action');
-        if (action !== null) {
-            this.debug && console.log('action: "%s"', action);
-
-            var button = event.target;
+    updateCalendarEventTitle(
+        label,  // from "data-label" (index 0; 0, 1, ..., 6, 7, 8, 9).
+        action, // from "data-action" (index 1; toggle-prefix, add-prefix, mark-completed, etc.).
+        eventTitlePrefix, // e.g. "2." for label 2.
+    ) {
+        this.debug && console.log('updateCalendarEventTitle');
+        this.debug && console.log('label: "%s"', label);
+        this.debug && console.log('action: "%s"', action);
+        this.debug && console.log('eventTitlePrefix: "%s"', eventTitlePrefix);
 
             this.clickEventBubbleEditButton();
 
@@ -390,13 +416,6 @@ class GoogleCalendarWorkflow {
                 endDateInput,
                 eventTitleInput,
             ]) => {
-                this.debug && console.log('button:', button);
-
-                var buttonLabel = button.getAttribute('data-label');
-                this.debug && console.log('buttonLabel:', buttonLabel);
-
-                var eventTitlePrefix = this.BUTTON_LABEL_TO_EVENT_TITLE_PREFIX[buttonLabel];
-                this.debug && console.log('eventTitlePrefix:', eventTitlePrefix);
 
                 var eventCompleted = this.COMPLETED_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix);
                 this.debug && console.log('eventCompleted:', eventCompleted);
@@ -480,6 +499,18 @@ class GoogleCalendarWorkflow {
                     }
                 }, 200);
             });
+    }
+
+    handleButtonClick(event) {
+        // console.log('target:', event.target);
+        var action = event.target.getAttribute('data-action');
+        if (action !== null) {
+            var button = event.target;
+            this.debug && console.log('button:', button);
+
+            var buttonLabel = button.getAttribute('data-label');
+            var eventTitlePrefix = this.BUTTON_LABEL_TO_EVENT_TITLE_PREFIX[buttonLabel];
+            this.updateCalendarEventTitle(buttonLabel, action, eventTitlePrefix);
         }
     }
 
