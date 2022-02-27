@@ -398,7 +398,7 @@ class GoogleCalendarWorkflow {
 
     updateCalendarEventTitle(
         label,  // from "data-label" (index 0; 0, 1, ..., 6, 7, 8, 9).
-        action, // from "data-action" (index 1; toggle-prefix, add-prefix, mark-completed, etc.).
+        action, // from "data-action" (index 1; toggle-prefix, mark-completed, etc.).
         eventTitlePrefix, // e.g. "2." for label 2.
     ) {
         this.debug && console.log('updateCalendarEventTitle');
@@ -451,8 +451,7 @@ class GoogleCalendarWorkflow {
                 newCalendarEventTitle = newCalendarEventTitle.replace(/^Tentative: /, '');
             }
 
-            if ((action === 'add-prefix' || action === 'mark-completed') &&
-                eventTitlePrefix !== null) {
+            if (action === 'mark-completed' && eventTitlePrefix !== null) {
                 // Append event title prefix.
                 // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
                 // "1. My Event"
