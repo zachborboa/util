@@ -4,12 +4,12 @@ class GoogleCalendarWorkflow {
     FIRST_ROW_BUTTONS = [
         // button label, button action, button classes
         ['-', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-dash']],
-        ['0', 'add-prefix',    ['jfk-button', 'jfk-button-standard', 'button-0']],
-        ['1', 'add-prefix',    ['jfk-button', 'jfk-button-standard', 'button-1']],
-        ['2', 'add-prefix',    ['jfk-button', 'jfk-button-standard', 'button-2']],
-        ['3', 'add-prefix',    ['jfk-button', 'jfk-button-standard', 'button-3']],
-        ['4', 'add-prefix',    ['jfk-button', 'jfk-button-standard', 'button-4']],
-        ['5', 'add-prefix',    ['jfk-button', 'jfk-button-standard', 'button-5']],
+        ['0', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-0']],
+        ['1', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-1']],
+        ['2', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-2']],
+        ['3', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-3']],
+        ['4', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-4']],
+        ['5', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-5']],
         ['X', 'remove-prefix', ['jfk-button', 'jfk-button-standard', 'button-x']],
     ];
 
@@ -337,7 +337,7 @@ class GoogleCalendarWorkflow {
             if (buttonSelector === '') {
 
                 var label = character;
-                var action = 'add-prefix';
+                var action = 'toggle-prefix';
                 var eventTitlePrefix = this.BUTTON_LABEL_TO_EVENT_TITLE_PREFIX[label];
                 this.updateCalendarEventTitle(label, action, eventTitlePrefix);
 
@@ -423,8 +423,22 @@ class GoogleCalendarWorkflow {
 
             var newCalendarEventTitle = originalCalendarEventTitle;
 
-            // Remove leading number (e.g. "1. " in "1. My Calendar Event").
-            newCalendarEventTitle = newCalendarEventTitle.replace(/^\d+\. /, '');
+            // Toggle the leading prefix (e.g. "- ", "1. ", "2. ", etc.) when
+            // the respective hotkey is pressed.
+            if (action === 'toggle-prefix') {
+
+                // Remove existing prefix if it is the same prefix as the hotkey.
+                if (newCalendarEventTitle.startsWith(eventTitlePrefix + ' ')) {
+                    newCalendarEventTitle = newCalendarEventTitle.substr((eventTitlePrefix + ' ').length);
+
+                } else {
+                    // Remove any existing leading number prefix (e.g. "1. " in "1. My Calendar Event").
+                    newCalendarEventTitle = newCalendarEventTitle.replace(/^\d+\. /, '');
+
+                    // Add chosen prefix.
+                    newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
+                }
+            }
 
             // Remove leading ! character.
             newCalendarEventTitle = newCalendarEventTitle.replace(/^! /, '');
@@ -443,16 +457,6 @@ class GoogleCalendarWorkflow {
                 // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
                 // "1. My Event"
                 newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
-
-            } else if (action === 'toggle-prefix') {
-                // Remove leading "- " when the dash hotkey is pressed the
-                // current event title already starts with a dash to toggle
-                // the dash prefix.
-                if (eventTitlePrefix === '-' && newCalendarEventTitle.startsWith('- ')) {
-                    newCalendarEventTitle = newCalendarEventTitle.substr('- '.length);
-                } else {
-                    newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
-                }
             }
 
             // Format today.
