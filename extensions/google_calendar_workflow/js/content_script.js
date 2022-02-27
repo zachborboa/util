@@ -344,14 +344,12 @@ class GoogleCalendarWorkflow {
             // Handle button click (e.g. for buttons -, 0, 1, 2, 3, 4, 5, x, d,
             // n, o, a).
             } else {
-
-            this.debug && console.log('button selector:', buttonSelector);
-            var buttonToClick = document.querySelector(buttonSelector);
-            this.debug && console.log('button to click:', buttonToClick);
-            if (buttonToClick) {
-                buttonToClick.click();
-            }
-
+                this.debug && console.log('button selector:', buttonSelector);
+                var buttonToClick = document.querySelector(buttonSelector);
+                this.debug && console.log('button to click:', buttonToClick);
+                if (buttonToClick) {
+                    buttonToClick.click();
+                }
             }
 
         // Delete.
@@ -408,97 +406,97 @@ class GoogleCalendarWorkflow {
         this.debug && console.log('action: "%s"', action);
         this.debug && console.log('eventTitlePrefix: "%s"', eventTitlePrefix);
 
-            this.clickEventBubbleEditButton();
+        this.clickEventBubbleEditButton();
 
-            this.waitUntilOnEventEditPage()
-            .then(([
-                startDateInput,
-                endDateInput,
-                eventTitleInput,
-            ]) => {
+        this.waitUntilOnEventEditPage()
+        .then(([
+            startDateInput,
+            endDateInput,
+            eventTitleInput,
+        ]) => {
 
-                var eventCompleted = this.COMPLETED_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix);
-                this.debug && console.log('eventCompleted:', eventCompleted);
+            var eventCompleted = this.COMPLETED_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix);
+            this.debug && console.log('eventCompleted:', eventCompleted);
 
-                var originalCalendarEventTitle = eventTitleInput.value;
-                this.debug && console.log('originalCalendarEventTitle:', originalCalendarEventTitle);
+            var originalCalendarEventTitle = eventTitleInput.value;
+            this.debug && console.log('originalCalendarEventTitle:', originalCalendarEventTitle);
 
-                var newCalendarEventTitle = originalCalendarEventTitle;
+            var newCalendarEventTitle = originalCalendarEventTitle;
 
-                // Remove leading number (e.g. "1. " in "1. My Calendar Event").
-                newCalendarEventTitle = newCalendarEventTitle.replace(/^\d+\. /, '');
+            // Remove leading number (e.g. "1. " in "1. My Calendar Event").
+            newCalendarEventTitle = newCalendarEventTitle.replace(/^\d+\. /, '');
 
-                // Remove leading ! character.
-                newCalendarEventTitle = newCalendarEventTitle.replace(/^! /, '');
+            // Remove leading ! character.
+            newCalendarEventTitle = newCalendarEventTitle.replace(/^! /, '');
 
-                // Remove leading ~ character.
-                newCalendarEventTitle = newCalendarEventTitle.replace(/^~ /, '');
+            // Remove leading ~ character.
+            newCalendarEventTitle = newCalendarEventTitle.replace(/^~ /, '');
 
-                // Remove leading "Tentative: " when event is marked done.
-                if (eventTitlePrefix === '✓') {
-                    newCalendarEventTitle = newCalendarEventTitle.replace(/^Tentative: /, '');
-                }
+            // Remove leading "Tentative: " when event is marked done.
+            if (eventTitlePrefix === '✓') {
+                newCalendarEventTitle = newCalendarEventTitle.replace(/^Tentative: /, '');
+            }
 
-                if ((action === 'add-prefix' || action === 'mark-completed') &&
-                    eventTitlePrefix !== null) {
-                    // Append event title prefix.
-                    // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
-                    // "1. My Event"
-                    newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
+            if ((action === 'add-prefix' || action === 'mark-completed') &&
+                eventTitlePrefix !== null) {
+                // Append event title prefix.
+                // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
+                // "1. My Event"
+                newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
 
-                } else if (action === 'toggle-prefix') {
-                    // Remove leading "- " when the dash hotkey is pressed the
-                    // current event title already starts with a dash to toggle
-                    // the dash prefix.
-                    if (eventTitlePrefix === '-' && newCalendarEventTitle.startsWith('- ')) {
-                        newCalendarEventTitle = newCalendarEventTitle.substr('- '.length);
-                    } else {
-                        newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
-                    }
-                }
-
-                // Format today.
-                var date = new Date();
-                var monthName = date.toLocaleString('en-us', { 'month': 'short' });
-                var todayFormattedDate = monthName + ' ' + date.getDate() + ', ' + date.getFullYear();
-                this.debug && console.log('todayFormattedDate:', todayFormattedDate);
-
-                // Format event date as a date or a date range.
-                var eventDate;
-                if (endDateInput.value !== startDateInput.value) {
-                    eventDate = startDateInput.value + ' - ' + endDateInput.value;
+            } else if (action === 'toggle-prefix') {
+                // Remove leading "- " when the dash hotkey is pressed the
+                // current event title already starts with a dash to toggle
+                // the dash prefix.
+                if (eventTitlePrefix === '-' && newCalendarEventTitle.startsWith('- ')) {
+                    newCalendarEventTitle = newCalendarEventTitle.substr('- '.length);
                 } else {
-                    eventDate = startDateInput.value;
+                    newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
                 }
-                this.debug && console.log('eventDate:', eventDate);
+            }
 
-                // Append today's date and the original calendar event date to
-                // the new calendar event title when the event is marked
-                // completed (done, nope, okay, awesome).
+            // Format today.
+            var date = new Date();
+            var monthName = date.toLocaleString('en-us', { 'month': 'short' });
+            var todayFormattedDate = monthName + ' ' + date.getDate() + ', ' + date.getFullYear();
+            this.debug && console.log('todayFormattedDate:', todayFormattedDate);
+
+            // Format event date as a date or a date range.
+            var eventDate;
+            if (endDateInput.value !== startDateInput.value) {
+                eventDate = startDateInput.value + ' - ' + endDateInput.value;
+            } else {
+                eventDate = startDateInput.value;
+            }
+            this.debug && console.log('eventDate:', eventDate);
+
+            // Append today's date and the original calendar event date to
+            // the new calendar event title when the event is marked
+            // completed (done, nope, okay, awesome).
+            if (eventCompleted) {
+                newCalendarEventTitle += ';' +
+                    ' ' + todayFormattedDate + ';' +
+                    ' event date: ' + eventDate;
+            }
+
+            this.debug && console.log('newCalendarEventTitle:', newCalendarEventTitle);
+
+            // Update calendar event.
+            eventTitleInput.focus();
+            eventTitleInput.value = newCalendarEventTitle;
+
+            setTimeout(() => {
+                dispatchEvent(eventTitleInput, 'input');
+
+                // Move event to the current move-to date if marked completed.
                 if (eventCompleted) {
-                    newCalendarEventTitle += ';' +
-                        ' ' + todayFormattedDate + ';' +
-                        ' event date: ' + eventDate;
+                    var callback = this.eventPageClickSaveButton.bind(this);
+                    this.moveEventToMoveToDate(callback);
+                } else {
+                    this.eventPageClickSaveButton();
                 }
-
-                this.debug && console.log('newCalendarEventTitle:', newCalendarEventTitle);
-
-                // Update calendar event.
-                eventTitleInput.focus();
-                eventTitleInput.value = newCalendarEventTitle;
-
-                setTimeout(() => {
-                    dispatchEvent(eventTitleInput, 'input');
-
-                    // Move event to the current move-to date if marked completed.
-                    if (eventCompleted) {
-                        var callback = this.eventPageClickSaveButton.bind(this);
-                        this.moveEventToMoveToDate(callback);
-                    } else {
-                        this.eventPageClickSaveButton();
-                    }
-                }, 200);
-            });
+            }, 200);
+        });
     }
 
     handleButtonClick(event) {
