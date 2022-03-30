@@ -40,23 +40,23 @@
     background-color: #f3f5f5;
 }
 
-    // Increase contrast for current calendar day.
-    ._gcw-current-date {
-        // Use transparent background to avoid covering calendar events when
-        // increasing z-index.
-        background-color: transparent !important;
+// Increase contrast for current calendar day.
+._gcw-current-date {
+    // Use transparent background to avoid covering calendar events when
+    // increasing z-index.
+    background-color: transparent !important;
 
-        // Use border as using outline displays inconsistent border widths.
-        border-color: rgba(0, 0, 0, .25);
-        border-style: solid;
-        border-width: 10px 10px 4px 10px;
+    // Use border as using outline displays inconsistent border widths.
+    border-color: rgba(0, 0, 0, .25);
+    border-style: solid;
+    border-width: 10px 10px 4px 10px;
 
-        // Allow clicking through to the events.
-        pointer-events: none;
+    // Allow clicking through to the events.
+    pointer-events: none;
 
-        // Increase z-index for borders to appear on top of calendar events.
-        z-index: 4;
-    }
+    // Increase z-index for borders to appear on top of calendar events.
+    z-index: 4;
+}
 
 // Modify toast message.
 div.wgVzIb {
