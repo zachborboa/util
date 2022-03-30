@@ -38,9 +38,10 @@
 .t8qpF {
     // Decrease contrast for calendar event days.
     background-color: #f3f5f5;
+}
 
     // Increase contrast for current calendar day.
-    &.ef2wWc {
+    ._gcw-current-date {
         // Use transparent background to avoid covering calendar events when
         // increasing z-index.
         background-color: transparent !important;
@@ -56,7 +57,6 @@
         // Increase z-index for borders to appear on top of calendar events.
         z-index: 4;
     }
-}
 
 // Modify toast message.
 div.wgVzIb {

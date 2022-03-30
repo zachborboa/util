@@ -84,6 +84,9 @@ class GoogleCalendarWorkflow {
         this.moveToDateInput;
         this.addMoveToDateField();
 
+        this.currentDateNode;
+        this.keepCurrentSelectorsUpdated();
+
         this.moveToDate = new GoogleCalendarMoveToDate({
             'debug': this.debug,
             'env': PROD_ENV,
@@ -687,6 +690,24 @@ class GoogleCalendarWorkflow {
 
         document.body.appendChild(moveToDateContainer);
         this.debug && console.log('moveToDateContainer:', moveToDateContainer);
+    }
+
+    keepCurrentSelectorsUpdated() {
+        this.debug && console.info('keepCurrentSelectorsUpdated');
+
+        setInterval(() => {
+
+            if (this.currentDateNode) {
+                this.currentDateNode.classList.remove('_gcw-current-date');
+            }
+
+            var currentDateNode = document.querySelector('.F262Ye');
+            if (currentDateNode) {
+                this.currentDateNode = currentDateNode.parentNode;
+                this.currentDateNode.classList.add('_gcw-current-date');
+            }
+
+        }, 2000);
     }
 }
 
