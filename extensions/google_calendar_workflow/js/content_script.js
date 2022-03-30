@@ -696,18 +696,13 @@ class GoogleCalendarWorkflow {
         this.debug && console.info('keepCurrentSelectorsUpdated');
 
         setInterval(() => {
-
-            if (this.currentDateNode) {
-                this.currentDateNode.classList.remove('_gcw-current-date');
-            }
-
             var currentDateNode = document.querySelector('.F262Ye');
-            if (currentDateNode) {
+            if (currentDateNode && currentDateNode !== this.currentDateNode) {
+                this.currentDateNode && this.currentDateNode.classList.remove('_gcw-current-date');
                 this.currentDateNode = currentDateNode.parentNode;
                 this.currentDateNode.classList.add('_gcw-current-date');
             }
-
-        }, 2000);
+        }, 3000);
     }
 }
 
