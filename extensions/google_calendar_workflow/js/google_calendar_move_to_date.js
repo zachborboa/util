@@ -226,6 +226,73 @@ class GoogleCalendarMoveToDate {
         return eventDateFormatted;
     }
 
+    getNewEventTitle(
+        originalCalendarEventTitle,
+        action,
+        eventTitlePrefix,
+        eventCompleted,
+        eventDate,
+        date,
+    ) {
+        this.debug && console.info('getNewEventTitle');
+        this.debug && console.log('originalCalendarEventTitle:', originalCalendarEventTitle);
+
+        var newCalendarEventTitle = originalCalendarEventTitle;
+
+        // Toggle the leading prefix (e.g. "- ", "1. ", "2. ", etc.) when
+        // the respective hotkey is pressed.
+        if (action === 'toggle-prefix') {
+
+            // Remove existing prefix if it is the same prefix as the hotkey.
+            if (newCalendarEventTitle.startsWith(eventTitlePrefix + ' ')) {
+                newCalendarEventTitle = newCalendarEventTitle.substr((eventTitlePrefix + ' ').length);
+
+            } else {
+                // Remove any existing leading number prefix (e.g. "1. " in "1. My Calendar Event").
+                newCalendarEventTitle = newCalendarEventTitle.replace(/^\d+\. /, '');
+
+                // Add chosen prefix.
+                newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
+            }
+        }
+
+        // Remove leading ! character.
+        newCalendarEventTitle = newCalendarEventTitle.replace(/^! /, '');
+
+        // Remove leading ~ character.
+        newCalendarEventTitle = newCalendarEventTitle.replace(/^~ /, '');
+
+        // Remove leading "Tentative: " when event is marked done.
+        if (eventTitlePrefix === '✓') {
+            newCalendarEventTitle = newCalendarEventTitle.replace(/^Tentative: /, '');
+        }
+
+        if (action === 'mark-completed' && eventTitlePrefix !== null) {
+            // Append event title prefix.
+            // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
+            // "1. My Event"
+            newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
+        }
+
+        // Format today.
+        var monthName = date.toLocaleString('en-us', { 'month': 'short' });
+        var todayFormattedDate = monthName + ' ' + date.getDate() + ', ' + date.getFullYear();
+        this.debug && console.log('todayFormattedDate:', todayFormattedDate);
+
+        // Append today's date and the original calendar event date to
+        // the new calendar event title when the event is marked
+        // completed (done, nope, okay, awesome).
+        if (eventCompleted) {
+            newCalendarEventTitle += ';' +
+                ' ' + todayFormattedDate + ';' +
+                ' event date: ' + eventDate;
+        }
+
+        this.debug && console.log('newCalendarEventTitle:', newCalendarEventTitle);
+
+        return newCalendarEventTitle;
+    }
+
     _getDateComparisonObject(date) {
         return new Date(date).getTime();
     }

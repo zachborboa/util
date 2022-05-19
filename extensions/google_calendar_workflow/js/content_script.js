@@ -424,49 +424,6 @@ class GoogleCalendarWorkflow {
             var originalCalendarEventTitle = eventTitleInput.value;
             this.debug && console.log('originalCalendarEventTitle:', originalCalendarEventTitle);
 
-            var newCalendarEventTitle = originalCalendarEventTitle;
-
-            // Toggle the leading prefix (e.g. "- ", "1. ", "2. ", etc.) when
-            // the respective hotkey is pressed.
-            if (action === 'toggle-prefix') {
-
-                // Remove existing prefix if it is the same prefix as the hotkey.
-                if (newCalendarEventTitle.startsWith(eventTitlePrefix + ' ')) {
-                    newCalendarEventTitle = newCalendarEventTitle.substr((eventTitlePrefix + ' ').length);
-
-                } else {
-                    // Remove any existing leading number prefix (e.g. "1. " in "1. My Calendar Event").
-                    newCalendarEventTitle = newCalendarEventTitle.replace(/^\d+\. /, '');
-
-                    // Add chosen prefix.
-                    newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
-                }
-            }
-
-            // Remove leading ! character.
-            newCalendarEventTitle = newCalendarEventTitle.replace(/^! /, '');
-
-            // Remove leading ~ character.
-            newCalendarEventTitle = newCalendarEventTitle.replace(/^~ /, '');
-
-            // Remove leading "Tentative: " when event is marked done.
-            if (eventTitlePrefix === '✓') {
-                newCalendarEventTitle = newCalendarEventTitle.replace(/^Tentative: /, '');
-            }
-
-            if (action === 'mark-completed' && eventTitlePrefix !== null) {
-                // Append event title prefix.
-                // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
-                // "1. My Event"
-                newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
-            }
-
-            // Format today.
-            var date = new Date();
-            var monthName = date.toLocaleString('en-us', { 'month': 'short' });
-            var todayFormattedDate = monthName + ' ' + date.getDate() + ', ' + date.getFullYear();
-            this.debug && console.log('todayFormattedDate:', todayFormattedDate);
-
             // Format event date as a date or a date range.
             var eventDate;
             if (endDateInput.value !== startDateInput.value) {
@@ -476,16 +433,15 @@ class GoogleCalendarWorkflow {
             }
             this.debug && console.log('eventDate:', eventDate);
 
-            // Append today's date and the original calendar event date to
-            // the new calendar event title when the event is marked
-            // completed (done, nope, okay, awesome).
-            if (eventCompleted) {
-                newCalendarEventTitle += ';' +
-                    ' ' + todayFormattedDate + ';' +
-                    ' event date: ' + eventDate;
-            }
-
-            this.debug && console.log('newCalendarEventTitle:', newCalendarEventTitle);
+            var date = new Date();
+            var newCalendarEventTitle = this.moveToDate.getNewEventTitle(
+                originalCalendarEventTitle,
+                action,
+                eventTitlePrefix,
+                eventCompleted,
+                eventDate,
+                date,
+            );
 
             // Update calendar event.
             eventTitleInput.focus();
