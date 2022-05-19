@@ -267,6 +267,12 @@ class GoogleCalendarMoveToDate {
             newCalendarEventTitle = newCalendarEventTitle.replace(/^Tentative: /, '');
         }
 
+        // Remove "Tentative: " within event title when event is no longer
+        // tentative.
+        if (['✓', '▣', 'ツ'].includes(eventTitlePrefix)) {
+            newCalendarEventTitle = newCalendarEventTitle.replace(/Tentative: /, '');
+        }
+
         if (action === 'mark-completed' && eventTitlePrefix !== null) {
             // Append event title prefix.
             // "✓ My Event; Dec 31, 2015; event date: Jan 1, 2016"
