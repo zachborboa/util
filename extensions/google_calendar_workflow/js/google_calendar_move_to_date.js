@@ -239,6 +239,12 @@ class GoogleCalendarMoveToDate {
 
         var newCalendarEventTitle = originalCalendarEventTitle;
 
+        // Remove leading ! character.
+        newCalendarEventTitle = newCalendarEventTitle.replace(/^! /, '');
+
+        // Remove leading ~ character.
+        newCalendarEventTitle = newCalendarEventTitle.replace(/^~ /, '');
+
         // Toggle the leading prefix (e.g. "- ", "1. ", "2. ", etc.) when
         // the respective hotkey is pressed.
         if (action === 'toggle-prefix') {
@@ -255,12 +261,6 @@ class GoogleCalendarMoveToDate {
                 newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
             }
         }
-
-        // Remove leading ! character.
-        newCalendarEventTitle = newCalendarEventTitle.replace(/^! /, '');
-
-        // Remove leading ~ character.
-        newCalendarEventTitle = newCalendarEventTitle.replace(/^~ /, '');
 
         // Remove leading "Tentative: " when event is marked done.
         if (eventTitlePrefix === '✓') {
