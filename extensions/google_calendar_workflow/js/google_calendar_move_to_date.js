@@ -257,6 +257,9 @@ class GoogleCalendarMoveToDate {
                 // Remove any existing leading number prefix (e.g. "1. " in "1. My Calendar Event").
                 newCalendarEventTitle = newCalendarEventTitle.replace(/^\d+\. /, '');
 
+                // Remove leading - character.
+                newCalendarEventTitle = newCalendarEventTitle.replace(/^- /, '');
+
                 // Add chosen prefix.
                 newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
             }
