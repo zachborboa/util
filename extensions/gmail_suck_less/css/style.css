@@ -121,3 +121,6 @@ div > .aCl .akj {
     }
 }
 */
+[aria-labelledby=":zx"] {
+  display: none !important;
+}

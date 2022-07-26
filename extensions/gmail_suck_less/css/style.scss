@@ -155,3 +155,8 @@ div > .aCl .akj {
     }
 }
 */
+
+// Hide "Pause mobile notifications while you're using this device" nag.
+[aria-labelledby=":zx"] {
+    display: none !important;
+}
