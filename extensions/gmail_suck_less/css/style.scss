@@ -157,6 +157,7 @@ div > .aCl .akj {
 */
 
 // Hide "Pause mobile notifications while you're using this device" nag.
+[aria-labelledby=":zx"],
 [aria-labelledby=":zy"] {
     display: none !important;
 }
