@@ -253,7 +253,14 @@ class GoogleCalendarMoveToDate {
             if (newCalendarEventTitle.startsWith(eventTitlePrefix + ' ')) {
                 newCalendarEventTitle = newCalendarEventTitle.substr((eventTitlePrefix + ' ').length);
 
+            // Remove existing prefix if it is the same prefix as the hotkey.
+            } else if (newCalendarEventTitle.startsWith('*** ' + eventTitlePrefix + ' ')) {
+                newCalendarEventTitle = '*** ' + newCalendarEventTitle.substr(('*** ' + eventTitlePrefix + ' ').length);
+
             } else {
+                var starPrefix = newCalendarEventTitle.startsWith('*** ');
+                newCalendarEventTitle = newCalendarEventTitle.replace(/^\*\*\* /, '');
+
                 // Remove any existing leading number prefix (e.g. "1. " in "1. My Calendar Event").
                 newCalendarEventTitle = newCalendarEventTitle.replace(/^\d+\. /, '');
 
@@ -261,7 +268,7 @@ class GoogleCalendarMoveToDate {
                 newCalendarEventTitle = newCalendarEventTitle.replace(/^- /, '');
 
                 // Add chosen prefix.
-                newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
+                newCalendarEventTitle = (starPrefix ? '*** ' : '') + eventTitlePrefix + ' ' + newCalendarEventTitle;
             }
         }
 
