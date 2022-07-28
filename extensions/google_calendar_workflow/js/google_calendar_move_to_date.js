@@ -256,6 +256,13 @@ class GoogleCalendarMoveToDate {
         var eventTitleStartsWithStarPrefix = originalCalendarEventTitle.startsWith('*** ');
         this.debug && console.log('eventTitleStartsWithStarPrefix:', eventTitleStartsWithStarPrefix);
 
+        var originalEventTitlePrefix = originalCalendarEventTitle.match(/(\d+\.) /);
+        originalEventTitlePrefix = originalEventTitlePrefix === null ? null : originalEventTitlePrefix[1];
+        this.debug && console.log('originalEventTitlePrefix: "%s"', originalEventTitlePrefix);
+
+        var replaceEventTitleNumber = eventTitlePrefix !== originalEventTitlePrefix;
+        this.debug && console.log('replaceEventTitleNumber: %s', replaceEventTitleNumber);
+
         // "1. " + * -> "*** 1. "
         if (action === 'toggle-prefix' && eventTitlePrefix === '*' && eventTitleStartsWithNumber) {
             newCalendarEventTitle = '*** ' + newCalendarEventTitle;
@@ -274,6 +281,11 @@ class GoogleCalendarMoveToDate {
         // "*** 1. " + * -> "1. "
         else if (action === 'toggle-prefix' && eventTitlePrefix === '*' && eventTitleStartsWithStarPrefix && eventTitleIsNumbered) {
             newCalendarEventTitle = newCalendarEventTitle.replace(/^\*\*\* /, '');
+        }
+
+        // "*** 1. " + 2. -> "*** 2. "
+        else if (action === 'toggle-prefix' && eventTitleStartsWithStarPrefix && eventTitleIsNumbered && replaceEventTitleNumber) {
+            newCalendarEventTitle = '*** ' + eventTitlePrefix + ' ' + newCalendarEventTitle.replace(/^\*\*\* \d+\. /, '');
         }
 
         // "*** 1. " + 1. -> "*** "

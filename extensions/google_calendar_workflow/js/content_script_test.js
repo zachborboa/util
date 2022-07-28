@@ -1885,4 +1885,13 @@ allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
     /* date */ moveToDateDate,
 ) === '1. Do thing';
 
+allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+    /* originalCalendarEventTitle */ '*** 4. Do thing',
+    /* action */ 'toggle-prefix',
+    /* eventTitlePrefix */ '5.',
+    /* eventCompleted */ false,
+    /* eventDate */ eventDate,
+    /* date */ moveToDateDate,
+) === '*** 5. Do thing';
+
 console.log('\nallTestsPass:', allTestsPass);
