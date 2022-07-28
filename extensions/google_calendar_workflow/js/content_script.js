@@ -11,6 +11,7 @@ class GoogleCalendarWorkflow {
         ['4', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-4']],
         ['5', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-5']],
         ['X', 'remove-prefix', ['jfk-button', 'jfk-button-standard', 'button-x']],
+        ['*', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-star']],
     ];
 
     SECOND_ROW_BUTTONS = [
@@ -35,6 +36,7 @@ class GoogleCalendarWorkflow {
         '8': '8.',
         '9': '9.',
         'X': null,
+        '*': '*',
         'DONE': '✓',
         'NOPE': '✗',
         'OKAY': '▣',
@@ -42,6 +44,7 @@ class GoogleCalendarWorkflow {
     };
 
     BUTTON_SELECTORS = {
+        '*': '.button-star',
         '-': '.button-dash',
         '0': '.button-0',
         '1': '.button-1',
@@ -53,11 +56,11 @@ class GoogleCalendarWorkflow {
         '7': '',
         '8': '',
         '9': '',
-        'x': '.button-x',
+        'a': '.button-a',
         'd': '.button-d',
         'n': '.button-n',
         'o': '.button-o',
-        'a': '.button-a',
+        'x': '.button-x',
     };
 
     COMPLETED_EVENT_TITLE_PREFIXES = [

@@ -236,6 +236,15 @@ class GoogleCalendarMoveToDate {
     ) {
         this.debug && console.info('getNewEventTitle');
         this.debug && console.log('originalCalendarEventTitle:', originalCalendarEventTitle);
+        this.debug && console.log('action:', action);
+        this.debug && console.log('eventTitlePrefix:', eventTitlePrefix);
+        this.debug && console.log('eventCompleted:', eventCompleted);
+        this.debug && console.log('eventDate:', eventDate);
+        this.debug && console.log('date:', date);
+
+        if (eventTitlePrefix === '*') {
+            eventTitlePrefix = '***';
+        }
 
         var newCalendarEventTitle = originalCalendarEventTitle;
 

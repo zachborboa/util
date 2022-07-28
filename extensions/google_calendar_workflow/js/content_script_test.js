@@ -1848,6 +1848,24 @@ allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
     /* date */ moveToDateDate,
 ) === '- Do thing';
 
+allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+    /* originalCalendarEventTitle */ 'Do thing',
+    /* action */ 'toggle-prefix',
+    /* eventTitlePrefix */ '*',
+    /* eventCompleted */ false,
+    /* eventDate */ eventDate,
+    /* date */ moveToDateDate,
+) === '*** Do thing';
+
+allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+    /* originalCalendarEventTitle */ '*** Do thing',
+    /* action */ 'toggle-prefix',
+    /* eventTitlePrefix */ '*',
+    /* eventCompleted */ false,
+    /* eventDate */ eventDate,
+    /* date */ moveToDateDate,
+) === 'Do thing';
+
 console.log('allTestsPass:', allTestsPass);
 
 console.log('DONE');
