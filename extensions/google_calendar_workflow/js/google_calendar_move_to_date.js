@@ -309,12 +309,13 @@ class GoogleCalendarMoveToDate {
             newCalendarEventTitle = newCalendarEventTitle.substr((eventTitlePrefix + ' ').length);
         }
 
+        // "2. " + 1. -> "1. "
         else if (action === 'toggle-prefix' && !eventTitleStartsWithPrefix) {
             // Remove leading ~ character.
             newCalendarEventTitle = newCalendarEventTitle.replace(/^~ /, '');
 
-            // Add chosen prefix.
-            newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
+            // Replace prefix.
+            newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle.replace(/^\d+\. /, '');
         }
 
         // Remove leading "Tentative: " when event is marked done.
