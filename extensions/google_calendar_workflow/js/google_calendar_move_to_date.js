@@ -235,50 +235,74 @@ class GoogleCalendarMoveToDate {
         date,
     ) {
         this.debug && console.info('getNewEventTitle');
-        this.debug && console.log('originalCalendarEventTitle:', originalCalendarEventTitle);
+        this.debug && console.log('originalCalendarEventTitle: "%s"', originalCalendarEventTitle);
         this.debug && console.log('action:', action);
         this.debug && console.log('eventTitlePrefix:', eventTitlePrefix);
         this.debug && console.log('eventCompleted:', eventCompleted);
         this.debug && console.log('eventDate:', eventDate);
         this.debug && console.log('date:', date);
 
-        if (eventTitlePrefix === '*') {
-            eventTitlePrefix = '***';
-        }
-
         var newCalendarEventTitle = originalCalendarEventTitle;
 
-        // Remove leading ! character.
-        newCalendarEventTitle = newCalendarEventTitle.replace(/^! /, '');
+        var eventTitleStartsWithNumber = /^(\d+)\. /.test(originalCalendarEventTitle);
+        this.debug && console.log('eventTitleStartsWithNumber:', eventTitleStartsWithNumber);
 
-        // Remove leading ~ character.
-        newCalendarEventTitle = newCalendarEventTitle.replace(/^~ /, '');
+        var eventTitleIsNumbered = /^(?:\*\*\* )?(\d+)\. /.test(originalCalendarEventTitle);
+        this.debug && console.log('eventTitleIsNumbered:', eventTitleIsNumbered);
 
-        // Toggle the leading prefix (e.g. "- ", "1. ", "2. ", etc.) when
-        // the respective hotkey is pressed.
-        if (action === 'toggle-prefix') {
+        var eventTitleStartsWithPrefix = originalCalendarEventTitle.startsWith(eventTitlePrefix);
+        this.debug && console.log('eventTitleStartsWithPrefix:', eventTitleStartsWithPrefix);
 
+        var eventTitleStartsWithStarPrefix = originalCalendarEventTitle.startsWith('*** ');
+        this.debug && console.log('eventTitleStartsWithStarPrefix:', eventTitleStartsWithStarPrefix);
+
+        // "1. " + * -> "*** 1. "
+        if (action === 'toggle-prefix' && eventTitlePrefix === '*' && eventTitleStartsWithNumber) {
+            newCalendarEventTitle = '*** ' + newCalendarEventTitle;
+        }
+
+        // "" + * -> "*** "
+        else if (action === 'toggle-prefix' && eventTitlePrefix === '*' && !eventTitleStartsWithStarPrefix) {
+            newCalendarEventTitle = '*** ' + newCalendarEventTitle;
+        }
+
+        // "*** " + * -> ""
+        else if (action === 'toggle-prefix' && eventTitlePrefix === '*' && eventTitleStartsWithStarPrefix) {
+            newCalendarEventTitle = newCalendarEventTitle.replace(/^\*\*\* /, '');
+        }
+
+        // "*** 1. " + * -> "1. "
+        else if (action === 'toggle-prefix' && eventTitlePrefix === '*' && eventTitleStartsWithStarPrefix && eventTitleIsNumbered) {
+            newCalendarEventTitle = newCalendarEventTitle.replace(/^\*\*\* /, '');
+        }
+
+        // "*** 1. " + 1. -> "*** "
+        else if (action === 'toggle-prefix' && eventTitleStartsWithStarPrefix && eventTitleIsNumbered) {
+            newCalendarEventTitle = newCalendarEventTitle.replace(/^(\*\*\* )(\d+\.) /, '$1');
+        }
+
+        // "*** " + 1. -> "*** 1. "
+        else if (action === 'toggle-prefix' && eventTitleStartsWithStarPrefix && !eventTitleIsNumbered) {
+            newCalendarEventTitle = '*** ' + eventTitlePrefix + ' ' + newCalendarEventTitle.replace(/^\*\*\* /, '');
+        }
+
+        // "3. " + - -> ""
+        else if (action === 'toggle-prefix' && eventTitlePrefix === '-' && eventTitleStartsWithNumber) {
+            // Remove any existing leading number prefix (e.g. "1. " in "1. My Calendar Event").
+            newCalendarEventTitle = newCalendarEventTitle.replace(/^\d+\. /, '');
+        }
+
+        else if (action === 'toggle-prefix' && eventTitleStartsWithPrefix) {
             // Remove existing prefix if it is the same prefix as the hotkey.
-            if (newCalendarEventTitle.startsWith(eventTitlePrefix + ' ')) {
-                newCalendarEventTitle = newCalendarEventTitle.substr((eventTitlePrefix + ' ').length);
+            newCalendarEventTitle = newCalendarEventTitle.substr((eventTitlePrefix + ' ').length);
+        }
 
-            // Remove existing prefix if it is the same prefix as the hotkey.
-            } else if (newCalendarEventTitle.startsWith('*** ' + eventTitlePrefix + ' ')) {
-                newCalendarEventTitle = '*** ' + newCalendarEventTitle.substr(('*** ' + eventTitlePrefix + ' ').length);
+        else if (action === 'toggle-prefix' && !eventTitleStartsWithPrefix) {
+            // Remove leading ~ character.
+            newCalendarEventTitle = newCalendarEventTitle.replace(/^~ /, '');
 
-            } else {
-                var starPrefix = newCalendarEventTitle.startsWith('*** ');
-                newCalendarEventTitle = newCalendarEventTitle.replace(/^\*\*\* /, '');
-
-                // Remove any existing leading number prefix (e.g. "1. " in "1. My Calendar Event").
-                newCalendarEventTitle = newCalendarEventTitle.replace(/^\d+\. /, '');
-
-                // Remove leading - character.
-                newCalendarEventTitle = newCalendarEventTitle.replace(/^- /, '');
-
-                // Add chosen prefix.
-                newCalendarEventTitle = (starPrefix ? '*** ' : '') + eventTitlePrefix + ' ' + newCalendarEventTitle;
-            }
+            // Add chosen prefix.
+            newCalendarEventTitle = eventTitlePrefix + ' ' + newCalendarEventTitle;
         }
 
         // Remove leading "Tentative: " when event is marked done.
@@ -313,7 +337,7 @@ class GoogleCalendarMoveToDate {
                 ' event date: ' + eventDate;
         }
 
-        this.debug && console.log('newCalendarEventTitle:', newCalendarEventTitle);
+        this.debug && console.log('newCalendarEventTitle: "%s"', newCalendarEventTitle);
 
         return newCalendarEventTitle;
     }
