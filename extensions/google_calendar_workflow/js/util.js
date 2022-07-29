@@ -10,41 +10,53 @@ function dispatchEvent(obj, event) {
 }
 
 function setInputValue(input, value) {
-    console.info('setInputValue');
+    console.group('setInputValue');
     console.log('input:', input);
     console.log('value:', value);
     return new Promise((resolve, reject) => {
-        // Avoid resolving immediately even if input's value already matches.
-        // Input's value may be changed shortly after checking due to a delayed
-        // update.
-        setTimeout(() => {
+
+        function checkInputValue() {
             // Focus input before checking if the input's value is the desired
             // value. The value might be updated when another input loses focus.
             input.focus();
-            console.log('focused');
+            console.log('input focused');
 
-            if (input.value === value) {
-                console.log('value matches without updating. resolving.');
-                resolve();
-                return;
-            } else {
-                console.log('value does not match (desired value: "%s", current input value: "%s")', value, input.value);
+            // Avoid resolving immediately even if input's value already matches.
+            // Input's value may be changed shortly after checking due to a delayed
+            // update.
+            setTimeout(() => {
+                if (input.value === value) {
+                    console.log('value matches without updating');
 
-                input.value = value;
-                console.log('value set (current input value: "%s")', input.value);
-
-                setTimeout(() => {
-                    dispatchEvent(input, 'input');
-                    console.log('input event sent');
-
-                    console.log('value is now "%s"', input.value);
                     setTimeout(() => {
-                        console.log('resolved');
-                        resolve();
+                        console.log('checking value one more time');
+                        if (input.value === value) {
+                            console.log('value matches without updating. resolving.');
+                            console.groupEnd();
+                            resolve();
+                        } else {
+                            console.log('value no longer matches (desired value: "%s", current input value: "%s")', value, input.value);
+                            checkInputValue();
+                        }
                     }, 100);
-                }, 100);
-            }
-        }, 100);
+                } else {
+                    console.log('value does not match (desired value: "%s", current input value: "%s")', value, input.value);
+
+                    input.value = value;
+                    console.log('value set (current input value: "%s")', input.value);
+
+                    setTimeout(() => {
+                        dispatchEvent(input, 'input');
+                        console.log('input event sent');
+
+                        console.log('value is now "%s"', input.value);
+                        checkInputValue();
+                    }, 100);
+                }
+            }, 100);
+        }
+
+        setTimeout(checkInputValue, 100);
     });
 }
 
