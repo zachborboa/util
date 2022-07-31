@@ -3,7 +3,7 @@
 
 'use strict';
 
-var GoogleCalendarMoveToDate = require('./google_calendar_move_to_date.js');
+var GoogleCalendarWorkflow = require('./google_calendar_move_to_date.js');
 
 const DEBUG = true;
 const TEST_ENV = 'TEST';
@@ -1288,12 +1288,12 @@ for (var i = 0; i < TESTS.length; i++) {
     }
     var expectedCellDate = test['expected_cell_date'];
 
-    var moveToDate = new GoogleCalendarMoveToDate({
+    var workflow = new GoogleCalendarWorkflow({
         'debug': DEBUG,
         'env': TEST_ENV,
         'cellDates': TEST_CELL_DATES,
     });
-    var topCell = moveToDate.findTopCell(cells);
+    var topCell = workflow.findTopCell(cells);
     var topCellForComparison = topCell;
     if (topCellForComparison && typeof topCellForComparison.toString === 'function') {
         topCellForComparison = topCellForComparison.toString();
@@ -1301,7 +1301,7 @@ for (var i = 0; i < TESTS.length; i++) {
     allTestsPass = allTestsPass && topCellForComparison === expectedTopCellForComparison;
 
     if (topCell !== undefined) {
-        var cellDate = moveToDate.getCellDate(topCell);
+        var cellDate = workflow.getCellDate(topCell);
         allTestsPass = allTestsPass && cellDate === expectedCellDate;
     }
 
@@ -1323,13 +1323,13 @@ for (var i = 0; i < TESTS.length; i++) {
 
 // === Additional test case 1. ================================================
 // load current calendar dates
-var moveToDate = new GoogleCalendarMoveToDate({
+var worflow = new GoogleCalendarWorkflow({
     'debug': DEBUG,
     'env': TEST_ENV,
     'cellDates': TEST_CELL_DATES,
 });
 // get top cell date
-var topCellDate = moveToDate.getTopCellDate(
+var topCellDate = worflow.getTopCellDate(
     [
         [
             [],
@@ -1373,9 +1373,9 @@ var topCellDate = moveToDate.getTopCellDate(
 allTestsPass = allTestsPass && topCellDate === 'Oct 21, 2019';
 
 // load newer calendar dates
-moveToDate.options.cellDates = TEST_NEWER_CELL_DATES;
+worflow.options.cellDates = TEST_NEWER_CELL_DATES;
 // get top cell date
-topCellDate = moveToDate.getTopCellDate(
+topCellDate = worflow.getTopCellDate(
     [
         [
             [],
@@ -1419,9 +1419,9 @@ topCellDate = moveToDate.getTopCellDate(
 allTestsPass = allTestsPass && topCellDate === 'Oct 21, 2019';
 
 // load older calendar dates
-moveToDate.options.cellDates = TEST_OLDER_CELL_DATES;
+worflow.options.cellDates = TEST_OLDER_CELL_DATES;
 // get top cell date
-topCellDate = moveToDate.getTopCellDate(
+topCellDate = worflow.getTopCellDate(
     [
         [
             [],
@@ -1466,14 +1466,14 @@ allTestsPass = allTestsPass && topCellDate === 'Sep 27, 2019';
 
 // === Additional test case 2. ================================================
 // load current calendar dates
-var moveToDate = new GoogleCalendarMoveToDate({
+var worflow = new GoogleCalendarWorkflow({
     'debug': DEBUG,
     'env': TEST_ENV,
     'cellDates': TEST_CELL_DATES,
 });
 // all cells filled except 1.
 // get top cell date.
-var topCellDate = moveToDate.getTopCellDate(
+var topCellDate = worflow.getTopCellDate(
     [
         [
             ['', '', '', '', '', '', '', '', '', '', '', '', ''],
@@ -1517,7 +1517,7 @@ var topCellDate = moveToDate.getTopCellDate(
 allTestsPass = allTestsPass && topCellDate === 'Oct 20, 2019';
 // all cells filled (simulating a task has been marked completed).
 // get top cell date.
-topCellDate = moveToDate.getTopCellDate(
+topCellDate = worflow.getTopCellDate(
     [
         [
             ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
@@ -1562,7 +1562,7 @@ allTestsPass = allTestsPass && topCellDate === 'Nov 2, 2019';
 
 // === Additional test case 3. ================================================
 // load current calendar dates
-var moveToDate = new GoogleCalendarMoveToDate({
+var worflow = new GoogleCalendarWorkflow({
     'debug': DEBUG,
     'env': TEST_ENV,
     'cellDates': TEST_CELL_DATES,
@@ -1570,7 +1570,7 @@ var moveToDate = new GoogleCalendarMoveToDate({
 });
 // all cells filled except 1.
 // get top cell date.
-var topCellDate = moveToDate.getTopCellDate(
+var topCellDate = worflow.getTopCellDate(
     [
         [
             ['', '', '', '', '', ''],
@@ -1614,7 +1614,7 @@ var topCellDate = moveToDate.getTopCellDate(
 allTestsPass = allTestsPass && topCellDate === 'Oct 20, 2019';
 // all cells filled (simulating a task has been marked completed).
 // get top cell date.
-topCellDate = moveToDate.getTopCellDate(
+topCellDate = worflow.getTopCellDate(
     [
         [
             ['', '', '', '', '', '', ''],
@@ -1658,7 +1658,7 @@ topCellDate = moveToDate.getTopCellDate(
 allTestsPass = allTestsPass && topCellDate === 'Nov 2, 2019';
 // all cells filled except 1 in second row.
 // get top cell date.
-topCellDate = moveToDate.getTopCellDate(
+topCellDate = worflow.getTopCellDate(
     [
         [
             ['', '', '', '', '', '', ''],
@@ -1702,7 +1702,7 @@ topCellDate = moveToDate.getTopCellDate(
 allTestsPass = allTestsPass && topCellDate === 'Oct 27, 2019';
 // all cells filled (simulating a task has been marked completed).
 // get top cell date.
-topCellDate = moveToDate.getTopCellDate(
+topCellDate = worflow.getTopCellDate(
     [
         [
             ['', '', '', '', '', '', ''],
@@ -1761,13 +1761,13 @@ console.log('tests found:', TESTS.length);
 //   (repeat)
 // Use oldest date found.
 
-allTestsPass = allTestsPass && moveToDate.getEventDateFormattedDate('2021-02-01') === '2021-02-01';
+allTestsPass = allTestsPass && worflow.getEventDateFormattedDate('2021-02-01') === '2021-02-01';
 
 
 var moveToDateDate = new Date(2022, 0, 1);
 var eventDate = 'Jan 10, 2022';
 
-allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+allTestsPass = allTestsPass && worflow.getNewEventTitle(
     /* originalCalendarEventTitle */ '- Do thing',
     /* action */ 'toggle-prefix',
     /* eventTitlePrefix */ '-',
@@ -1776,7 +1776,7 @@ allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
     /* date */ moveToDateDate,
 ) === 'Do thing';
 
-allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+allTestsPass = allTestsPass && worflow.getNewEventTitle(
     /* originalCalendarEventTitle */ 'Do thing',
     /* action */ 'toggle-prefix',
     /* eventTitlePrefix */ '1.',
@@ -1786,7 +1786,7 @@ allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
 ) === '1. Do thing';
 
 
-allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+allTestsPass = allTestsPass && worflow.getNewEventTitle(
     /* originalCalendarEventTitle */ '*** 1. Do thing',
     /* action */ 'toggle-prefix',
     /* eventTitlePrefix */ '1.',
@@ -1795,7 +1795,7 @@ allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
     /* date */ moveToDateDate,
 ) === '*** Do thing';
 
-allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+allTestsPass = allTestsPass && worflow.getNewEventTitle(
     /* originalCalendarEventTitle */ '*** Do thing',
     /* action */ 'toggle-prefix',
     /* eventTitlePrefix */ '1.',
@@ -1804,7 +1804,7 @@ allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
     /* date */ moveToDateDate,
 ) === '*** 1. Do thing';
 
-allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+allTestsPass = allTestsPass && worflow.getNewEventTitle(
     /* originalCalendarEventTitle */ 'Tentative: Do thing',
     /* action */ 'mark-completed',
     /* eventTitlePrefix */ '✓',
@@ -1813,7 +1813,7 @@ allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
     /* date */ moveToDateDate,
 ) === '✓ Do thing; Jan 1, 2022; event date: Jan 10, 2022';
 
-allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+allTestsPass = allTestsPass && worflow.getNewEventTitle(
     /* originalCalendarEventTitle */ '*** ↻ Tentative: Go to a coffee shop for a change of scenery ***',
     /* action */ 'mark-completed',
     /* eventTitlePrefix */ '✓',
@@ -1822,7 +1822,7 @@ allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
     /* date */ moveToDateDate,
 ) === '✓ *** ↻ Go to a coffee shop for a change of scenery ***; Jan 1, 2022; event date: Jan 10, 2022';
 
-allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+allTestsPass = allTestsPass && worflow.getNewEventTitle(
     /* originalCalendarEventTitle */ 'Tentative: Do thing',
     /* action */ 'toggle-prefix',
     /* eventTitlePrefix */ '✓',
@@ -1831,7 +1831,7 @@ allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
     /* date */ moveToDateDate,
 ) === '✓ Do thing; Jan 1, 2022; event date: Jan 10, 2022';
 
-allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+allTestsPass = allTestsPass && worflow.getNewEventTitle(
     /* originalCalendarEventTitle */ '~ Pay day (↻)',
     /* action */ 'toggle-prefix',
     /* eventTitlePrefix */ '-',
@@ -1840,7 +1840,7 @@ allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
     /* date */ moveToDateDate,
 ) === '- Pay day (↻)';
 
-allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+allTestsPass = allTestsPass && worflow.getNewEventTitle(
     /* originalCalendarEventTitle */ '3. - Do thing',
     /* action */ 'toggle-prefix',
     /* eventTitlePrefix */ '-',
@@ -1849,7 +1849,7 @@ allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
     /* date */ moveToDateDate,
 ) === '- Do thing';
 
-allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+allTestsPass = allTestsPass && worflow.getNewEventTitle(
     /* originalCalendarEventTitle */ 'Do thing',
     /* action */ 'toggle-prefix',
     /* eventTitlePrefix */ '*',
@@ -1858,7 +1858,7 @@ allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
     /* date */ moveToDateDate,
 ) === '*** Do thing';
 
-allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+allTestsPass = allTestsPass && worflow.getNewEventTitle(
     /* originalCalendarEventTitle */ '*** Do thing',
     /* action */ 'toggle-prefix',
     /* eventTitlePrefix */ '*',
@@ -1867,7 +1867,7 @@ allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
     /* date */ moveToDateDate,
 ) === 'Do thing';
 
-allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+allTestsPass = allTestsPass && worflow.getNewEventTitle(
     /* originalCalendarEventTitle */ '1. Do thing',
     /* action */ 'toggle-prefix',
     /* eventTitlePrefix */ '*',
@@ -1876,7 +1876,7 @@ allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
     /* date */ moveToDateDate,
 ) === '*** 1. Do thing';
 
-allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+allTestsPass = allTestsPass && worflow.getNewEventTitle(
     /* originalCalendarEventTitle */ '*** 1. Do thing',
     /* action */ 'toggle-prefix',
     /* eventTitlePrefix */ '*',
@@ -1885,7 +1885,7 @@ allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
     /* date */ moveToDateDate,
 ) === '1. Do thing';
 
-allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+allTestsPass = allTestsPass && worflow.getNewEventTitle(
     /* originalCalendarEventTitle */ '*** 4. Do thing',
     /* action */ 'toggle-prefix',
     /* eventTitlePrefix */ '5.',
@@ -1894,7 +1894,7 @@ allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
     /* date */ moveToDateDate,
 ) === '*** 5. Do thing';
 
-allTestsPass = allTestsPass && moveToDate.getNewEventTitle(
+allTestsPass = allTestsPass && worflow.getNewEventTitle(
     /* originalCalendarEventTitle */ '2. Do thing',
     /* action */ 'toggle-prefix',
     /* eventTitlePrefix */ '1.',

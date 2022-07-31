@@ -6,8 +6,7 @@
       ],
       "js": [
         "js/util.js",
-        "js/google_calendar_move_to_date.js",
-        "js/content_script.js"
+        "js/google_calendar_move_to_date.js"
       ],
       "matches": [
         "https://calendar.google.com/calendar/*"
