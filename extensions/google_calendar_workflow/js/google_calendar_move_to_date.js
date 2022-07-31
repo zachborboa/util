@@ -52,18 +52,18 @@ class GoogleCalendarMoveToDate {
         return cellEventsFound;
     }
 
-    findTopCell(cells) {
+    findTopCell(calendarGridRows) {
         // Find first top-right most cell in current view containing a non-full number of events.
         this.debug && console.group('findTopCell');
-        this.debug && console.log('cells:', cells);
+        this.debug && console.log('calendarGridRows:', calendarGridRows);
         var topCell;
 
         // Check top to bottom.
         outer_loop:
-        for (var rowIndex = 0; rowIndex < cells.length; rowIndex++) {
+        for (var rowIndex = 0; rowIndex < calendarGridRows.length; rowIndex++) {
             this.debug && console.group('rowIndex:', rowIndex);
 
-            var row = cells[rowIndex];
+            var row = calendarGridRows[rowIndex];
             this.debug && console.log('row:', row);
 
             var rowCells = this.findCellsInRow(row);
