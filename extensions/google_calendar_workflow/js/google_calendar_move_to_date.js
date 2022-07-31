@@ -516,6 +516,19 @@ class GoogleCalendarWorkflow {
         });
     }
 
+    waitUntilOnCustomWeekPage() {
+        this.debug && console.log('waiting until on custom week page');
+        return new Promise((resolve, reject) => {
+            var checkCustomWeekPageInterval = setInterval(() => {
+                if (window.location.pathname.indexOf('/customweek/') !== -1) {
+                    this.debug && console.log('now on custom week page');
+                    clearInterval(checkCustomWeekPageInterval);
+                    resolve();
+                }
+            }, 200);
+        });
+    }
+
     moveEvents(
         moveFromDate,
         minMoveToDate,
@@ -543,35 +556,51 @@ class GoogleCalendarWorkflow {
         var firstCellWithMinEvents = this.findCellWithMinEvents(calendarGridRows, minMoveToDateFindString, maxMoveToDateFindString);
         this.debug && console.log('firstCellWithMinEvents:', firstCellWithMinEvents);
 
-        this.debug && console.log('moveFromDate:', moveFromDate);
         var moveToDate = this.getCellDate(firstCellWithMinEvents);
-        this.debug && console.log('moveToDate:', moveToDate);
+        this.debug && console.log('moving from %s to %s', moveFromDate, moveToDate);
         this.debug && console.log('moving events from this cell', moveFromDateCell, 'to this cell', firstCellWithMinEvents);
 
-        // Edit event date of first event in source cell.
-        var sourceEvent = moveFromDateCell.querySelector('[data-eventid]');
-        if (!sourceEvent) {
-            this.debug && console.log('source cell has no events');
-            return;
-        }
+        var moveEvent = (() =>  {
+            this.debug && console.log('moveEvent');
+            this.debug && console.log('moveFromDateCell:', moveFromDateCell);
 
-        console.log('sourceEvent:', sourceEvent);
-        sourceEvent.click();
+            // Edit event date of first event in source cell.
+            var sourceEvent = moveFromDateCell.querySelector('[data-eventid]');
+            if (!sourceEvent) {
+                this.debug && console.log('no events on source cell:', moveFromDateCell);
+                return;
+            }
 
-        waitUntilElementExists('[aria-label="Edit event"]')
-        .then((editEventButton) => {
-            editEventButton.click();
-            console.log('edit event button clicked');
+            console.log('sourceEvent:', sourceEvent);
+            sourceEvent.click();
 
-            this.waitUntilOnEventEditPage()
-            .then(() => {
-                console.log('on event edit page');
-                console.log('ready to update event date');
+            waitUntilElementExists('[aria-label="Edit event"]')
+            .then((editEventButton) => {
+                editEventButton.click();
+                console.log('edit event button clicked');
 
-                // var callback = this.eventPageClickSaveButton.bind(this);
-                // this.moveEventToMoveToDate(moveToDate, callback);
+                this.waitUntilOnEventEditPage()
+                .then(() => {
+                    console.log('on event edit page');
+                    console.log('ready to update event date');
+
+                    var callback = (() => {
+                        console.log('on event edit page callback');
+                        this.eventPageClickSaveButton();
+
+                        this.waitUntilOnCustomWeekPage()
+                        .then(() => {
+                            console.log('now on custom week page');
+
+                            // Try to move next source event to destination.
+                            setTimeout(moveEvent, 1000);
+                        });
+                    });
+                    this.moveEventToMoveToDate(moveToDate, callback);
+                });
             });
         });
+        moveEvent();
 
         this.debug && console.groupEnd();
     }
