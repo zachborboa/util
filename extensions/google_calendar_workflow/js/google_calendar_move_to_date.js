@@ -408,6 +408,7 @@ class GoogleCalendarWorkflow {
 
     findCellByDateStringEnding(calendarGridRows, dateStringEnding) {
         this.debug && console.group('findCellByDateStringEnding');
+        this.debug && console.log('dateStringEnding:', dateStringEnding);
 
         var cellFound;
         outer_loop:
@@ -439,7 +440,7 @@ class GoogleCalendarWorkflow {
     }
 
     findCellWithMinEvents(calendarGridRows, minMoveToDateFindString, maxMoveToDateFindString) {
-        this.debug && console.group('findCellByDateStringEnding');
+        this.debug && console.group('findCellWithMinEvents');
 
         var cellFound;
         var minEvents = null;
@@ -454,13 +455,13 @@ class GoogleCalendarWorkflow {
             var rowCells = this.findCellsInRow(row);
             // Check right to left.
             for (var cellIndex = rowCells.length - 1; cellIndex >= 0; cellIndex--) {
-                this.debug && console.log('cellIndex:', cellIndex);
                 var cell = rowCells[cellIndex];
-                this.debug && console.log('cell:', cell);
 
                 // Figure out which day or days have the fewest number of
                 // events.
                 var cellEventsFound = this.countEventsInCell(cell);
+
+                this.debug && console.log('cell', cellIndex, cellEventsFound, cell);
                 if (
                     (minEvents === null || cellEventsFound < minEvents) &&
                     !(minMoveToDayFound && maxMoveToDayFound)
@@ -533,19 +534,15 @@ class GoogleCalendarWorkflow {
         moveFromDate,
         minMoveToDate,
         maxMoveToDate,
-        calendarGridRows,
     ) {
         // Find row containing both min day and max day. Check top to bottom.
         this.debug && console.group('moveEvents');
         this.debug && console.log('moveFromDate: %s', moveFromDate);
         this.debug && console.log('minMoveToDate: %s', minMoveToDate);
         this.debug && console.log('maxMoveToDate: %s', maxMoveToDate);
-        this.debug && console.log('calendarGridRows:', calendarGridRows);
 
         var moveFromDateFindString = ', ' + new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric'}).format(moveFromDate);
         this.debug && console.log('moveFromDateFindString: "%s"', moveFromDateFindString);
-        var moveFromDateCell = this.findCellByDateStringEnding(calendarGridRows, moveFromDateFindString);
-        this.debug && console.log('moveFromDateCell:', moveFromDateCell);
 
         var minMoveToDateFindString = ', ' + new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric'}).format(minMoveToDate);
         this.debug && console.log('minMoveToDateFindString: "%s"', minMoveToDateFindString);
@@ -553,52 +550,62 @@ class GoogleCalendarWorkflow {
         var maxMoveToDateFindString = ', ' + new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric'}).format(maxMoveToDate);
         this.debug && console.log('maxMoveToDateFindString: "%s"', maxMoveToDateFindString);
 
-        var firstCellWithMinEvents = this.findCellWithMinEvents(calendarGridRows, minMoveToDateFindString, maxMoveToDateFindString);
-        this.debug && console.log('firstCellWithMinEvents:', firstCellWithMinEvents);
-
-        var moveToDate = this.getCellDate(firstCellWithMinEvents);
-        this.debug && console.log('moving from %s to %s', moveFromDate, moveToDate);
-        this.debug && console.log('moving events from this cell', moveFromDateCell, 'to this cell', firstCellWithMinEvents);
-
         var moveEvent = (() =>  {
             this.debug && console.log('moveEvent');
+
+            var calendarGridRows = document.querySelectorAll('[data-view-heading] [role="presentation"] [role="row"]');
+            this.debug && console.log('calendarGridRows:', calendarGridRows);
+
+            var moveFromDateCell = this.findCellByDateStringEnding(calendarGridRows, moveFromDateFindString);
             this.debug && console.log('moveFromDateCell:', moveFromDateCell);
+
+            var firstCellWithMinEvents = this.findCellWithMinEvents(calendarGridRows, minMoveToDateFindString, maxMoveToDateFindString);
+            this.debug && console.log('firstCellWithMinEvents:', firstCellWithMinEvents);
+
+            var moveToDate = this.getCellDate(firstCellWithMinEvents);
+            this.debug && console.log('moving from %s to %s', moveFromDate, moveToDate);
+            this.debug && console.log('moving events from this cell', moveFromDateCell, 'to this cell', firstCellWithMinEvents);
 
             // Edit event date of first event in source cell.
             var sourceEvent = moveFromDateCell.querySelector('[data-eventid]');
             if (!sourceEvent) {
-                this.debug && console.log('no events on source cell:', moveFromDateCell);
+                this.debug && console.log('no events found on source cell:', moveFromDateCell);
                 return;
+            } else {
+                console.log('sourceEvent:', sourceEvent);
             }
 
-            console.log('sourceEvent:', sourceEvent);
-            sourceEvent.click();
+            console.log('about to click sourceEvent');
+            setTimeout(() => {
+                sourceEvent.click();
+                console.log('sourceEvent clicked');
 
-            waitUntilElementExists('[aria-label="Edit event"]')
-            .then((editEventButton) => {
-                editEventButton.click();
-                console.log('edit event button clicked');
+                waitUntilElementExists('[aria-label="Edit event"]')
+                .then((editEventButton) => {
+                    editEventButton.click();
+                    console.log('edit event button clicked');
 
-                this.waitUntilOnEventEditPage()
-                .then(() => {
-                    console.log('on event edit page');
-                    console.log('ready to update event date');
+                    this.waitUntilOnEventEditPage()
+                    .then(() => {
+                        console.log('on event edit page');
+                        console.log('ready to update event date');
 
-                    var callback = (() => {
-                        console.log('on event edit page callback');
-                        this.eventPageClickSaveButton();
+                        var callback = (() => {
+                            console.log('on event edit page callback');
+                            this.eventPageClickSaveButton();
 
-                        this.waitUntilOnCustomWeekPage()
-                        .then(() => {
-                            console.log('now on custom week page');
+                            this.waitUntilOnCustomWeekPage()
+                            .then(() => {
+                                console.log('now on custom week page');
 
-                            // Try to move next source event to destination.
-                            setTimeout(moveEvent, 1000);
+                                // Try to move next source event to destination.
+                                setTimeout(moveEvent, 1000);
+                            });
                         });
+                        this.moveEventToMoveToDate(moveToDate, callback);
                     });
-                    this.moveEventToMoveToDate(moveToDate, callback);
                 });
-            });
+            }, 5000);
         });
         moveEvent();
 
@@ -1279,12 +1286,10 @@ class GoogleCalendarWorkflow {
         minMoveToDate.setDate(minMoveToDate.getDate() - (7 + 6));
         console.log('minMoveToDate:', minMoveToDate);
 
-        var calendarGridRows = document.querySelectorAll('[data-view-heading] [role="presentation"] [role="row"]');
         this.moveEvents(
             moveFromDate,
             minMoveToDate,
             maxMoveToDate,
-            calendarGridRows,
         );
     }
 
