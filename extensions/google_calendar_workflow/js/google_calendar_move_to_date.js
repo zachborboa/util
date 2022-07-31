@@ -3,6 +3,54 @@
 const TEST_ENV = 'TEST';
 const PROD_ENV = 'PROD';
 
+class Spinner {
+    #SPINNER_DELAY_MS = 180;
+
+    constructor() {
+        this.spinnerNode = this.addSpinnerNode();
+        this.spin();
+    }
+
+    addSpinnerNode() {
+        var spinnerNode = document.createElement('span');
+        spinnerNode.style.color = '#5f6368';
+        spinnerNode.style.fontFamily = 'monospace';
+        spinnerNode.style.fontSize = 'xxx-large';
+        spinnerNode.style.left = '220px';
+        spinnerNode.style.opacity = '0';
+        spinnerNode.style.position = 'absolute';
+        spinnerNode.style.top = '7px';
+        spinnerNode.style.transition = 'opacity 0.3s, visibility 0.3s';
+        spinnerNode.style.zIndex = '9999';
+        return spinnerNode;
+    }
+
+    setSpinnerCharacter(character) {
+        return new Promise((resolve, reject) => {
+            setTimeout((() => {
+                this.spinnerNode.innerText = character;
+                resolve();
+            }), this.#SPINNER_DELAY_MS);
+        });
+    }
+
+    spin() {
+        this.setSpinnerCharacter('|')
+            .then(() => this.setSpinnerCharacter('/'))
+            .then(() => this.setSpinnerCharacter('-'))
+            .then(() => this.setSpinnerCharacter('\\'))
+            .then(() => this.spin());
+    }
+
+    hide() {
+        this.spinnerNode.style.opacity = '0';
+    }
+
+    show() {
+        this.spinnerNode.style.opacity = '1';
+    }
+}
+
 class GoogleCalendarWorkflow {
     // Maximum number of events to keep in a cell.
     #DEFAULT_MAX_EVENTS_PER_CELL = 14;
@@ -97,6 +145,8 @@ class GoogleCalendarWorkflow {
         this.moveToDateRadioFourteen;
         this.moveToDateInput;
         this.addMoveToDateField();
+
+        this.spinner = this.addSpinner();
 
         this.currentDateNode;
         this.keepCurrentSelectorsUpdated();
@@ -535,6 +585,8 @@ class GoogleCalendarWorkflow {
         minMoveToDate,
         maxMoveToDate,
     ) {
+        return new Promise((resolve, reject) => {
+
         // Find row containing both min day and max day. Check top to bottom.
         this.debug && console.group('moveEvents');
         this.debug && console.log('moveFromDate: %s', moveFromDate);
@@ -570,6 +622,7 @@ class GoogleCalendarWorkflow {
             var sourceEvent = moveFromDateCell.querySelector('[data-eventid]');
             if (!sourceEvent) {
                 this.debug && console.log('no events found on source cell:', moveFromDateCell);
+                resolve();
                 return;
             } else {
                 console.log('sourceEvent:', sourceEvent);
@@ -610,6 +663,7 @@ class GoogleCalendarWorkflow {
         moveEvent();
 
         this.debug && console.groupEnd();
+        });
     }
 
     getCalendarYear() {
@@ -1269,9 +1323,12 @@ class GoogleCalendarWorkflow {
         // week.
         this.debug && console.info('cleanUpEvents');
 
+        this.spinner.show();
+
         var currentMoveToDate = this.getCurrentMoveToDate();
         if (currentMoveToDate === '') {
             this.debug && console.warn('move to date empty');
+            this.spinner.hide();
             return;
         }
 
@@ -1290,7 +1347,14 @@ class GoogleCalendarWorkflow {
             moveFromDate,
             minMoveToDate,
             maxMoveToDate,
-        );
+        ).then(() => this.spinner.hide());
+    }
+
+    addSpinner() {
+        this.debug && console.info('addSpinner');
+        var spinner = new Spinner();
+        document.body.appendChild(spinner.spinnerNode);
+        return spinner;
     }
 
     _getDateComparisonObject(date) {
