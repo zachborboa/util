@@ -657,7 +657,7 @@ class GoogleCalendarWorkflow {
                             this.moveEventToMoveToDate(moveToDate, callback);
                         });
                     });
-                }, 5000);
+                }, 2000);
             });
             moveEvent();
 
