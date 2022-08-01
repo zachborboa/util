@@ -545,11 +545,15 @@ class GoogleCalendarWorkflow {
         return cellFound;
     }
 
+    isOnCustomWeekPage() {
+        return window.location.pathname.indexOf('/customweek/') !== -1;
+    }
+
     waitUntilOnCustomWeekPage() {
         this.debug && console.log('waiting until on custom week page');
         return new Promise((resolve, reject) => {
             var checkCustomWeekPageInterval = setInterval(() => {
-                if (window.location.pathname.indexOf('/customweek/') !== -1) {
+                if (this.isOnCustomWeekPage()) {
                     this.debug && console.log('now on custom week page');
                     clearInterval(checkCustomWeekPageInterval);
                     resolve();
@@ -976,6 +980,27 @@ class GoogleCalendarWorkflow {
 
         // Clean up calendar events.
         } else if (character === 'f') {
+
+            // Ignore "f" key press when focus is inside an input element.
+            // <input />
+            if (event.target.nodeName === 'INPUT') {
+                console.log('inside input');
+                return;
+            }
+
+            // Ignore "f" key press when focus is inside a textbox.
+            // <div role="textbox" ...></div>
+            if (event.target.getAttribute('role') === 'textbox') {
+                console.log('inside textbox');
+                return;
+            }
+
+            // Ignore "f" key press when not on the custom week page.
+            if (!this.isOnCustomWeekPage()) {
+                console.log('not on custom week page');
+                return;
+            }
+
             this.cleanUpEvents();
         }
     }
