@@ -545,28 +545,6 @@ class GoogleCalendarWorkflow {
         return cellFound;
     }
 
-    waitUntilOnEventEditPage() {
-        this.debug && console.log('waiting until on edit event page');
-        return new Promise((resolve, reject) => {
-            Promise.all([
-                waitUntilElementExists('[aria-label="Start date"]'),
-                waitUntilElementExists('[aria-label="End date"]'),
-                waitUntilElementExists('[aria-label="Title"]'),
-            ]).then(([
-                startDateInput,
-                endDateInput,
-                eventTitleInput,
-            ]) => {
-                this.debug && console.log('now on edit event page');
-                resolve([
-                    startDateInput,
-                    endDateInput,
-                    eventTitleInput,
-                ]);
-            });
-        });
-    }
-
     waitUntilOnCustomWeekPage() {
         this.debug && console.log('waiting until on custom week page');
         return new Promise((resolve, reject) => {
