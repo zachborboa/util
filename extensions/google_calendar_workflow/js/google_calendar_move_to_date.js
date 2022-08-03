@@ -633,13 +633,13 @@ class GoogleCalendarWorkflow {
                                     console.log('now on custom week page');
 
                                     // Try to move next source event to destination.
-                                    setTimeout(moveEvent, 1000);
+                                    setTimeout(moveEvent, 500);
                                 });
                             });
                             this.moveEventToMoveToDate(moveToDate, callback);
                         });
                     });
-                }, 2000);
+                }, 1000);
             });
             moveEvent();
 
