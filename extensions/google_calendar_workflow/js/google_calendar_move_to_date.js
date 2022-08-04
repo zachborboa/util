@@ -12,6 +12,16 @@ class Spinner {
     }
 
     addSpinnerNode() {
+        // Fix "ReferenceError: document is not defined" when testing.
+        if (typeof document === 'undefined') {
+            global.document = {};
+            global.document.createElement = (() => {
+                return {
+                    style: {},
+                };
+            });
+        }
+
         var spinnerNode = document.createElement('span');
         spinnerNode.style.color = '#5f6368';
         spinnerNode.style.fontFamily = 'monospace';
@@ -1355,7 +1365,9 @@ class GoogleCalendarWorkflow {
     addSpinner() {
         this.debug && console.info('addSpinner');
         var spinner = new Spinner();
-        document.body.appendChild(spinner.spinnerNode);
+        if (this.env === PROD_ENV) {
+            document.body.appendChild(spinner.spinnerNode);
+        }
         return spinner;
     }
 
