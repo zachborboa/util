@@ -384,6 +384,16 @@ class GoogleCalendarWorkflow {
             newCalendarEventTitle = newCalendarEventTitle.replace(/^\*\*\* /, '');
         }
 
+        // "*** - " + - -> "*** "
+        else if (action === 'toggle-prefix' && eventTitlePrefix === '-' && eventTitleStartsWithStarPrefix && newCalendarEventTitle.match(/\*\*\* - /)) {
+            newCalendarEventTitle = newCalendarEventTitle.replace(/^\*\*\* - /, '*** ');
+        }
+
+        // "*** " + - -> "- "
+        else if (action === 'toggle-prefix' && eventTitlePrefix === '-' && eventTitleStartsWithStarPrefix && newCalendarEventTitle.match(/\*\*\* /)) {
+            newCalendarEventTitle = newCalendarEventTitle.replace(/^\*\*\* /, '- ');
+        }
+
         // "*** 1. " + 2. -> "*** 2. "
         else if (action === 'toggle-prefix' && eventTitleStartsWithStarPrefix && eventTitleIsNumbered && replaceEventTitleNumber) {
             newCalendarEventTitle = '*** ' + eventTitlePrefix + ' ' + newCalendarEventTitle.replace(/^\*\*\* \d+\. /, '');

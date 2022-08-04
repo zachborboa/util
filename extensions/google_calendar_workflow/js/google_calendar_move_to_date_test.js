@@ -1850,6 +1850,24 @@ allTestsPass = allTestsPass && worflow.getNewEventTitle(
 ) === '- Do thing';
 
 allTestsPass = allTestsPass && worflow.getNewEventTitle(
+    /* originalCalendarEventTitle */ '*** - Do thing',
+    /* action */ 'toggle-prefix',
+    /* eventTitlePrefix */ '-',
+    /* eventCompleted */ false,
+    /* eventDate */ eventDate,
+    /* date */ moveToDateDate,
+) === '*** Do thing';
+
+allTestsPass = allTestsPass && worflow.getNewEventTitle(
+    /* originalCalendarEventTitle */ '*** Do thing',
+    /* action */ 'toggle-prefix',
+    /* eventTitlePrefix */ '-',
+    /* eventCompleted */ false,
+    /* eventDate */ eventDate,
+    /* date */ moveToDateDate,
+) === '- Do thing';
+
+allTestsPass = allTestsPass && worflow.getNewEventTitle(
     /* originalCalendarEventTitle */ 'Do thing',
     /* action */ 'toggle-prefix',
     /* eventTitlePrefix */ '*',
