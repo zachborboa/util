@@ -10,6 +10,9 @@
       ]
     },
     {
+      "js": [
+        "js/content_script.js"
+      ],
       "css": [
         "css/style.css"
       ],
