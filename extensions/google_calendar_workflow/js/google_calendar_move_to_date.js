@@ -72,6 +72,17 @@ class GoogleCalendarWorkflow {
     // Oldest available cell date that has been found and should be used.
     topCellDate;
 
+    editEventInterval = -1;
+
+    // List of recent characters pressed.
+    recentCharacterKeysPressedBuffer = [];
+
+    // Last time key was pressed.
+    lastKeyTime = Date.now();
+
+    // Amount of time can elapse before list of recent characters pressed is reset.
+    keystrokeDelay = 1000;
+
     FIRST_ROW_BUTTONS = [
         // button label, button action, button classes
         ['-', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-dash']],
@@ -717,8 +728,6 @@ class GoogleCalendarWorkflow {
         return inputDate.toISOString().slice(0, 10);
     }
 
-    // BEGIN class GoogleCalendarWorkflow.
-
     insertAfter(newNode, referenceNode) {
         referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
     }
@@ -933,8 +942,10 @@ class GoogleCalendarWorkflow {
         var character = event.key;
         // this.debug && console.log('character:', character);
 
+        clearInterval(this.editEventInterval);
+
         if (event.getModifierState('CapsLock')) {
-            console.warn('caps lock is on');
+            this.debug && console.warn('caps lock is on');
         }
 
         // Ignore events with modifiers.
@@ -948,40 +959,42 @@ class GoogleCalendarWorkflow {
             return;
         }
 
-        var eventBubble = this.getEventBubble();
+        if (character === 'Escape') {
+            this.debug && console.log('escape pressed. canceling');
+            return;
+        }
 
-        // Take requested action when event bubble is open and a keyboard shortcut matching the key pressed is found.
-        if (eventBubble && character in this.BUTTON_SELECTORS) {
-            event.preventDefault();
+        // Only track a sequence of keystrokes when numeric keys are pressed.
+        if ('0123456789'.indexOf(character) !== -1) {
+            const currentTime = Date.now();
 
-            var buttonSelector = this.BUTTON_SELECTORS[character];
-
-            // Handle simulated button click without an existing button button
-            // (e.g. for buttons 6, 7, 8, 9).
-            if (buttonSelector === '') {
-
-                var label = character;
-                var action = 'toggle-prefix';
-                var eventTitlePrefix = this.BUTTON_LABEL_TO_EVENT_TITLE_PREFIX[label];
-                this.updateCalendarEventTitle(label, action, eventTitlePrefix);
-
-            // Handle button click (e.g. for buttons -, 0, 1, 2, 3, 4, 5, x, d,
-            // n, o, a).
-            } else {
-                this.debug && console.log('button selector:', buttonSelector);
-                var buttonToClick = document.querySelector(buttonSelector);
-                this.debug && console.log('button to click:', buttonToClick);
-                if (buttonToClick) {
-                    buttonToClick.click();
-                }
+            // Reset list of recently pressed characters when enough time has
+            // elapsed.
+            if (currentTime - this.lastKeyTime > this.keystrokeDelay) {
+                this.recentCharacterKeysPressedBuffer = [];
             }
 
+            this.recentCharacterKeysPressedBuffer.push(character);
+            this.lastKeyTime = currentTime;
+
+            // console.log(this.recentCharacterKeysPressedBuffer);
+            // console.log('"%s. "', this.recentCharacterKeysPressedBuffer.join(''));
+        } else {
+            // Reset list of recently pressed characters when a non-numeric key
+            // is pressed.
+            this.recentCharacterKeysPressedBuffer = [];
+        }
+
+        var eventBubble = this.getEventBubble();
+
         // Delete.
-        } else if (eventBubble && character === '#') {
+        if (eventBubble && character === '#') {
+            this.debug && console.log('delete event');
             this.clickEventBubbleDeleteButton();
 
         // Move.
         } else if (eventBubble && character === 'm') {
+            this.debug && console.log('move event');
             this.clickEventBubbleEditButton();
 
             this.waitUntilOnEventEditPage()
@@ -998,14 +1011,64 @@ class GoogleCalendarWorkflow {
                 this.moveEventToMoveToDate(currentMoveToDate, callback);
             });
 
+        // Set calendar event prefix.
+        } else if (eventBubble && this.recentCharacterKeysPressedBuffer.length) {
+            this.debug && console.log('set calendar event prefix');
+            event.preventDefault();
+
+            this.editEventInterval = setTimeout(
+                (
+                    ((label, action, eventTitlePrefix) => {
+                        return (() => {
+                            // console.log('timeout reached');
+                            // console.log('label:', label);
+                            // console.log('action:', action);
+                            // console.log('eventTitlePrefix: "%s"', eventTitlePrefix);
+                            this.updateCalendarEventTitle(label, action, eventTitlePrefix);
+                        });
+                    })(
+                        character, // label
+                        'toggle-prefix', // action
+                        this.recentCharacterKeysPressedBuffer.join('') + '.', // eventTitlePrefix
+                    )
+                ), 1000);
+
+        // Take requested action when event bubble is open and a keyboard shortcut matching the key pressed is found.
+        } else if (eventBubble && character in this.BUTTON_SELECTORS) {
+            event.preventDefault();
+
+            var buttonSelector = this.BUTTON_SELECTORS[character];
+
+            // Handle simulated button click without an existing button button
+            // (e.g. for buttons 6, 7, 8, 9).
+            if (buttonSelector === '') {
+
+                var label = character;
+                var action = 'toggle-prefix';
+                var eventTitlePrefix = this.BUTTON_LABEL_TO_EVENT_TITLE_PREFIX[label];
+                this.updateCalendarEventTitle(label, action, eventTitlePrefix);
+
+            // Handle button click (e.g. for buttons *, -, 0, 1, 2, 3, 4, 5, a,
+            // d, n, o, x).
+            } else {
+                this.debug && console.log('button selector:', buttonSelector);
+                var buttonToClick = document.querySelector(buttonSelector);
+                this.debug && console.log('button to click:', buttonToClick);
+                if (buttonToClick) {
+                    buttonToClick.click();
+                }
+            }
+
         // Update move-to date.
         } else if (character === 'j' || character === 'k') {
+            this.debug && console.log('update move-to date');
             setTimeout(() => {
                 this.updateMoveToDate();
             }, 3000);
 
         // Clean up calendar events.
         } else if (character === 'f') {
+            this.debug && console.log('clean up calendar events');
 
             // Ignore "f" key press when focus is inside an input element.
             // <input />
@@ -1028,6 +1091,9 @@ class GoogleCalendarWorkflow {
             }
 
             this.cleanUpEvents();
+
+        } else {
+            this.debug && console.log('other');
         }
     }
 
