@@ -45,6 +45,10 @@ class Spinner {
     }
 
     spin() {
+        if (this.env !== PROD_ENV) {
+            return;
+        }
+
         this.setSpinnerCharacter('|')
             .then(() => this.setSpinnerCharacter('/'))
             .then(() => this.setSpinnerCharacter('-'))
@@ -161,10 +165,12 @@ class GoogleCalendarWorkflow {
         this.currentDateNode;
         this.keepCurrentSelectorsUpdated();
 
-        setTimeout(() => {
-            this.updateMoveToDate();
-            this.restoreUserSettings();
-        }, 5000);
+        if (this.env === PROD_ENV) {
+            setTimeout(() => {
+                this.updateMoveToDate();
+                this.restoreUserSettings();
+            }, 5000);
+        }
     }
 
     findCellsInRow(row) {
