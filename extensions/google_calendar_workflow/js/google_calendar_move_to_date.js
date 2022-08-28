@@ -1019,19 +1019,19 @@ class GoogleCalendarWorkflow {
             event.preventDefault();
 
             var updateCalendarEventTitle = (
-                    ((label, action, eventTitlePrefix) => {
-                        return (() => {
-                            // console.log('timeout reached');
-                            // console.log('label:', label);
-                            // console.log('action:', action);
-                            // console.log('eventTitlePrefix: "%s"', eventTitlePrefix);
-                            this.updateCalendarEventTitle(label, action, eventTitlePrefix);
-                        });
-                    })(
-                        character, // label
-                        'toggle-prefix', // action
-                        this.recentCharacterKeysPressedBuffer.join('') + '.', // eventTitlePrefix
-                    )
+                ((label, action, eventTitlePrefix) => {
+                    return (() => {
+                        // console.log('timeout reached');
+                        // console.log('label:', label);
+                        // console.log('action:', action);
+                        // console.log('eventTitlePrefix: "%s"', eventTitlePrefix);
+                        this.updateCalendarEventTitle(label, action, eventTitlePrefix);
+                    });
+                })(
+                    character, // label
+                    'toggle-prefix', // action
+                    this.recentCharacterKeysPressedBuffer.join('') + '.', // eventTitlePrefix
+                )
             );
 
             // Wait a bit for another key to be pressed when only 1 key has been
