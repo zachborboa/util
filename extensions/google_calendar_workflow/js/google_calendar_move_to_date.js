@@ -1018,8 +1018,7 @@ class GoogleCalendarWorkflow {
             this.debug && console.log('set calendar event prefix');
             event.preventDefault();
 
-            this.editEventInterval = setTimeout(
-                (
+            var updateCalendarEventTitle = (
                     ((label, action, eventTitlePrefix) => {
                         return (() => {
                             // console.log('timeout reached');
@@ -1033,7 +1032,18 @@ class GoogleCalendarWorkflow {
                         'toggle-prefix', // action
                         this.recentCharacterKeysPressedBuffer.join('') + '.', // eventTitlePrefix
                     )
-                ), 1000);
+            );
+
+            // Wait a bit for another key to be pressed when only 1 key has been
+            // pressed.
+            if (this.recentCharacterKeysPressedBuffer.length === 1) {
+                this.editEventInterval = setTimeout(updateCalendarEventTitle, 1000);
+
+            // Otherwise, start updating calendar event without waiting for more
+            // key presses.
+            } else {
+                updateCalendarEventTitle();
+            }
 
         // Take requested action when event bubble is open and a keyboard shortcut matching the key pressed is found.
         } else if (eventBubble && character in this.BUTTON_SELECTORS) {
