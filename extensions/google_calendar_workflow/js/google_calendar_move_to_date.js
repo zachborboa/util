@@ -6,7 +6,10 @@ const PROD_ENV = 'PROD';
 class Spinner {
     #SPINNER_DELAY_MS = 180;
 
-    constructor() {
+    constructor(options) {
+        this.options = options;
+        this.env = options.env;
+
         this.spinnerNode = this.addSpinnerNode();
         this.spin();
     }
@@ -1458,7 +1461,9 @@ class GoogleCalendarWorkflow {
 
     addSpinner() {
         this.debug && console.info('addSpinner');
-        var spinner = new Spinner();
+        var spinner = new Spinner({
+            'env': this.env,
+        });
         if (this.env === PROD_ENV) {
             document.body.appendChild(spinner.spinnerNode);
         }
