@@ -744,6 +744,56 @@ class GoogleCalendarWorkflow {
         editEventButton.click();
     }
 
+    clickEventBubbleOptionsDuplicate() {
+        this.debug && console.info('clickEventBubbleOptionsDuplicate');
+
+        return new Promise((resolve, reject) => {
+            waitUntilElementVisible('[aria-label="Options"]')
+            .then((optionsButton) => {
+                return new Promise((res, rej) => {
+                    setTimeout(() => {
+                        optionsButton.click();
+                        console.log('options button clicked');
+                        res();
+                    }, 5000);
+                });
+            })
+            .then(() => {
+                return waitUntilElementVisible('[aria-label="Duplicate"]')
+                    .then((duplicateEventOption) => {
+                        return new Promise((res, rej) => {
+                            setTimeout(() => {
+                                // Click using a "mousedown" event followed by a
+                                // "mouseup" event as calling .click() on the object
+                                // doesn't seem to trigger the click action to
+                                // duplicate the event:
+                                //   duplicateEventOption.click();
+
+                                duplicateEventOption.dispatchEvent(
+                                    new Event('mousedown', {
+                                        'bubbles': true,
+                                    })
+                                );
+
+                                duplicateEventOption.dispatchEvent(
+                                    new Event('mouseup', {
+                                        'bubbles': true,
+                                    })
+                                );
+
+                                console.log('duplicate event option clicked');
+                                res();
+                            }, 5000);
+                        });
+                    });
+            })
+            .then(() => {
+                console.log('finally resolving');
+                resolve();
+            });
+        });
+    }
+
     getEventActionContainer() {
         var eventActionContainer = document.querySelector('.gcw-container');
         return eventActionContainer;
@@ -900,6 +950,7 @@ class GoogleCalendarWorkflow {
         });
     }
 
+    // TODO: Make this a promise.
     clickEventBubbleDeleteButton() {
         this.debug && console.info('clickEventBubbleDeleteButton');
         var deleteEventButton = document.querySelector('[aria-label="Delete event"]');
@@ -992,12 +1043,20 @@ class GoogleCalendarWorkflow {
 
         var eventBubble = this.getEventBubble();
 
-        // Delete.
+        // Delete event.
         if (eventBubble && character === '#') {
             this.debug && console.log('delete event');
             this.clickEventBubbleDeleteButton();
 
-        // Move.
+        // Copy event (duplicate).
+        } else if (eventBubble && character === 'c') {
+            this.debug && console.log('copy event');
+            this.clickEventBubbleOptionsDuplicate()
+                .then(() => {
+                    console.log('done clicking event bubble duplicate');
+                });
+
+        // Move event.
         } else if (eventBubble && character === 'm') {
             this.debug && console.log('move event');
             this.clickEventBubbleEditButton();

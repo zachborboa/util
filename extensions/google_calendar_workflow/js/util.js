@@ -61,6 +61,7 @@ function setInputValue(input, value) {
 }
 
 function waitUntilElementExists(selector, baseElement) {
+    console.log('waitUntilElementExists:', selector);
     if (baseElement === undefined) {
         baseElement = document;
     }
@@ -68,12 +69,34 @@ function waitUntilElementExists(selector, baseElement) {
         var check = () => {
             var element = baseElement.querySelector(selector);
             if (element) {
+                console.log('waitUntilElementExists.exists:', selector, element);
                 resolve(element);
             } else {
                 setTimeout(check, 100);
             }
         };
         setTimeout(check, 100);
+    });
+}
+
+function waitUntilElementVisible(selector, baseElement) {
+    console.log('waitUntilElementVisible:', selector);
+    if (baseElement === undefined) {
+        baseElement = document;
+    }
+    return new Promise((resolve, reject) => {
+        waitUntilElementExists(selector, baseElement)
+        .then((elementFound) => {
+            var check = () => {
+                if (isVisible(elementFound)) {
+                    console.log('waitUntilElementVisible.found:', selector, elementFound);
+                    resolve(elementFound);
+                } else {
+                    setTimeout(check, 1000);
+                }
+            };
+            setTimeout(check, 1000);
+        });
     });
 }
 
