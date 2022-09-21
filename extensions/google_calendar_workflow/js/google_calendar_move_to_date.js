@@ -745,18 +745,12 @@ class GoogleCalendarWorkflow {
     }
 
     clickEventBubbleOptionsDuplicate() {
-        this.debug && console.info('clickEventBubbleOptionsDuplicate');
+        this.debug && console.group('clickEventBubbleOptionsDuplicate');
 
         return new Promise((resolve, reject) => {
             waitUntilElementVisible('[aria-label="Options"]')
             .then((optionsButton) => {
-                return new Promise((res, rej) => {
-                    setTimeout(() => {
-                        optionsButton.click();
-                        console.log('options button clicked');
-                        res();
-                    }, 5000);
-                });
+                optionsButton.click();
             })
             .then(() => {
                 return waitUntilElementVisible('[aria-label="Duplicate"]')
@@ -788,8 +782,9 @@ class GoogleCalendarWorkflow {
                     });
             })
             .then(() => {
-                console.log('finally resolving');
+                this.debug && console.log('finally resolving');
                 resolve();
+                this.debug && console.groupEnd();
             });
         });
     }
@@ -1051,10 +1046,7 @@ class GoogleCalendarWorkflow {
         // Copy event (duplicate).
         } else if (eventBubble && character === 'c') {
             this.debug && console.log('copy event');
-            this.clickEventBubbleOptionsDuplicate()
-                .then(() => {
-                    console.log('done clicking event bubble duplicate');
-                });
+            this.clickEventBubbleOptionsDuplicate();
 
         // Move event.
         } else if (eventBubble && character === 'm') {
