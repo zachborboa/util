@@ -755,30 +755,25 @@ class GoogleCalendarWorkflow {
             .then(() => {
                 return waitUntilElementVisible('[aria-label="Duplicate"]')
                     .then((duplicateEventOption) => {
-                        return new Promise((res, rej) => {
-                            setTimeout(() => {
-                                // Click using a "mousedown" event followed by a
-                                // "mouseup" event as calling .click() on the object
-                                // doesn't seem to trigger the click action to
-                                // duplicate the event:
-                                //   duplicateEventOption.click();
+                        // Click using a "mousedown" event followed by a
+                        // "mouseup" event as calling .click() on the object
+                        // doesn't seem to trigger the click action to
+                        // duplicate the event:
+                        //   duplicateEventOption.click();
 
-                                duplicateEventOption.dispatchEvent(
-                                    new Event('mousedown', {
-                                        'bubbles': true,
-                                    })
-                                );
+                        duplicateEventOption.dispatchEvent(
+                            new Event('mousedown', {
+                                'bubbles': true,
+                            })
+                        );
 
-                                duplicateEventOption.dispatchEvent(
-                                    new Event('mouseup', {
-                                        'bubbles': true,
-                                    })
-                                );
+                        duplicateEventOption.dispatchEvent(
+                            new Event('mouseup', {
+                                'bubbles': true,
+                            })
+                        );
 
-                                console.log('duplicate event option clicked');
-                                res();
-                            }, 5000);
-                        });
+                        console.log('duplicate event option clicked');
                     });
             })
             .then(() => {
