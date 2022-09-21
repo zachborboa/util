@@ -77,6 +77,6 @@ function waitUntilElementExists(selector, baseElement) {
     });
 }
 
-function isVisible(obj) {
-    return obj.offsetWidth > 0 && obj.offsetHeight > 0;
+function isVisible(el) {
+    return el && el.offsetParent !== null;
 }
