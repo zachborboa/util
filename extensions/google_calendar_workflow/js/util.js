@@ -61,7 +61,7 @@ function setInputValue(input, value) {
 }
 
 function waitUntilElementExists(selector, baseElement) {
-    console.log('waitUntilElementExists:', selector);
+    console.group('waitUntilElementExists:', selector);
     if (baseElement === undefined) {
         baseElement = document;
     }
@@ -69,7 +69,8 @@ function waitUntilElementExists(selector, baseElement) {
         var check = () => {
             var element = baseElement.querySelector(selector);
             if (element) {
-                console.log('waitUntilElementExists.exists:', selector, element);
+                console.log('waitUntilElementExists.exists:', selector);
+                console.groupEnd();
                 resolve(element);
             } else {
                 setTimeout(check, 100);
@@ -80,7 +81,7 @@ function waitUntilElementExists(selector, baseElement) {
 }
 
 function waitUntilElementVisible(selector, baseElement) {
-    console.log('waitUntilElementVisible:', selector);
+    console.group('waitUntilElementVisible:', selector);
     if (baseElement === undefined) {
         baseElement = document;
     }
@@ -89,7 +90,8 @@ function waitUntilElementVisible(selector, baseElement) {
         .then((elementFound) => {
             var check = () => {
                 if (isVisible(elementFound)) {
-                    console.log('waitUntilElementVisible.found:', selector, elementFound);
+                    console.log('waitUntilElementVisible.found:', selector);
+                    console.groupEnd();
                     resolve(elementFound);
                 } else {
                     setTimeout(check, 1000);
