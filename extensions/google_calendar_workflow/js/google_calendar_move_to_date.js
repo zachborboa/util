@@ -329,7 +329,7 @@ class GoogleCalendarWorkflow {
             }
         }
 
-        this.debug && console.log('topCellDate:', this.topCellDate);
+        this.debug && console.log('topCellDate: "%s"', this.topCellDate);
         return this.topCellDate;
     }
 
@@ -730,6 +730,10 @@ class GoogleCalendarWorkflow {
 
     getInputDateFormattedDate(date) {
         var inputDate = new Date(date);
+        if (inputDate.toString() === 'Invalid Date') {
+            this.debug && console.warn('invalid date: "%s"', date);
+            return '';
+        }
         return inputDate.toISOString().slice(0, 10);
     }
 
