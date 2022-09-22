@@ -1362,7 +1362,7 @@ class GoogleCalendarWorkflow {
     }
 
     restoreUserSettings() {
-        this.debug && console.info('restoreUserSettings');
+        this.debug && console.group('restoreUserSettings');
 
         if (this.env !== PROD_ENV) {
             return;
@@ -1386,7 +1386,11 @@ class GoogleCalendarWorkflow {
             }
 
             this.moveToDateInput.value = parsedUserSettings['moveToDate'];
+        } else {
+            this.debug && console.log('existing user settings not found');
         }
+
+        this.debug && console.groupEnd();
     }
 
     addMoveToDateField() {
