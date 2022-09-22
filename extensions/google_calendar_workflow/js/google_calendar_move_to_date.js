@@ -1135,10 +1135,18 @@ class GoogleCalendarWorkflow {
         } else if (character === 'f') {
             this.debug && console.log('clean up calendar events');
 
+            // Allow key press to take action when the focus is an
+            // input that is a radio button.
+            // <input type="radio" />
+            if (event.target.nodeName === 'INPUT' &&
+                event.target.hasAttribute('type') &&
+                event.target.getAttribute('type') === 'radio') {
+                console.log('inside radio input. ok');
+
             // Ignore "f" key press when focus is inside an input element.
             // <input />
-            if (event.target.nodeName === 'INPUT') {
-                console.log('inside input');
+            } else if (event.target.nodeName === 'INPUT') {
+                console.log('inside other input type:', event.target.nodeName);
                 return;
             }
 
