@@ -308,7 +308,7 @@ class GoogleCalendarWorkflow {
         this.debug && console.info('getTopCellDate');
         // Use date from input when in manual mode.
         if (this.options.maxEventsPerCell === 'manual') {
-            this.topCellDate = this.moveToDateInput.value;
+            this.topCellDate = this.getCurrentMoveToDate();
         } else {
             // Calculate if cell date is older than the current top cell date only when a top cell is found.
             var topCell = this.findTopCell(calendarGridRows);
@@ -1334,11 +1334,12 @@ class GoogleCalendarWorkflow {
     }
 
     updateMaxEventsPerCell(maxEventsPerCell) {
-        this.debug && console.info('updateMaxEventsPerCell');
+        this.debug && console.group('updateMaxEventsPerCell');
         this.debug && console.log('maxEventsPerCell:', maxEventsPerCell);
         this.setOption('maxEventsPerCell', maxEventsPerCell);
         this.clearTopCellDate();
         this.updateMoveToDate();
+        this.debug && console.groupEnd();
     }
 
     saveUserSettings() {
@@ -1400,6 +1401,13 @@ class GoogleCalendarWorkflow {
 
         var moveToDateRadioManual = document.createElement('input');
         moveToDateRadioManual.addEventListener('change', (event) => {
+
+            // Update move to date when empty.
+            var currentMoveToDate = this.getCurrentMoveToDate();
+            if (currentMoveToDate === '') {
+                this.updateMoveToDate();
+            }
+
             this.updateMaxEventsPerCell(event.target.value);
             this.moveToDateInput.disabled = false;
             this.saveUserSettings();
