@@ -1296,11 +1296,11 @@ class GoogleCalendarWorkflow {
     }
 
     updateMoveToDate(attempt) {
+        this.debug && console.group('updateMoveToDate');
+
         if (this.env !== PROD_ENV) {
             return;
         }
-
-        this.debug && console.group('updateMoveToDate');
 
         attempt = attempt || 0;
         attempt += 1;
@@ -1354,10 +1354,6 @@ class GoogleCalendarWorkflow {
     }
 
     restoreUserSettings() {
-        if (this.env !== PROD_ENV) {
-            return;
-        }
-
         this.debug && console.info('restoreUserSettings');
 
         if (this.env !== PROD_ENV) {
