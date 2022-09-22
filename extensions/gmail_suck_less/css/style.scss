@@ -126,7 +126,9 @@ div > .aCl .akj {
 
 .ii {
     // Prevent tiny inline font (e.g. <span style="font-size:x-small"></span>).
-    span[style] {
+    // However, allow the font-size style to be specified and applied for an
+    // expected color.
+    span[style]:not([style*="color:#b7b7b7"]) {
         font-size: medium !important;
     }
 

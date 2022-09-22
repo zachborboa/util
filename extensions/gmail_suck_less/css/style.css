@@ -98,7 +98,7 @@ div > .aCl .akj {
   padding-right: 0 !important;
 }
 
-.ii span[style] {
+.ii span[style]:not([style*="color:#b7b7b7"]) {
   font-size: medium !important;
 }
 .ii img {
