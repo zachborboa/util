@@ -1,3 +1,5 @@
+const DEBUG = false;
+
 var DEFAULT_PIN_PATTERN_URLS = [
     '^https:\\/\\/calendar\\.google\\.com\\/',
     '^https:\\/\\/mail\\.google\\.com\\/',
@@ -11,7 +13,7 @@ for ( var i in DEFAULT_PIN_PATTERN_URLS ) {
         'pattern': pattern,
     };
 }
-console.log( 'DEFAULT_PIN_PATTERNS:', DEFAULT_PIN_PATTERNS );
+DEBUG && console.log( 'DEFAULT_PIN_PATTERNS:', DEFAULT_PIN_PATTERNS );
 
 var PinTab = function() {
     this.options = {};
@@ -19,19 +21,19 @@ var PinTab = function() {
 };
 
 PinTab.prototype.init = function() {
-    console.info( 'PinTab.prototype.init' );
+    DEBUG && console.info( 'PinTab.prototype.init' );
     this.get( null, function( items ) {
-        console.info( 'this.get callback' );
+        DEBUG && console.info( 'this.get callback' );
         pinTab.options = items;
         if ( ! pinTab.options.pin_patterns ) {
             pinTab.options.pin_patterns = DEFAULT_PIN_PATTERNS;
         }
-        console.info( 'options set', pinTab.options );
+        DEBUG && console.info( 'options set', pinTab.options );
     });
 };
 
 PinTab.prototype.pinTab = function( options ) {
-    console.info( 'PinTab.prototype.pinTab' );
+    DEBUG && console.info( 'PinTab.prototype.pinTab' );
     var updateProperties = {
         pinned: true,
     };
@@ -42,22 +44,22 @@ PinTab.prototype.pinTab = function( options ) {
         if ( tab.pinned ) {
             // TODO: Move tab to index from settings chrome.tabs.move( options.tab.id, { 'index': ... });
         } else {
-            console.warn( 'failed to pin tab' );
+            DEBUG && console.warn( 'failed to pin tab' );
         }
     });
 };
 
 PinTab.prototype.pinTabIfUrlMatch = function( tab ) {
-    console.info( 'PinTab.prototype.pinTabIfUrlMatch' );
+    DEBUG && console.info( 'PinTab.prototype.pinTabIfUrlMatch' );
     if ( tab.pinned ) {
         return;
     }
     for ( var key in this.options.pin_patterns ) {
         var pinTabsPattern = this.options.pin_patterns[key];
         var pattern = RegExp(pinTabsPattern.pattern);
-        console.log(pattern);
+        DEBUG && console.log(pattern);
         if ( pattern.test(tab.url) ) {
-            console.log('matched');
+            DEBUG && console.log('matched');
             pinTab.pinTab({
                 'tab': tab,
             });
@@ -67,7 +69,7 @@ PinTab.prototype.pinTabIfUrlMatch = function( tab ) {
 };
 
 PinTab.prototype.unpinTab = function( options ) {
-    console.info( 'PinTab.prototype.unpinTab' );
+    DEBUG && console.info( 'PinTab.prototype.unpinTab' );
     chrome.tabs.update( options.tab.id, {
         'pinned': false,
     }, function( tab ) {
@@ -76,13 +78,13 @@ PinTab.prototype.unpinTab = function( options ) {
                 'index': -1,
             });
         } else {
-            console.log( 'failed to unpin tab' );
+            DEBUG && console.log( 'failed to unpin tab' );
         }
     });
 };
 
 PinTab.prototype.togglePin = function( options ) {
-    console.info( 'PinTab.prototype.togglePin' );
+    DEBUG && console.info( 'PinTab.prototype.togglePin' );
     if ( options.tab.pinned ) {
         this.unpinTab({
             'tab': options.tab,
@@ -95,24 +97,24 @@ PinTab.prototype.togglePin = function( options ) {
 };
 
 PinTab.prototype.get = function( key, callback ) {
-    console.info( 'PinTab.prototype.get key:', key );
+    DEBUG && console.info( 'PinTab.prototype.get key:', key );
     chrome.storage.sync.get( key, function( items ) {
-        console.log( 'PinTab.prototype.get callback for key:', key );
+        DEBUG && console.log( 'PinTab.prototype.get callback for key:', key );
         if ( chrome.runtime.lastError ) {
-            console.warn( 'chrome.runtime.lastError.message', chrome.runtime.lastError.message );
+            DEBUG && console.warn( 'chrome.runtime.lastError.message', chrome.runtime.lastError.message );
         } else {
-            console.log( 'items:', items );
+            DEBUG && console.log( 'items:', items );
             callback( items );
         }
     });
 };
 
 PinTab.prototype.set = function( key, callback ) {
-    console.info( 'PinTab.prototype.set key:', key );
+    DEBUG && console.info( 'PinTab.prototype.set key:', key );
     chrome.storage.sync.set( key, function() {
-        console.log( 'PinTab.prototype.set callback for key:', key );
+        DEBUG && console.log( 'PinTab.prototype.set callback for key:', key );
         if ( chrome.runtime.lastError ) {
-            console.warn( 'chrome.runtime.lastError.message', chrome.runtime.lastError.message );
+            DEBUG && console.warn( 'chrome.runtime.lastError.message', chrome.runtime.lastError.message );
         } else {
             callback();
         }
@@ -120,14 +122,14 @@ PinTab.prototype.set = function( key, callback ) {
 };
 
 PinTab.prototype.addPattern = function( patternObj, callback ) {
-    console.info( 'PinTab.prototype.addPattern', patternObj );
+    DEBUG && console.info( 'PinTab.prototype.addPattern', patternObj );
     var key = btoa( patternObj.pattern );
-    console.log( 'key:', key );
+    DEBUG && console.log( 'key:', key );
     var added = false;
     if ( ! ( key in this.options.pin_patterns ) ) {
         added = true;
     }
-    console.log( 'added:', added );
+    DEBUG && console.log( 'added:', added );
     this.options.pin_patterns[ key ] = patternObj;
     pinTab.set( this.options, function() {
         callback( added );
@@ -135,15 +137,15 @@ PinTab.prototype.addPattern = function( patternObj, callback ) {
 };
 
 PinTab.prototype.removePattern = function( pattern, callback ) {
-    console.info( 'PinTab.prototype.removePattern', pattern );
+    DEBUG && console.info( 'PinTab.prototype.removePattern', pattern );
     var key = btoa( pattern );
-    console.log( 'key:', key );
+    DEBUG && console.log( 'key:', key );
     delete this.options.pin_patterns[ key ];
     callback();
 };
 
 PinTab.prototype.getMatchingTabCount = function(callback) {
-    console.info('PinTab.prototype.getMatchingTabCount');
+    DEBUG && console.info('PinTab.prototype.getMatchingTabCount');
     chrome.windows.getAll(
         /* object getInfo */ {
             'populate': true,
@@ -155,28 +157,28 @@ PinTab.prototype.getMatchingTabCount = function(callback) {
                     tabsOpen[tab.id] = tab;
                 });
             });
-            console.log('tabsOpen:', tabsOpen);
+            DEBUG && console.log('tabsOpen:', tabsOpen);
 
-            console.log('looping through all pin patterns');
+            DEBUG && console.log('looping through all pin patterns');
             var patternMatches = {};
             for ( var key in pinTab.options.pin_patterns ) {
                 var pinTabsPattern = pinTab.options.pin_patterns[key];
-                console.log('pattern:', pinTabsPattern.pattern);
+                DEBUG && console.log('pattern:', pinTabsPattern.pattern);
                 var regex = RegExp(pinTabsPattern.pattern);
-                console.log('regex:', regex);
+                DEBUG && console.log('regex:', regex);
                 patternMatches[key] = 0;
                 for ( var k in tabsOpen ) {
                     var tab = tabsOpen[k];
-                    console.log('tab.url:', tab.url);
+                    DEBUG && console.log('tab.url:', tab.url);
                     if ( regex.test(tab.url) ) {
-                        console.log('matched');
+                        DEBUG && console.log('matched');
                         patternMatches[key] += 1;
                     }
                 }
-                console.log('---');
+                DEBUG && console.log('---');
             }
 
-            console.log('patternMatches:', patternMatches);
+            DEBUG && console.log('patternMatches:', patternMatches);
             callback(patternMatches);
         }
     );
@@ -187,17 +189,17 @@ var pinTab = new PinTab();
 
 // Pin the active tab when the browser action icon is clicked.
 chrome.browserAction.onClicked.addListener(function() {
-    console.info( 'chrome.browserAction.onClicked' );
+    DEBUG && console.info( 'chrome.browserAction.onClicked' );
     chrome.windows.getCurrent({
         'populate': true,
         'windowTypes': ['normal',],
     }, function ( currentWindow ) {
-        console.log( 'currentWindow:', currentWindow );
+        DEBUG && console.log( 'currentWindow:', currentWindow );
         for ( var i = 0; i < currentWindow.tabs.length; i++ ) {
             var tab = currentWindow.tabs[ i ];
-            console.log( 'tab:', tab );
+            DEBUG && console.log( 'tab:', tab );
             if ( tab.active ) {
-                console.log( 'tab is active' );
+                DEBUG && console.log( 'tab is active' );
                 pinTab.togglePin({
                     'tab': tab,
                 });
@@ -211,7 +213,7 @@ chrome.browserAction.onClicked.addListener(function() {
 // be notified when a URL is set.
 chrome.tabs.onCreated.addListener(function(
     /* Tab */ tab ) {
-    console.info( 'chrome.tabs.onCreated', tab );
+    DEBUG && console.info( 'chrome.tabs.onCreated', tab );
     pinTab.pinTabIfUrlMatch( tab );
 });
 
@@ -220,12 +222,15 @@ chrome.tabs.onUpdated.addListener(function(
     /* integer */ tabId,
     /* object */ changeInfo,
     /* Tab */ tab ) {
-    console.info( 'chrome.tabs.onUpdated', tab );
+    DEBUG && console.info( 'chrome.tabs.onUpdated', tab );
     pinTab.pinTabIfUrlMatch( tab );
 });
 
+// Used by hotkeys.
+// https://developer.chrome.com/docs/extensions/reference/commands/#event-onCommand
+/*
 chrome.commands.onCommand.addListener(function() {
-    console.info('chrome.commands.onCommand');
+    DEBUG && console.info('chrome.commands.onCommand');
 
     chrome.tabs.query(
         // queryInfo
@@ -242,3 +247,4 @@ chrome.commands.onCommand.addListener(function() {
         }
     );
 });
+*/
