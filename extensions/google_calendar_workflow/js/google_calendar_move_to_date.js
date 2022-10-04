@@ -31,6 +31,7 @@ class Spinner {
         spinnerNode.style.fontSize = 'xxx-large';
         spinnerNode.style.left = '220px';
         spinnerNode.style.opacity = '0';
+        spinnerNode.style.pointerEvents = 'none';
         spinnerNode.style.position = 'absolute';
         spinnerNode.style.top = '7px';
         spinnerNode.style.transition = 'opacity 0.3s, visibility 0.3s';
