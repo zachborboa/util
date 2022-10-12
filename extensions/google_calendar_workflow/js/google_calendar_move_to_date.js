@@ -599,7 +599,7 @@ class GoogleCalendarWorkflow {
                     clearInterval(checkCustomWeekPageInterval);
                     resolve();
                 }
-            }, 200);
+            }, 100);
         });
     }
 
@@ -676,13 +676,13 @@ class GoogleCalendarWorkflow {
                                     console.log('now on custom week page');
 
                                     // Try to move next source event to destination.
-                                    setTimeout(moveEvent, 250);
+                                    setTimeout(moveEvent, 100);
                                 });
                             });
                             this.moveEventToMoveToDate(moveToDate, callback);
                         });
                     });
-                }, 500);
+                }, 100);
             });
             moveEvent();
 
