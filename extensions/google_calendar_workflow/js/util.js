@@ -94,10 +94,10 @@ function waitUntilElementVisible(selector, baseElement) {
                     console.groupEnd();
                     resolve(elementFound);
                 } else {
-                    setTimeout(check, 1000);
+                    setTimeout(check, 100);
                 }
             };
-            setTimeout(check, 1000);
+            setTimeout(check, 100);
         });
     });
 }
