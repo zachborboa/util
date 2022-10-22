@@ -13,10 +13,51 @@ table {
 .comment {
   border: 3px solid transparent;
   border-radius: 2px;
+  margin-left: -16px;
   padding: 9px 9px 12px;
 }
 .comment:hover {
   border-color: #999;
+}
+
+img[width="40"] {
+  width: 20px;
+}
+
+img[width="80"] {
+  width: 60px;
+}
+
+img[width="120"] {
+  width: 100px;
+}
+
+img[width="160"] {
+  width: 140px;
+}
+
+img[width="200"] {
+  width: 180px;
+}
+
+img[width="240"] {
+  width: 220px;
+}
+
+img[width="280"] {
+  width: 260px;
+}
+
+img[width="320"] {
+  width: 300px;
+}
+
+img[width="360"] {
+  width: 340px;
+}
+
+img[width="400"] {
+  width: 380px;
 }
 
 .reply {
