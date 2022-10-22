@@ -1,11 +1,36 @@
+body {
+    margin: 0;
+}
+
+// Remove excess spacing on tables.
+table {
+    border-spacing: 0;
+}
+
+// Use the full width of the page for content.
+#hnmain {
+    width: 100%;
+}
+
 .comment {
     &:hover {
-        border-color: #ccc;
-        background-color: rgba(0, 0, 0, .05);
+        border-color: #999;
+
+        // Avoid changing the background-color, especially to a darker closer
+        // which would create less contrast with the text.
+        // background-color: rgba(0, 0, 0, .05);
     }
 
-    border: 1px solid transparent;
+    // outline: 1px solid blue;
+
+    border: 3px solid transparent;
     border-radius: 2px;
+    padding: 9px 9px 12px;
+}
+
+// Hide reply to save on vertical space.
+.reply {
+    display: none;
 }
 
 ._hn-nav {

@@ -1,10 +1,26 @@
+body {
+  margin: 0;
+}
+
+table {
+  border-spacing: 0;
+}
+
+#hnmain {
+  width: 100%;
+}
+
 .comment {
-  border: 1px solid transparent;
+  border: 3px solid transparent;
   border-radius: 2px;
+  padding: 9px 9px 12px;
 }
 .comment:hover {
-  border-color: #ccc;
-  background-color: rgba(0, 0, 0, 0.05);
+  border-color: #999;
+}
+
+.reply {
+  display: none;
 }
 
 ._hn-nav {
