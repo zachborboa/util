@@ -510,9 +510,8 @@ class GoogleCalendarWorkflow {
             var rowCells = this.findCellsInRow(row);
             // Check right to left.
             for (var cellIndex = rowCells.length - 1; cellIndex >= 0; cellIndex--) {
-                this.debug && console.log('cellIndex:', cellIndex);
                 var cell = rowCells[cellIndex];
-                this.debug && console.log('cell:', cell);
+                this.debug && console.log('cell:', cell, 'cellIndex:', cellIndex);
 
                 var cellDayNode = cell.querySelector('h2');
                 if (cellDayNode.innerText.endsWith(dateStringEnding)) {
