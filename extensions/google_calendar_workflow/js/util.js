@@ -105,3 +105,33 @@ function waitUntilElementVisible(selector, baseElement) {
 function isVisible(el) {
     return el && el.offsetParent !== null;
 }
+
+function clickElementAndWaitUntilElementExists(elementToClick, selector) {
+    console.group('clickElementAndWaitUntilElementExists:', selector);
+
+    return new Promise((resolve, reject) => {
+        // Amount of time can elapse before clicking element again.
+        const clickAgainDelay = 5000;
+
+        elementToClick.click();
+        var lastClickedTime = Date.now();
+
+        const check = () => {
+            var element = document.querySelector(selector);
+            if (element) {
+                resolve(element);
+                console.log('clickElementAndWaitUntilElementExists.found:', selector);
+                console.groupEnd();
+            } else {
+                const currentTime = Date.now();
+                if (currentTime - lastClickedTime > clickAgainDelay) {
+                    elementToClick.click();
+                    lastClickedTime = currentTime;
+                }
+
+                setTimeout(check, 1000);
+            }
+        };
+        setTimeout(check, 1000);
+    });
+}
