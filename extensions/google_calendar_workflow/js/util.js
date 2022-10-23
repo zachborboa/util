@@ -115,7 +115,7 @@ function clickElementAndWaitUntilElementExists(elementToClick, selector) {
         const clickAgainDelay = 5000;
 
         elementToClick.click();
-        DEBUG && console.log('element clicked');
+        DEBUG && console.log('element clicked:', elementToClick);
 
         var lastClickedTime = Date.now();
 
@@ -131,7 +131,7 @@ function clickElementAndWaitUntilElementExists(elementToClick, selector) {
 
                 if (currentTime - lastClickedTime > clickAgainDelay) {
                     elementToClick.click();
-                    DEBUG && console.log('element clicked');
+                    DEBUG && console.log('element clicked:', elementToClick);
 
                     lastClickedTime = currentTime;
                 }
