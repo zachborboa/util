@@ -107,25 +107,32 @@ function isVisible(el) {
 }
 
 function clickElementAndWaitUntilElementExists(elementToClick, selector) {
-    console.group('clickElementAndWaitUntilElementExists:', selector);
+    DEBUG && console.group('clickElementAndWaitUntilElementExists:', selector);
+    DEBUG && console.log('elementToClick:', elementToClick);
 
     return new Promise((resolve, reject) => {
         // Amount of time can elapse before clicking element again.
         const clickAgainDelay = 5000;
 
         elementToClick.click();
+        DEBUG && console.log('element clicked');
+
         var lastClickedTime = Date.now();
 
         const check = () => {
             var element = document.querySelector(selector);
             if (element) {
+                DEBUG && console.log('element using selector "%s" found', selector);
                 resolve(element);
-                console.log('clickElementAndWaitUntilElementExists.found:', selector);
-                console.groupEnd();
+                DEBUG && console.groupEnd();
             } else {
                 const currentTime = Date.now();
+                DEBUG && console.log(currentTime - lastClickedTime, currentTime - lastClickedTime > clickAgainDelay);
+
                 if (currentTime - lastClickedTime > clickAgainDelay) {
                     elementToClick.click();
+                    DEBUG && console.log('element clicked');
+
                     lastClickedTime = currentTime;
                 }
 
