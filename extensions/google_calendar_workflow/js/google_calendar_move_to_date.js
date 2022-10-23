@@ -1,8 +1,5 @@
 'use strict';
 
-const TEST_ENV = 'TEST';
-const PROD_ENV = 'PROD';
-
 class Spinner {
     #SPINNER_DELAY_MS = 180;
 
@@ -1542,7 +1539,7 @@ if (typeof(window) === 'undefined') {
     module.exports = GoogleCalendarWorkflow
 } else {
     new GoogleCalendarWorkflow({
-        'debug': true,
+        'debug': DEBUG,
         'env': PROD_ENV,
     });
 }
