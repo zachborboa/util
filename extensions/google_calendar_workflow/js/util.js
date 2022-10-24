@@ -106,16 +106,18 @@ function isVisible(el) {
     return el && el.offsetParent !== null;
 }
 
-function clickElementAndWaitUntilElementExists(elementToClick, selector) {
-    DEBUG && console.group('clickElementAndWaitUntilElementExists:', selector);
-    DEBUG && console.log('elementToClick:', elementToClick);
+function clickElementAndWaitUntilElementExists(elementToClickSelector, elementToClickBase, selector) {
+    DEBUG && console.group('clickElementAndWaitUntilElementExists');
+    DEBUG && console.log('elementToClickSelector:', elementToClickSelector);
+    DEBUG && console.log('selector:', selector);
 
     return new Promise((resolve, reject) => {
         // Amount of time can elapse before clicking element again.
         const clickAgainDelay = 5000;
 
+        var elementToClick = elementToClickBase.querySelector(elementToClickSelector);
         elementToClick.click();
-        DEBUG && console.log('element clicked:', elementToClick);
+        DEBUG && console.log('elementToClick clicked:', elementToClick);
 
         var lastClickedTime = Date.now();
 
@@ -130,8 +132,9 @@ function clickElementAndWaitUntilElementExists(elementToClick, selector) {
                 DEBUG && console.log(currentTime - lastClickedTime, currentTime - lastClickedTime > clickAgainDelay);
 
                 if (currentTime - lastClickedTime > clickAgainDelay) {
+                    var elementToClick = elementToClickBase.querySelector(elementToClickSelector);
                     elementToClick.click();
-                    DEBUG && console.log('element clicked:', elementToClick);
+                    DEBUG && console.log('elementToClick clicked:', elementToClick);
 
                     lastClickedTime = currentTime;
                 }

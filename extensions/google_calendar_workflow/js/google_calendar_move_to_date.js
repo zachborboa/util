@@ -649,7 +649,8 @@ class GoogleCalendarWorkflow {
                 this.debug && console.log('about to click sourceEvent and wait until edit event exists');
                 setTimeout(() => {
                     this.debug && console.log('clicking sourceEvent and waiting until edit event exists');
-                    clickElementAndWaitUntilElementExists(sourceEvent, '[aria-label="Edit event"]')
+
+                    clickElementAndWaitUntilElementExists('[data-eventid]', moveFromDateCell, '[aria-label="Edit event"]')
                     .then((editEventButton) => {
                         editEventButton.click();
                         this.debug && console.log('edit event button clicked');
