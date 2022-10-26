@@ -5,9 +5,17 @@ body {
 table {
   border-spacing: 0;
 }
+table td {
+  padding-bottom: 0;
+  padding-top: 0;
+}
 
 #hnmain {
   width: 100%;
+}
+
+#comment-tree {
+  border-collapse: collapse;
 }
 
 .comment {
