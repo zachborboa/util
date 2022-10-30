@@ -753,6 +753,19 @@ class GoogleCalendarWorkflow {
             })
             .then(() => {
                 return waitUntilElementVisible('[aria-label="Duplicate"]')
+                    // Add delay before simulating click on the duplicate
+                    // option. Without the delay, it seems to not trigger the
+                    // simulated click.
+                    .then((duplicateEventOption) => {
+                        console.log('duplicate event option found');
+                        return new Promise(resolve => {
+                            console.log('waiting');
+                            setTimeout(() => {
+                                console.log('wait done');
+                                resolve(duplicateEventOption);
+                            }, 200);
+                        });
+                    })
                     .then((duplicateEventOption) => {
                         // Click using a "mousedown" event followed by a
                         // "mouseup" event as calling .click() on the object
