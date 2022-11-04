@@ -1266,7 +1266,7 @@ class GoogleCalendarWorkflow {
                 } else {
                     this.eventPageClickSaveButton();
                 }
-            }, 200);
+            }, 100);
         });
     }
 

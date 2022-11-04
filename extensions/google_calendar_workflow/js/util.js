@@ -56,7 +56,7 @@ function setInputValue(input, value) {
             }, 100);
         }
 
-        setTimeout(checkInputValue, 100);
+        checkInputValue();
     });
 }
 
@@ -73,10 +73,10 @@ function waitUntilElementExists(selector, baseElement) {
                 console.groupEnd();
                 resolve(element);
             } else {
-                setTimeout(check, 100);
+                setTimeout(check, 10);
             }
         };
-        setTimeout(check, 100);
+        setTimeout(check, 10);
     });
 }
 
