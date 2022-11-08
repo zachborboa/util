@@ -6,6 +6,7 @@
 var GoogleCalendarWorkflow = require('./google_calendar_move_to_date.js');
 
 const DEBUG = true;
+
 const TEST_ENV = 'TEST';
 const PROD_ENV = 'PROD';
 

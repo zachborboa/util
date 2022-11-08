@@ -1,5 +1,10 @@
 'use strict';
 
+const DEBUG = true;
+
+const TEST_ENV = 'TEST';
+const PROD_ENV = 'PROD';
+
 class Spinner {
     #SPINNER_DELAY_MS = 180;
 
