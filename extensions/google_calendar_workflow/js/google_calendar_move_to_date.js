@@ -1363,6 +1363,27 @@ class GoogleCalendarWorkflow {
         this.debug && console.groupEnd();
     }
 
+    getUserSettings() {
+        this.debug && console.group('getUserSettings');
+
+        if (this.env !== PROD_ENV) {
+            return;
+        }
+
+        var userSettings = localStorage.getItem('settings');
+        var parsedUserSettings = {};
+        if (userSettings !== null) {
+            parsedUserSettings = JSON.parse(userSettings);
+            this.debug && console.log('existing user settings found:', parsedUserSettings);
+        } else {
+            this.debug && console.log('existing user settings not found');
+        }
+
+        this.debug && console.groupEnd();
+
+        return parsedUserSettings;
+    }
+
     saveUserSettings() {
         this.debug && console.info('saveUserSettings');
 
@@ -1381,11 +1402,8 @@ class GoogleCalendarWorkflow {
             return;
         }
 
-        var userSettings = localStorage.getItem('settings');
-        if (userSettings !== null) {
-            var parsedUserSettings = JSON.parse(userSettings);
-            this.debug && console.log('existing user settings found:', parsedUserSettings);
-
+        var parsedUserSettings = this.getUserSettings();
+        if (parsedUserSettings !== null) {
             if (parsedUserSettings['manual']) {
                 this.moveToDateRadioManual.click();
             }
@@ -1399,8 +1417,6 @@ class GoogleCalendarWorkflow {
             }
 
             this.moveToDateInput.value = parsedUserSettings['moveToDate'];
-        } else {
-            this.debug && console.log('existing user settings not found');
         }
 
         this.debug && console.groupEnd();
