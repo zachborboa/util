@@ -1387,12 +1387,16 @@ class GoogleCalendarWorkflow {
     saveUserSettings() {
         this.debug && console.info('saveUserSettings');
 
-        localStorage.setItem('settings', JSON.stringify({
-            'manual': this.moveToDateRadioManual.checked,
-            'seven': this.moveToDateRadioSeven.checked,
-            'fourteen': this.moveToDateRadioFourteen.checked,
-            'moveToDate': this.moveToDateInput.value,
-        }));
+        var settings = this.getUserSettings();
+        settings['manual'] = this.moveToDateRadioManual.checked;
+        settings['seven'] = this.moveToDateRadioSeven.checked;
+        settings['fourteen'] = this.moveToDateRadioFourteen.checked;
+
+        if (this.moveToDateInput.value !== '') {
+            settings['moveToDate'] = this.moveToDateInput.value;
+        }
+
+        localStorage.setItem('settings', JSON.stringify(settings));
     }
 
     restoreUserSettings() {
