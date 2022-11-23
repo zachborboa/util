@@ -116,8 +116,12 @@ function clickElementAndWaitUntilElementExists(elementToClickSelector, elementTo
         const clickAgainDelay = 5000;
 
         var elementToClick = elementToClickBase.querySelector(elementToClickSelector);
-        elementToClick.click();
-        DEBUG && console.log('elementToClick clicked:', elementToClick);
+        if (elementToClick) {
+            elementToClick.click();
+            DEBUG && console.log('elementToClick clicked:', elementToClick);
+        } else {
+            DEBUG && console.warn('elementToClick not found using selector:', elementToClickSelector);
+        }
 
         var lastClickedTime = Date.now();
 
@@ -132,9 +136,14 @@ function clickElementAndWaitUntilElementExists(elementToClickSelector, elementTo
                 DEBUG && console.log(currentTime - lastClickedTime, currentTime - lastClickedTime > clickAgainDelay);
 
                 if (currentTime - lastClickedTime > clickAgainDelay) {
+
                     var elementToClick = elementToClickBase.querySelector(elementToClickSelector);
-                    elementToClick.click();
-                    DEBUG && console.log('elementToClick clicked:', elementToClick);
+                    if (elementToClick) {
+                        elementToClick.click();
+                        DEBUG && console.log('elementToClick clicked:', elementToClick);
+                    } else {
+                        DEBUG && console.warn('elementToClick not found using selector:', elementToClickSelector);
+                    }
 
                     lastClickedTime = currentTime;
                 }
