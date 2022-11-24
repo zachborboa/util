@@ -28,7 +28,7 @@ function getCalendarEventsWithMetadata(calendarEvents) {
     var priorityLowest = false;
     var priorityNextLowest = false;
     if (prioritySet.size) {
-        priorityLowest = Math.min(...prioritySet);
+        priorityLowest = Math.max(...prioritySet);
         priorityNextLowest = priorityLowest + 1;
     }
 
