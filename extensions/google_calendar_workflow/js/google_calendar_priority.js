@@ -190,3 +190,4 @@ var calendarEvents = [
 calendarEvents = increaseEventPriority(calendarEvent_doTheImportantThing, calendarEvents);
 calendarEvents = increaseEventPriority(calendarEvent_doTheMostImportantThing, calendarEvents);
 calendarEvents = increaseEventPriority(calendarEvent_doTheMostImportantThing, calendarEvents);
+calendarEvents = increaseEventPriority(calendarEvent_doThing, calendarEvents);
