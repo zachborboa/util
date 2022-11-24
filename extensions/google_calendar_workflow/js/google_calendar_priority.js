@@ -14,7 +14,7 @@ function getCalendarEventsWithMetadata(calendarEvents) {
         calendarEvent['is_numbered'] = eventTitleIsNumbered;
 
         var eventPriority = calendarEvent.title.match(/(\d+)\. /);
-        console.log('eventPriority: "%s"', eventPriority);
+        // console.log('eventPriority: "%s"', eventPriority);
         if (eventPriority) {
             eventPriority = parseInt(eventPriority[1]);
             priorityFound = true;
@@ -95,7 +95,6 @@ function increaseEventPriority(targetEvent, calendarEvents) {
 
     var calendarEventChanges = [];
     if (calendarEventMetadata['priority_found'] === false) {
-        console.log('priority not found');
         calendarEventChanges.push({
             'event': targetEvent,
             'old_title': targetEvent.title,
@@ -108,6 +107,30 @@ function increaseEventPriority(targetEvent, calendarEvents) {
             'old_title': targetEvent.title,
             'new_title': getEventTitleWithPriority(targetEvent, calendarEventMetadata['priority_next_lowest']),
         });
+
+    } else if (calendarEventMetadata['priority_found'] === true && targetEvent['priority'] !== null) {
+        calendarEventChanges.push({
+            'event': targetEvent,
+            'old_title': targetEvent.title,
+            'new_title': getEventTitleWithPriority(targetEvent, targetEvent['priority'] - 1),
+        });
+        console.log('calendarEventChanges before:', calendarEventChanges);
+
+        for (var i = 0; i < calendarEventMetadata['events'].length; i++) {
+            console.log(i);
+            var calendarEvent = calendarEventMetadata['events'][i];
+            if (calendarEvent['id'] !== targetEvent['id'] && calendarEvent['priority'] !== null) {
+                console.log('calendar event to change:', calendarEvent);
+
+                var calendarEventChange = {
+                    'event': calendarEvent,
+                    'old_title': calendarEvent.title,
+                    'new_title': getEventTitleWithPriority(calendarEvent, calendarEvent['priority'] + 1),
+                };
+                console.log('calendarEventChange:', calendarEventChange);
+                calendarEventChanges.push(calendarEventChange);
+            }
+        }
 
     } else {
         console.error('unhandled case');
@@ -165,4 +188,5 @@ var calendarEvents = [
 ];
 
 calendarEvents = increaseEventPriority(calendarEvent_doTheImportantThing, calendarEvents);
+calendarEvents = increaseEventPriority(calendarEvent_doTheMostImportantThing, calendarEvents);
 calendarEvents = increaseEventPriority(calendarEvent_doTheMostImportantThing, calendarEvents);
