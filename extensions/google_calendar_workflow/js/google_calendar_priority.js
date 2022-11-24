@@ -109,17 +109,20 @@ function increaseEventPriority(targetEvent, calendarEvents) {
         });
 
     } else if (calendarEventMetadata['priority_found'] === true && targetEvent['priority'] !== null) {
+        var updatedTargetEventPriority = targetEvent['priority'] - 1;
         calendarEventChanges.push({
             'event': targetEvent,
             'old_title': targetEvent.title,
-            'new_title': getEventTitleWithPriority(targetEvent, targetEvent['priority'] - 1),
+            'new_title': getEventTitleWithPriority(targetEvent, updatedTargetEventPriority),
         });
         console.log('calendarEventChanges before:', calendarEventChanges);
 
         for (var i = 0; i < calendarEventMetadata['events'].length; i++) {
             console.log(i);
             var calendarEvent = calendarEventMetadata['events'][i];
-            if (calendarEvent['id'] !== targetEvent['id'] && calendarEvent['priority'] !== null) {
+            if (calendarEvent['id'] !== targetEvent['id'] &&
+                calendarEvent['priority'] !== null &&
+                calendarEvent['priority'] >= updatedTargetEventPriority) {
                 console.log('calendar event to change:', calendarEvent);
 
                 var calendarEventChange = {
@@ -191,3 +194,5 @@ calendarEvents = increaseEventPriority(calendarEvent_doTheImportantThing, calend
 calendarEvents = increaseEventPriority(calendarEvent_doTheMostImportantThing, calendarEvents);
 calendarEvents = increaseEventPriority(calendarEvent_doTheMostImportantThing, calendarEvents);
 calendarEvents = increaseEventPriority(calendarEvent_doThing, calendarEvents);
+calendarEvents = increaseEventPriority(calendarEvent_doThing, calendarEvents);
+calendarEvents = increaseEventPriority(calendarEvent_doTheImportantThing, calendarEvents);
