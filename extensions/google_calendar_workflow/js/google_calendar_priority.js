@@ -4,7 +4,7 @@ function getCalendarEventsWithMetadata(calendarEvents) {
     var priorityFound = false;
     var prioritySet = new Set();
     for (var i = 0; i < calendarEvents.length; i++) {
-        console.log(i);
+        console.group('calendarEvent', i);
 
         var calendarEvent = calendarEvents[i];
         console.log('calendarEvent:', calendarEvent);
@@ -21,6 +21,8 @@ function getCalendarEventsWithMetadata(calendarEvents) {
             prioritySet.add(eventPriority);
         }
         calendarEvent['priority'] = eventPriority;
+
+        console.groupEnd();
     }
 
     var priorityLowest = false;
@@ -37,7 +39,7 @@ function getCalendarEventsWithMetadata(calendarEvents) {
         'priority_lowest': priorityLowest,
         'priority_next_lowest': priorityNextLowest,
     };
-    console.log(calendarEventMetadata);
+    console.log('calendarEventMetadata:', calendarEventMetadata);
 
     console.groupEnd();
     return calendarEventMetadata;
@@ -51,8 +53,8 @@ function removeEventTitlePriority(eventTitle) {
     return updatedEventTitle;
 }
 
-function getIncreasedEventTitlePriority(calendarEvent) {
-    console.group('getIncreasedEventTitlePriority');
+function getEventTitleWithIncreasedPriority(calendarEvent) {
+    console.group('getEventTitleWithIncreasedPriority');
     console.log('calendarEvent:', calendarEvent);
 
     var updatedEventTitle = calendarEvent.title;
@@ -69,8 +71,24 @@ function getIncreasedEventTitlePriority(calendarEvent) {
     return updatedEventTitle;
 }
 
+function getEventTitleWithPriority(calendarEvent, eventPriority) {
+    console.group('getEventTitleWithPriority');
+    console.log('calendarEvent:', calendarEvent);
+
+    var updatedEventTitle;
+    if (calendarEvent['priority'] === null) {
+        updatedEventTitle = eventPriority + '. ' + calendarEvent.title;
+    } else {
+        updatedEventTitle = eventPriority + '. ' + removeEventTitlePriority(calendarEvent.title);
+    }
+
+    console.groupEnd();
+    return updatedEventTitle;
+}
+
 function increaseEventPriority(targetEvent, calendarEvents) {
     console.group('increaseEventPriority');
+    console.log('targetEvent:', targetEvent);
     console.log('events before:', calendarEvents);
 
     var calendarEventMetadata = getCalendarEventsWithMetadata(calendarEvents);
@@ -81,10 +99,18 @@ function increaseEventPriority(targetEvent, calendarEvents) {
         calendarEventChanges.push({
             'event': targetEvent,
             'old_title': targetEvent.title,
-            'new_title': getIncreasedEventTitlePriority(targetEvent),
+            'new_title': getEventTitleWithIncreasedPriority(targetEvent),
         });
+
+    } else if (calendarEventMetadata['priority_found'] === true && targetEvent['priority'] === null) {
+        calendarEventChanges.push({
+            'event': targetEvent,
+            'old_title': targetEvent.title,
+            'new_title': getEventTitleWithPriority(targetEvent, calendarEventMetadata['priority_next_lowest']),
+        });
+
     } else {
-        console.log('priority found');
+        console.error('unhandled case');
     }
 
     console.log('calendarEventChanges:', calendarEventChanges);
@@ -139,3 +165,4 @@ var calendarEvents = [
 ];
 
 calendarEvents = increaseEventPriority(calendarEvent_doTheImportantThing, calendarEvents);
+calendarEvents = increaseEventPriority(calendarEvent_doTheMostImportantThing, calendarEvents);
