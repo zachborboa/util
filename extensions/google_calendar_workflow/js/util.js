@@ -11,7 +11,7 @@ function dispatchEvent(obj, event) {
 
 function setInputValue(input, value) {
     console.group('setInputValue');
-    console.log('input:', input);
+    // console.log('input:', input);
     console.log('value:', value);
     return new Promise((resolve, reject) => {
 
@@ -118,7 +118,7 @@ function clickElementAndWaitUntilElementExists(elementToClickSelector, elementTo
         var elementToClick = elementToClickBase.querySelector(elementToClickSelector);
         if (elementToClick) {
             elementToClick.click();
-            DEBUG && console.log('elementToClick clicked:', elementToClick);
+            // DEBUG && console.log('elementToClick clicked:', elementToClick);
         } else {
             DEBUG && console.warn('elementToClick not found using selector:', elementToClickSelector);
         }
@@ -140,7 +140,7 @@ function clickElementAndWaitUntilElementExists(elementToClickSelector, elementTo
                     var elementToClick = elementToClickBase.querySelector(elementToClickSelector);
                     if (elementToClick) {
                         elementToClick.click();
-                        DEBUG && console.log('elementToClick clicked:', elementToClick);
+                        // DEBUG && console.log('elementToClick clicked:', elementToClick);
                     } else {
                         DEBUG && console.warn('elementToClick not found using selector:', elementToClickSelector);
                     }
