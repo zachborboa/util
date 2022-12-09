@@ -1,219 +1,236 @@
-function getCalendarEventsWithMetadata(calendarEvents) {
-    console.group('getCalendarEventsWithMetadata');
+class Workflow {
+    constructor() {
+        this.events = [];
+    }
 
-    var updatedCalendarEvents = [];
-    var priorityFound = false;
-    var prioritySet = new Set();
-    for (var i = 0; i < calendarEvents.length; i++) {
-        console.group('calendarEvent', i);
+    setEvents(events) {
+        this.events = events;
+    }
 
-        var calendarEvent = {...calendarEvents[i]};
+    getEventById(targetEventId) {
+        console.info('getEventById');
+        console.log('targetEventId:', targetEventId);
+        for (var i = 0; i < this.events.length; i++) {
+            var calendarEvent = this.events[i];
+            if (calendarEvent['id'] === targetEventId) {
+                return calendarEvent;
+            }
+        }
+    }
+
+    getCalendarEventsWithMetadata() {
+        console.group('getCalendarEventsWithMetadata');
+
+        var updatedCalendarEvents = [];
+        var priorityFound = false;
+        var prioritySet = new Set();
+        for (var i = 0; i < this.events.length; i++) {
+            console.group('calendarEvent', i);
+
+            var calendarEvent = {...this.events[i]};
+            console.log('calendarEvent:', calendarEvent);
+
+            var eventTitleIsNumbered = /^(?:\*\*\* )?(\d+)\. /.test(calendarEvent.title);
+            console.log('eventTitleIsNumbered:', eventTitleIsNumbered);
+            calendarEvent['is_numbered'] = eventTitleIsNumbered;
+
+            var eventPriority = calendarEvent.title.match(/(\d+)\. /);
+            // console.log('eventPriority: "%s"', eventPriority);
+            if (eventPriority) {
+                eventPriority = parseInt(eventPriority[1]);
+                priorityFound = true;
+                prioritySet.add(eventPriority);
+            }
+            calendarEvent['priority'] = eventPriority;
+
+            updatedCalendarEvents.push(calendarEvent);
+            console.groupEnd();
+        }
+
+        var priorityLowest = false;
+        var priorityNextLowest = false;
+        if (prioritySet.size) {
+            priorityLowest = Math.max(...prioritySet);
+            priorityNextLowest = priorityLowest + 1;
+        }
+
+        var calendarEventMetadata = {
+            'events': updatedCalendarEvents,
+            'priority_found': priorityFound,
+            'priority_set': prioritySet,
+            'priority_lowest': priorityLowest,
+            'priority_next_lowest': priorityNextLowest,
+        };
+        console.log('calendarEventMetadata:', calendarEventMetadata);
+
+        console.groupEnd();
+        return calendarEventMetadata;
+    }
+
+    removeEventTitlePriority(eventTitle) {
+        console.group('removeEventTitlePriority');
+        console.log('eventTitle:', eventTitle);
+        var updatedEventTitle = eventTitle.replace(/^\d+\. /, '');
+        console.log('updatedEventTitle:', updatedEventTitle);
+        console.groupEnd();
+        return updatedEventTitle;
+    }
+
+    getEventTitleWithIncreasedPriority(calendarEvent) {
+        console.group('getEventTitleWithIncreasedPriority');
         console.log('calendarEvent:', calendarEvent);
 
-        var eventTitleIsNumbered = /^(?:\*\*\* )?(\d+)\. /.test(calendarEvent.title);
-        console.log('eventTitleIsNumbered:', eventTitleIsNumbered);
-        calendarEvent['is_numbered'] = eventTitleIsNumbered;
-
-        var eventPriority = calendarEvent.title.match(/(\d+)\. /);
-        // console.log('eventPriority: "%s"', eventPriority);
-        if (eventPriority) {
-            eventPriority = parseInt(eventPriority[1]);
-            priorityFound = true;
-            prioritySet.add(eventPriority);
+        var updatedEventTitle = calendarEvent.title;
+        var updatedEventPriority;
+        if (calendarEvent['priority'] === null || calendarEvent['priority'] === undefined) {
+            updatedEventPriority = 1;
+            updatedEventTitle = updatedEventPriority + '. ' + updatedEventTitle;
+        } else {
+            updatedEventPriority = calendarEvent['priority'] + 1;
+            updatedEventTitle = updatedEventPriority + '. ' + this.removeEventTitlePriority(updatedEventTitle);
         }
-        calendarEvent['priority'] = eventPriority;
 
-        updatedCalendarEvents.push(calendarEvent);
+        console.log('updatedEventTitle:', updatedEventTitle);
         console.groupEnd();
+        return updatedEventTitle;
     }
 
-    var priorityLowest = false;
-    var priorityNextLowest = false;
-    if (prioritySet.size) {
-        priorityLowest = Math.max(...prioritySet);
-        priorityNextLowest = priorityLowest + 1;
-    }
+    getEventPriority(targetEvent) {
+        console.group('getEventPriority');
+        console.log('targetEvent:', targetEvent);
 
-    var calendarEventMetadata = {
-        'events': updatedCalendarEvents,
-        'priority_found': priorityFound,
-        'priority_set': prioritySet,
-        'priority_lowest': priorityLowest,
-        'priority_next_lowest': priorityNextLowest,
-    };
-    console.log('calendarEventMetadata:', calendarEventMetadata);
-
-    console.groupEnd();
-    return calendarEventMetadata;
-}
-
-function removeEventTitlePriority(eventTitle) {
-    console.group('removeEventTitlePriority');
-    console.log('eventTitle:', eventTitle);
-    var updatedEventTitle = eventTitle.replace(/^\d+\. /, '');
-    console.log('updatedEventTitle:', updatedEventTitle);
-    console.groupEnd();
-    return updatedEventTitle;
-}
-
-function getEventTitleWithIncreasedPriority(calendarEvent) {
-    console.group('getEventTitleWithIncreasedPriority');
-    console.log('calendarEvent:', calendarEvent);
-
-    var updatedEventTitle = calendarEvent.title;
-    var updatedEventPriority;
-    if (calendarEvent['priority'] === null || calendarEvent['priority'] === undefined) {
-        updatedEventPriority = 1;
-        updatedEventTitle = updatedEventPriority + '. ' + updatedEventTitle;
-    } else {
-        updatedEventPriority = calendarEvent['priority'] + 1;
-        updatedEventTitle = updatedEventPriority + '. ' + removeEventTitlePriority(updatedEventTitle);
-    }
-
-    console.log('updatedEventTitle:', updatedEventTitle);
-    console.groupEnd();
-    return updatedEventTitle;
-}
-
-function getEventTitleWithPriority(calendarEvent, eventPriority) {
-    console.group('getEventTitleWithPriority');
-    console.log('calendarEvent:', calendarEvent);
-    console.log('eventPriority:', eventPriority);
-
-    var updatedEventTitle;
-    if (calendarEvent['priority'] === null) {
-        updatedEventTitle = eventPriority + '. ' + calendarEvent.title;
-    } else {
-        updatedEventTitle = eventPriority + '. ' + removeEventTitlePriority(calendarEvent.title);
-    }
-
-    console.log('updatedEventTitle:', updatedEventTitle);
-    console.groupEnd();
-    return updatedEventTitle;
-}
-
-function getEventPriority(targetEvent) {
-    console.group('getEventPriority');
-    console.log('targetEvent:', targetEvent);
-
-    var eventPriority = null;
-    var eventPriorityMatch = targetEvent.title.match(/(\d+)\. /);
-    if (eventPriorityMatch) {
-        eventPriority = parseInt(eventPriorityMatch[1]);
-    }
-
-    console.log('eventPriority:', eventPriority);
-    return eventPriority;
-}
-
-function getEventById(targetEventId, calendarEvents) {
-    console.info('getEventById');
-    console.log('targetEventId:', targetEventId);
-    console.log('calendarEvents:', calendarEvents);
-    for (var i = 0; i < calendarEvents.length; i++) {
-        var calendarEvent = calendarEvents[i];
-        if (calendarEvent['id'] === targetEventId) {
-            return calendarEvent;
+        var eventPriority = null;
+        var eventPriorityMatch = targetEvent.title.match(/(\d+)\. /);
+        if (eventPriorityMatch) {
+            eventPriority = parseInt(eventPriorityMatch[1]);
         }
+
+        console.log('eventPriority:', eventPriority);
+        return eventPriority;
     }
-}
 
-function increaseEventPriority(targetEvent, calendarEvents) {
-    console.group('increaseEventPriority');
-    console.log('targetEvent:', targetEvent);
-    targetEvent = getEventById(targetEvent['id'], calendarEvents);
-    console.log('targetEvent:', targetEvent);
-    console.log('targetEvent.priority:', targetEvent['priority']);
-    console.log('events before:', calendarEvents);
+    getEventTitleWithPriority(calendarEvent, eventPriority) {
+        console.group('getEventTitleWithPriority');
+        console.log('calendarEvent:', calendarEvent);
+        console.log('eventPriority:', eventPriority);
 
-    var calendarEventMetadata = getCalendarEventsWithMetadata(calendarEvents);
-    console.log('priority_found:', calendarEventMetadata['priority_found']);
+        var updatedEventTitle;
+        if (calendarEvent['priority'] === null) {
+            updatedEventTitle = eventPriority + '. ' + calendarEvent.title;
+        } else {
+            updatedEventTitle = eventPriority + '. ' + this.removeEventTitlePriority(calendarEvent.title);
+        }
 
-    var calendarEventChanges = [];
-    if (calendarEventMetadata['priority_found'] === false) {
-        calendarEventChanges.push({
-            'event': targetEvent,
-            'old_title': targetEvent.title,
-            'new_title': getEventTitleWithIncreasedPriority(targetEvent),
-        });
+        console.log('updatedEventTitle:', updatedEventTitle);
+        console.groupEnd();
+        return updatedEventTitle;
+    }
 
-    } else if (
-        calendarEventMetadata['priority_found'] === true &&
-        (
-            targetEvent['priority'] === null ||
-            targetEvent['priority'] === undefined
-        )) {
-        calendarEventChanges.push({
-            'event': targetEvent,
-            'old_title': targetEvent.title,
-            'new_title': getEventTitleWithPriority(targetEvent, calendarEventMetadata['priority_next_lowest']),
-        });
+    increaseEventPriority(userTargetEvent) {
+        console.group('increaseEventPriority');
+        console.log('userTargetEvent:', userTargetEvent);
 
-    } else if (calendarEventMetadata['priority_found'] === true && targetEvent['priority'] !== null) {
-        var eventPriority = getEventPriority(targetEvent);
-        var updatedTargetEventPriority = eventPriority === null ? foo : eventPriority - 1;
-        calendarEventChanges.push({
-            'event': targetEvent,
-            'old_title': targetEvent.title,
-            'new_title': getEventTitleWithPriority(targetEvent, updatedTargetEventPriority),
-        });
-        console.log('calendarEventChanges before:', calendarEventChanges);
+        var targetEvent = this.getEventById(userTargetEvent['id']);
+        console.log('targetEvent:', targetEvent);
+        console.log('targetEvent.priority:', targetEvent['priority']);
 
-        for (var i = 0; i < calendarEventMetadata['events'].length; i++) {
-            console.log(i);
-            var calendarEvent = calendarEventMetadata['events'][i];
-            if (calendarEvent['id'] !== targetEvent['id'] &&
-                calendarEvent['priority'] !== null &&
-                calendarEvent['priority'] >= updatedTargetEventPriority) {
-                console.log('calendar event to change:', calendarEvent);
+        var calendarEventMetadata = this.getCalendarEventsWithMetadata();
+        console.log('priority_found:', calendarEventMetadata['priority_found']);
 
-                var calendarEventChange = {
-                    'event': calendarEvent,
-                    'old_title': calendarEvent.title,
-                    'new_title': getEventTitleWithPriority(calendarEvent, calendarEvent['priority'] + 1),
-                    //'new_title': getEventTitleWithPriority(calendarEvent, calendarEvent['priority'] - 1),
-                };
-                console.log('calendarEventChange:', calendarEventChange);
-                calendarEventChanges.push(calendarEventChange);
+        var calendarEventChanges = [];
+        if (calendarEventMetadata['priority_found'] === false) {
+            calendarEventChanges.push({
+                'event': targetEvent,
+                'old_title': targetEvent.title,
+                'new_title': this.getEventTitleWithIncreasedPriority(targetEvent),
+            });
+
+        } else if (
+            calendarEventMetadata['priority_found'] === true &&
+            (
+                targetEvent['priority'] === null ||
+                targetEvent['priority'] === undefined
+            )) {
+            calendarEventChanges.push({
+                'event': targetEvent,
+                'old_title': targetEvent.title,
+                'new_title': this.getEventTitleWithPriority(targetEvent, calendarEventMetadata['priority_next_lowest']),
+            });
+
+        } else if (
+            calendarEventMetadata['priority_found'] === true &&
+            targetEvent['priority'] !== null) {
+
+            var eventPriority = this.getEventPriority(targetEvent);
+            var updatedTargetEventPriority = eventPriority === null ? FIXME : eventPriority - 1;
+            calendarEventChanges.push({
+                'event': targetEvent,
+                'old_title': targetEvent.title,
+                'new_title': this.getEventTitleWithPriority(targetEvent, updatedTargetEventPriority),
+            });
+            console.log('calendarEventChanges before:', calendarEventChanges);
+
+            for (var i = 0; i < calendarEventMetadata['events'].length; i++) {
+                var calendarEvent = calendarEventMetadata['events'][i];
+                if (calendarEvent['id'] !== targetEvent['id']) {
+                    console.log('found calendar event to change:', calendarEvent);
+
+                    if (calendarEvent['priority'] !== null) {
+                        if (calendarEvent['priority'] >= updatedTargetEventPriority) {
+                            console.log('found calendar event has priority %s >= %s', calendarEvent['priority'], updatedTargetEventPriority);
+
+                            var calendarEventChange = {
+                                'event': calendarEvent,
+                                'old_title': calendarEvent.title,
+                                'new_title': this.getEventTitleWithPriority(calendarEvent, calendarEvent['priority'] + 1),
+                                //'new_title': this.getEventTitleWithPriority(calendarEvent, calendarEvent['priority'] - 1),
+                            };
+                            console.log('calendarEventChange:', calendarEventChange);
+                            calendarEventChanges.push(calendarEventChange);
+
+                        } else {
+                            console.log('found calendar event has OTHER priority %s', calendarEvent['priority']);
+                        }
+                    }
+                }
             }
+
+        } else {
+            console.error('Error: unhandled case');
         }
 
-    } else {
-        console.error('unhandled case');
-    }
+        console.log('calendarEventChanges:', calendarEventChanges);
 
-    console.log('calendarEventChanges:', calendarEventChanges);
+        for (var i = 0; i < calendarEventChanges.length; i++) {
+            var calendarEventChange = calendarEventChanges[i];
+            console.group('calendarEventChange %s:', i, calendarEventChange);
 
-    for (var i = 0; i < calendarEventChanges.length; i++) {
-        console.group('calendarEventChange', i);
+            for (var j = 0; j < this.events.length; j++) {
+                // console.log('event index', j);
+                var calendarEvent = this.events[j];
+                if (calendarEvent.id === calendarEventChange.event.id) {
+                    console.group('event index', j);
 
-        var calendarEventChange = calendarEventChanges[i];
-        console.log('calendarEventChange:', calendarEventChange);
+                    console.log('calendarEvent before:', calendarEvent);
+                    calendarEvent['title'] = calendarEventChange['new_title'];
+                    console.log('calendarEvent after:', calendarEvent);
 
-        for (var j = 0; j < calendarEventMetadata['events'].length; j++) {
-            console.log(j);
-            var calendarEvent = calendarEventMetadata['events'][j];
-            if (calendarEvent.id === calendarEventChange.event.id) {
-                console.log('calendarEvent before:', calendarEvent);
-                calendarEvent['title'] = calendarEventChange['new_title'];
-                console.log('calendarEvent after:', calendarEvent);
-
-                calendarEvents[j] = calendarEvent;
+                    console.groupEnd();
+                }
             }
+
+            console.groupEnd();
         }
+
+        console.log('events after:', calendarEvents);
+
+        calendarEventMetadata = this.getCalendarEventsWithMetadata();
+        this.events = calendarEventMetadata['events'];
+
+        console.log('events after:', this.events);
 
         console.groupEnd();
     }
-
-    console.log('events after:', calendarEvents);
-
-    calendarEventMetadata = getCalendarEventsWithMetadata(calendarEvents);
-    calendarEvents = calendarEventMetadata['events'];
-
-    console.log('events after:', calendarEvents);
-
-    console.groupEnd();
-    return calendarEvents;
 }
 
 var calendarEvent_doThing = {
@@ -235,50 +252,261 @@ var calendarEvents = [
     calendarEvent_doTheMostImportantThing,
 ];
 
-function getEvent(targetEvent, calendarEvents) {
-    for (var i = 0; i < calendarEvents.length; i++) {
-        var calendarEvent = calendarEvents[i];
-        if (calendarEvent['id'] === targetEvent['id']) {
-            return calendarEvent;
+var wf = new Workflow();
+wf.setEvents(calendarEvents);
+
+function diff(string_1, string_2) {
+    const { spawnSync } = require('child_process');
+
+    const command = 'diff';
+    const args = [
+        '--unified',
+        `<(echo "${string_1}")`,
+        `<(echo "${string_2}")`,
+    ];
+    const options = {
+        'shell': '/bin/bash',
+    };
+
+    const diffResult = spawnSync(command, args, options);
+    const diff = diffResult.stdout.toString();
+    // console.log(diff);
+
+    const diffHighlightResult = spawnSync('diff-highlight', [], { input: diff });
+    const diffHighlight = diffHighlightResult.stdout.toString();
+    // console.log(diffHighlight);
+
+    const colorDiffResult = spawnSync('colordiff', [], { input: diffHighlight });
+    const colorDiff = colorDiffResult.stdout.toString();
+    console.log(colorDiff);
+}
+
+function doThingAndExpect(obj, funcName, args, expectations) {
+    console.group('doThingAndExpect');
+
+    var calendarEventsBefore = JSON.stringify(obj.events, null, 2);
+
+    var fn = wf[funcName];
+    fn.apply(wf, args);
+
+    var calendarEventsAfter = JSON.stringify(obj.events, null, 2);
+
+    // console.log(calendarEventsBefore);
+    // console.log(calendarEventsAfter);
+
+    diff(calendarEventsBefore, calendarEventsAfter);
+
+    // console.log(expectations);
+
+    var success = true;
+    for (var i = 0; i < expectations.length; i++) {
+        var expect = expectations[i];
+        console.group('expect:', expect);
+
+        var calendarEvent;
+        for (var j = 0; j < obj.events.length; j++) {
+            if (obj.events[j].id === expect.id) {
+                calendarEvent = obj.events[j];
+                // console.log('event found:', calendarEvent);
+            }
         }
+
+        for (var prop in expect) {
+            if (expect[prop] !== calendarEvent[prop]) {
+                console.log('FAIL: expect.' + prop + ' != ' + expect[prop]);
+                success = false;
+
+                console.log('funcName:', funcName);
+                console.log('args:', args);
+                console.log(calendarEvent);
+                console.log(obj.events);
+            } else {
+                console.log('OK: expect.' + prop + ' = ' + expect[prop]);
+            }
+        }
+
+        console.groupEnd();
     }
+
+    console.groupEnd();
+
+    return success;
 }
 
 var allTestsPass = true;
 
-calendarEvents = increaseEventPriority(calendarEvent_doTheImportantThing, calendarEvents);
-allTestsPass = allTestsPass && getEvent(calendarEvent_doThing, calendarEvents)['priority'] === null;
-allTestsPass = allTestsPass && getEvent(calendarEvent_doTheImportantThing, calendarEvents)['priority'] === 1;
-allTestsPass = allTestsPass && getEvent(calendarEvent_doTheMostImportantThing, calendarEvents)['priority'] === null;
+allTestsPass = allTestsPass && doThingAndExpect(
+    wf,
+    'increaseEventPriority',
+    [
+        calendarEvent_doTheImportantThing,
+    ],
+    [
+        {
+            'id': calendarEvent_doThing.id,
+            'title': 'Do thing',
+            'is_numbered': false,
+            'priority': null,
+        },
+        {
+            'id': calendarEvent_doTheImportantThing.id,
+            'title': '1. Do the important thing',
+            'is_numbered': true,
+            'priority': 1,
+        },
+        {
+            'id': calendarEvent_doTheMostImportantThing.id,
+            'title': 'Do the most important thing',
+            'is_numbered': false,
+            'priority': null,
+        },
+    ],
+);
 
-calendarEvents = increaseEventPriority(calendarEvent_doTheMostImportantThing, calendarEvents);
-allTestsPass = allTestsPass && getEvent(calendarEvent_doThing, calendarEvents)['priority'] === null;
-allTestsPass = allTestsPass && getEvent(calendarEvent_doTheImportantThing, calendarEvents)['priority'] === 1;
-allTestsPass = allTestsPass && getEvent(calendarEvent_doTheMostImportantThing, calendarEvents)['priority'] === 2;
+allTestsPass = allTestsPass && doThingAndExpect(
+    wf,
+    'increaseEventPriority',
+    [
+        calendarEvent_doTheMostImportantThing,
+    ],
+    [
+        {
+            'id': calendarEvent_doThing.id,
+            'title': 'Do thing',
+            'is_numbered': false,
+            'priority': null,
+        },
+        {
+            'id': calendarEvent_doTheImportantThing.id,
+            'title': '1. Do the important thing',
+            'is_numbered': true,
+            'priority': 1,
+        },
+        {
+            'id': calendarEvent_doTheMostImportantThing.id,
+            'title': '2. Do the most important thing',
+            'is_numbered': true,
+            'priority': 2,
+        },
+    ],
+);
 
-calendarEvents = increaseEventPriority(calendarEvent_doTheMostImportantThing, calendarEvents);
-allTestsPass = allTestsPass && getEvent(calendarEvent_doThing, calendarEvents)['priority'] === null;
-allTestsPass = allTestsPass && getEvent(calendarEvent_doTheImportantThing, calendarEvents)['priority'] === 2;
-allTestsPass = allTestsPass && getEvent(calendarEvent_doTheMostImportantThing, calendarEvents)['priority'] === 1;
+allTestsPass = allTestsPass && doThingAndExpect(
+    wf,
+    'increaseEventPriority',
+    [
+        calendarEvent_doTheMostImportantThing,
+    ],
+    [
+        {
+            'id': calendarEvent_doThing.id,
+            'title': 'Do thing',
+            'is_numbered': false,
+            'priority': null,
+        },
+        {
+            'id': calendarEvent_doTheImportantThing.id,
+            'title': '2. Do the important thing',
+            'is_numbered': true,
+            'priority': 2,
+        },
+        {
+            'id': calendarEvent_doTheMostImportantThing.id,
+            'title': '1. Do the most important thing',
+            'is_numbered': true,
+            'priority': 1,
+        },
+    ],
+);
 
-calendarEvents = increaseEventPriority(calendarEvent_doThing, calendarEvents);
-allTestsPass = allTestsPass && getEvent(calendarEvent_doThing, calendarEvents)['priority'] === 3;
-allTestsPass = allTestsPass && getEvent(calendarEvent_doTheImportantThing, calendarEvents)['priority'] === 2;
-allTestsPass = allTestsPass && getEvent(calendarEvent_doTheMostImportantThing, calendarEvents)['priority'] === 1;
+allTestsPass = allTestsPass && doThingAndExpect(
+    wf,
+    'increaseEventPriority',
+    [
+        calendarEvent_doThing,
+    ],
+    [
+        {
+            'id': calendarEvent_doThing.id,
+            'title': '3. Do thing',
+            'is_numbered': true,
+            'priority': 3,
+        },
+        {
+            'id': calendarEvent_doTheImportantThing.id,
+            'title': '2. Do the important thing',
+            'is_numbered': true,
+            'priority': 2,
+        },
+        {
+            'id': calendarEvent_doTheMostImportantThing.id,
+            'title': '1. Do the most important thing',
+            'is_numbered': true,
+            'priority': 1,
+        },
+    ],
+);
 
-calendarEvents = increaseEventPriority(calendarEvent_doThing, calendarEvents);
-allTestsPass = allTestsPass && getEvent(calendarEvent_doThing, calendarEvents)['priority'] === 2;
-allTestsPass = allTestsPass && getEvent(calendarEvent_doTheImportantThing, calendarEvents)['priority'] === 3;
-allTestsPass = allTestsPass && getEvent(calendarEvent_doTheMostImportantThing, calendarEvents)['priority'] === 1;
+allTestsPass = allTestsPass && doThingAndExpect(
+    wf,
+    'increaseEventPriority',
+    [
+        calendarEvent_doThing,
+    ],
+    [
+        {
+            'id': calendarEvent_doThing.id,
+            'title': '2. Do thing',
+            'is_numbered': true,
+            'priority': 2,
+        },
+        {
+            'id': calendarEvent_doTheImportantThing.id,
+            'title': '3. Do the important thing',
+            'is_numbered': true,
+            'priority': 3,
+        },
+        {
+            'id': calendarEvent_doTheMostImportantThing.id,
+            'title': '1. Do the most important thing',
+            'is_numbered': true,
+            'priority': 1,
+        },
+    ],
+);
 
-calendarEvents = increaseEventPriority(calendarEvent_doTheImportantThing, calendarEvents);
-allTestsPass = allTestsPass && getEvent(calendarEvent_doThing, calendarEvents)['priority'] === 3;
-allTestsPass = allTestsPass && getEvent(calendarEvent_doTheImportantThing, calendarEvents)['priority'] === 2;
-allTestsPass = allTestsPass && getEvent(calendarEvent_doTheMostImportantThing, calendarEvents)['priority'] === 1;
+allTestsPass = allTestsPass && doThingAndExpect(
+    wf,
+    'increaseEventPriority',
+    [
+        calendarEvent_doTheImportantThing,
+    ],
+    [
+        {
+            'id': calendarEvent_doThing.id,
+            'title': '3. Do thing',
+            'is_numbered': true,
+            'priority': 3,
+        },
+        {
+            'id': calendarEvent_doTheImportantThing.id,
+            'title': '2. Do the important thing',
+            'is_numbered': true,
+            'priority': 2,
+        },
+        {
+            'id': calendarEvent_doTheMostImportantThing.id,
+            'title': '1. Do the most important thing',
+            'is_numbered': true,
+            'priority': 1,
+        },
+    ],
+);
 
-calendarEvents = increaseEventPriority(calendarEvent_doTheMostImportantThing, calendarEvents);
-// allTestsPass = allTestsPass && getEvent(calendarEvent_doThing, calendarEvents)['priority'] === 2;
-// allTestsPass = allTestsPass && getEvent(calendarEvent_doTheImportantThing, calendarEvents)['priority'] === 1;
-// allTestsPass = allTestsPass && getEvent(calendarEvent_doTheMostImportantThing, calendarEvents)['priority'] === 0;
+// TESTING:
+// calendarEvents = increaseEventPriority(calendarEvent_doTheMostImportantThing, calendarEvents);
+// calendarEvent_doThing, calendarEvents)['priority'] === 2;
+// calendarEvent_doTheImportantThing, calendarEvents)['priority'] === 1;
+// calendarEvent_doTheMostImportantThing, calendarEvents)['priority'] === 0;
 
 console.log('\nallTestsPass:', allTestsPass);
