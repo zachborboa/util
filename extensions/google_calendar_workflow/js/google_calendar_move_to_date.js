@@ -1178,6 +1178,16 @@ class GoogleCalendarWorkflow {
 
             this.cleanUpEvents();
 
+        // Decrease selected event day.
+        } else if (character === 'ArrowLeft') {
+            this.debug && console.log('decrease selected event day; arrow key:', character);
+            this.decreaseSelectedEventDay();
+
+        // Increase/decrease selected event day.
+        } else if (character === 'ArrowRight') {
+            this.debug && console.log('increase selected event day; arrow key:', character);
+            this.increaseSelectedEventDay();
+
         } else {
             this.debug && console.log('other');
         }
@@ -1567,6 +1577,106 @@ class GoogleCalendarWorkflow {
             document.body.appendChild(spinner.spinnerNode);
         }
         return spinner;
+    }
+
+    addOneDayToDate(dateObj) {
+        dateObj.setDate(dateObj.getDate() + 1);
+        return dateObj;
+    }
+
+    subtractOneDayToDate(dateObj) {
+        dateObj.setDate(dateObj.getDate() - 1);
+        return dateObj;
+    }
+
+    getDayFormatted(dateObj) {
+        var dayFormatted = [
+            dateObj.getFullYear(),
+            [
+                (parseInt(dateObj.getMonth().toString()) + 1).length === 1 ? '0' : '',
+                (parseInt(dateObj.getMonth().toString()) + 1),
+            ].join(''),
+            [
+                dateObj.getDate().toString().length === 1 ? '0' : '',
+                dateObj.getDate().toString(),
+            ].join(''),
+        ].join('-');
+        console.log('dayFormatted:', dayFormatted);
+        return dayFormatted;
+    }
+
+    getNextDayFormatted(dateObj) {
+        console.info('getNextDayFormatted:', dateObj);
+        var nextDay = this.addOneDayToDate(dateObj);
+        var nextDayFormatted = this.getDayFormatted(nextDay);
+        console.log('nextDayFormatted:', nextDayFormatted);
+        return nextDayFormatted;
+    }
+
+    getPreviousDayFormatted(dateObj) {
+        console.info('getPreviousDayFormatted:', dateObj);
+        var previousDay = this.subtractOneDayToDate(dateObj);
+        var previousFormatted = this.getDayFormatted(previousDay);
+        console.log('previousFormatted:', previousFormatted);
+        return previousFormatted;
+    }
+
+    decreaseSelectedEventDay() {
+        this.debug && console.group('decreaseSelectedEventDay');
+        this.changeSelectedEventDay('decrease');
+        this.debug && console.groupEnd();
+    }
+
+    increaseSelectedEventDay() {
+        this.debug && console.group('increaseSelectedEventDay');
+        this.changeSelectedEventDay('increase');
+        this.debug && console.groupEnd();
+    }
+
+    changeSelectedEventDay(direction) {
+        this.debug && console.group('changeSelectedEventDay:', direction);
+        this.clickEventBubbleEditButton();
+
+        this.waitUntilOnEventEditPage()
+        .then(([
+            startDateInput,
+            endDateInput,
+            eventTitleInput,
+        ]) => {
+            console.log('on event edit page');
+            console.log('will change selected event day:', direction);
+
+            var fn;
+            if (direction === 'decrease') {
+                fn = this.getPreviousDayFormatted;
+            } else if (direction === 'increase') {
+                fn = this.getNextDayFormatted;
+            }
+            console.log('fn:', fn);
+
+            var startDateInputValue = startDateInput.value;
+            console.log('startDateInputValue:', startDateInputValue);
+
+            var newStartDateInputValue = fn.call(this, new Date(startDateInputValue));
+            console.log('newStartDateInputValue:', newStartDateInputValue);
+
+            var endDateInputValue = endDateInput.value;
+            console.log('endDateInputValue:', endDateInputValue);
+
+            var newEndDateInputValue = fn.call(this, new Date(endDateInputValue));
+            console.log('newEndDateInputValue:', newEndDateInputValue);
+
+            Promise.resolve()
+            .then(() => setInputValue(startDateInput, newStartDateInputValue))
+            .then(() => setInputValue(endDateInput, newEndDateInputValue))
+            .then(() => eventTitleInput.focus())
+            .then(() => {
+                this.debug && console.log('done updating start and end dates');
+                this.eventPageClickSaveButton();
+            });
+        });
+
+        this.debug && console.groupEnd();
     }
 
     _getDateComparisonObject(date) {
