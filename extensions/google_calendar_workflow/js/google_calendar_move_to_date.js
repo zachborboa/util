@@ -946,14 +946,19 @@ class GoogleCalendarWorkflow {
         }, 3000);
     }
 
+    // TODO: Make this a promise to be able to do this:
+    // eventPageClickSaveButton().then(() => waitUntilOnCalendarPage());
     eventPageClickSaveButton() {
         this.debug && console.info('eventPageClickSaveButton');
         waitUntilElementExists('[aria-label="Save"]')
         .then((saveButton) => {
             saveButton.click();
+
+            /*
             setTimeout(() => {
                 this.updateMoveToDate();
             }, 500);
+            */
         });
     }
 
