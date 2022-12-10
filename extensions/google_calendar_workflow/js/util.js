@@ -1,3 +1,5 @@
+const TIMEOUT_MS = 250;
+
 function dispatchEvent(obj, event) {
     var evt = new Event(
         event,
@@ -38,7 +40,7 @@ function setInputValue(input, value) {
                             DEBUG && console.log('value no longer matches (desired value: "%s", current input value: "%s")', value, input.value);
                             checkInputValue();
                         }
-                    }, 100);
+                    }, TIMEOUT_MS);
                 } else {
                     DEBUG && console.log('value does not match (desired value: "%s", current input value: "%s")', value, input.value);
 
@@ -51,9 +53,9 @@ function setInputValue(input, value) {
 
                         DEBUG && console.log('value is now "%s"', input.value);
                         checkInputValue();
-                    }, 100);
+                    }, TIMEOUT_MS);
                 }
-            }, 100);
+            }, TIMEOUT_MS);
         }
 
         checkInputValue();
@@ -73,10 +75,10 @@ function waitUntilElementExists(selector, baseElement) {
                 DEBUG && console.groupEnd();
                 resolve(element);
             } else {
-                setTimeout(check, 10);
+                setTimeout(check, TIMEOUT_MS);
             }
         };
-        setTimeout(check, 10);
+        setTimeout(check, TIMEOUT_MS);
     });
 }
 
@@ -94,10 +96,10 @@ function waitUntilElementVisible(selector, baseElement) {
                     DEBUG && console.groupEnd();
                     resolve(elementFound);
                 } else {
-                    setTimeout(check, 100);
+                    setTimeout(check, TIMEOUT_MS);
                 }
             };
-            setTimeout(check, 100);
+            setTimeout(check, TIMEOUT_MS);
         });
     });
 }
