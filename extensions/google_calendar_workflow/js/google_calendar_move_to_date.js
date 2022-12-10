@@ -648,7 +648,7 @@ class GoogleCalendarWorkflow {
                     resolve();
                     return;
                 } else {
-                    console.log('sourceEvent:', sourceEvent);
+                    // this.debug && console.log('sourceEvent:', sourceEvent);
                 }
 
                 this.debug && console.log('about to click sourceEvent and wait until edit event exists');
@@ -663,16 +663,16 @@ class GoogleCalendarWorkflow {
                         this.debug && console.log('waiting until edit event button exists');
                         this.waitUntilOnEventEditPage()
                         .then(() => {
-                            console.log('on event edit page');
-                            console.log('ready to update event date');
+                            this.debug && console.log('on event edit page');
+                            this.debug && console.log('ready to update event date');
 
                             var callback = (() => {
-                                console.log('on event edit page callback');
+                                this.debug && console.log('on event edit page callback');
                                 this.eventPageClickSaveButton();
 
                                 this.waitUntilOnCustomWeekPage()
                                 .then(() => {
-                                    console.log('now on custom week page');
+                                    this.debug && console.log('now on custom week page');
 
                                     // Try to move next source event to destination.
                                     setTimeout(moveEvent, 100);
@@ -762,11 +762,11 @@ class GoogleCalendarWorkflow {
                     // option. Without the delay, it seems to not trigger the
                     // simulated click.
                     .then((duplicateEventOption) => {
-                        console.log('duplicate event option found');
+                        this.debug && console.log('duplicate event option found');
                         return new Promise(resolve => {
-                            console.log('waiting');
+                            this.debug && console.log('waiting');
                             setTimeout(() => {
-                                console.log('wait done');
+                                this.debug && console.log('wait done');
                                 resolve(duplicateEventOption);
                             }, 200);
                         });
@@ -790,7 +790,7 @@ class GoogleCalendarWorkflow {
                             })
                         );
 
-                        console.log('duplicate event option clicked');
+                        this.debug && console.log('duplicate event option clicked');
                     });
             })
             .then(() => {
@@ -1159,25 +1159,25 @@ class GoogleCalendarWorkflow {
             if (event.target.nodeName === 'INPUT' &&
                 event.target.hasAttribute('type') &&
                 event.target.getAttribute('type') === 'radio') {
-                console.log('inside radio input. ok');
+                this.debug && console.log('inside radio input. ok');
 
             // Ignore "f" key press when focus is inside an input element.
             // <input />
             } else if (event.target.nodeName === 'INPUT') {
-                console.log('inside other input type:', event.target.nodeName);
+                this.debug && console.log('inside other input type:', event.target.nodeName);
                 return;
             }
 
             // Ignore "f" key press when focus is inside a textbox.
             // <div role="textbox" ...></div>
             if (event.target.getAttribute('role') === 'textbox') {
-                console.log('inside textbox');
+                this.debug && console.log('inside textbox');
                 return;
             }
 
             // Ignore "f" key press when not on the custom week page.
             if (!this.isOnCustomWeekPage()) {
-                console.log('not on custom week page');
+                this.debug && console.log('not on custom week page');
                 return;
             }
 
@@ -1556,15 +1556,15 @@ class GoogleCalendarWorkflow {
         }
 
         var moveFromDate = new Date(currentMoveToDate + ' 00:00:00');
-        console.log('moveFromDate:', moveFromDate);
+        this.debug && console.log('moveFromDate:', moveFromDate);
 
         var maxMoveToDate = new Date(currentMoveToDate + ' 00:00:00');
         maxMoveToDate.setDate(maxMoveToDate.getDate() - 7);
-        console.log('maxMoveToDate:', maxMoveToDate);
+        this.debug && console.log('maxMoveToDate:', maxMoveToDate);
 
         var minMoveToDate = new Date(currentMoveToDate + ' 00:00:00');
         minMoveToDate.setDate(minMoveToDate.getDate() - (7 + 6));
-        console.log('minMoveToDate:', minMoveToDate);
+        this.debug && console.log('minMoveToDate:', minMoveToDate);
 
         this.moveEvents(
             moveFromDate,
@@ -1606,23 +1606,23 @@ class GoogleCalendarWorkflow {
                 dateObj.getDate().toString(),
             ].join(''),
         ].join('-');
-        console.log('dayFormatted:', dayFormatted);
+        this.debug && console.log('dayFormatted:', dayFormatted);
         return dayFormatted;
     }
 
     getNextDayFormatted(dateObj) {
-        console.info('getNextDayFormatted:', dateObj);
+        this.debug && console.info('getNextDayFormatted:', dateObj);
         var nextDay = this.addOneDayToDate(dateObj);
         var nextDayFormatted = this.getDayFormatted(nextDay);
-        console.log('nextDayFormatted:', nextDayFormatted);
+        this.debug && console.log('nextDayFormatted:', nextDayFormatted);
         return nextDayFormatted;
     }
 
     getPreviousDayFormatted(dateObj) {
-        console.info('getPreviousDayFormatted:', dateObj);
+        this.debug && console.info('getPreviousDayFormatted:', dateObj);
         var previousDay = this.subtractOneDayToDate(dateObj);
         var previousFormatted = this.getDayFormatted(previousDay);
-        console.log('previousFormatted:', previousFormatted);
+        this.debug && console.log('previousFormatted:', previousFormatted);
         return previousFormatted;
     }
 
@@ -1648,8 +1648,8 @@ class GoogleCalendarWorkflow {
             endDateInput,
             eventTitleInput,
         ]) => {
-            console.log('on event edit page');
-            console.log('will change selected event day:', direction);
+            this.debug && console.log('on event edit page');
+            this.debug && console.log('will change selected event day:', direction);
 
             var fn;
             if (direction === 'decrease') {
@@ -1657,19 +1657,19 @@ class GoogleCalendarWorkflow {
             } else if (direction === 'increase') {
                 fn = this.getNextDayFormatted;
             }
-            console.log('fn:', fn);
+            this.debug && console.log('fn:', fn);
 
             var startDateInputValue = startDateInput.value;
-            console.log('startDateInputValue:', startDateInputValue);
+            this.debug && console.log('startDateInputValue:', startDateInputValue);
 
             var newStartDateInputValue = fn.call(this, new Date(startDateInputValue));
-            console.log('newStartDateInputValue:', newStartDateInputValue);
+            this.debug && console.log('newStartDateInputValue:', newStartDateInputValue);
 
             var endDateInputValue = endDateInput.value;
-            console.log('endDateInputValue:', endDateInputValue);
+            this.debug && console.log('endDateInputValue:', endDateInputValue);
 
             var newEndDateInputValue = fn.call(this, new Date(endDateInputValue));
-            console.log('newEndDateInputValue:', newEndDateInputValue);
+            this.debug && console.log('newEndDateInputValue:', newEndDateInputValue);
 
             Promise.resolve()
             .then(() => setInputValue(startDateInput, newStartDateInputValue))
