@@ -1,4 +1,4 @@
-const TIMEOUT_MS = 250;
+const TIMEOUT_MS = 100;
 
 function dispatchEvent(obj, event) {
     var evt = new Event(
