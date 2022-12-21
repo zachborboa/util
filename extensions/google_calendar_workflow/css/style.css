@@ -117,8 +117,10 @@ div.wgVzIb {
   border: 1px solid #f0c36d;
   color: #222 !important;
   min-height: auto !important;
-  top: 45px;
   bottom: auto !important;
+  left: 0;
+  top: 50%;
+  transform: none !important;
 }
 div.wgVzIb > div > div {
   padding: 5px 7px;
