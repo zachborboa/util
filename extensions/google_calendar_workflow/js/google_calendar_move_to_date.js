@@ -741,11 +741,17 @@ class GoogleCalendarWorkflow {
         referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
     }
 
+    // TODO: Make this a promise that clicks event edit button and waits until
+    // on event edit page.
     clickEventBubbleEditButton() {
         this.debug && console.info('clickEventBubbleEditButton');
         var editEventButton = document.querySelector('[aria-label="Edit event"]');
         // this.debug && console.log('editEventButton:', editEventButton);
-        editEventButton.click();
+        if (editEventButton) {
+            editEventButton.click();
+        } else {
+            this.debug && console.warn('editEventButton not found', editEventButton);
+        }
     }
 
     clickEventBubbleOptionsDuplicate() {
