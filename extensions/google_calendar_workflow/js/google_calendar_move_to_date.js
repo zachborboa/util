@@ -182,6 +182,8 @@ class GoogleCalendarWorkflow {
         this.currentDateNode;
         this.keepCurrentSelectorsUpdated();
 
+        this.cleaningUpEvents = false;
+
         if (this.env === PROD_ENV) {
             setTimeout(() => {
                 this.updateMoveToDate();
@@ -673,8 +675,6 @@ class GoogleCalendarWorkflow {
 
                                 this.waitUntilOnCustomWeekPage()
                                 .then(() => {
-                                    this.debug && console.log('now on custom week page');
-
                                     // Try to move next source event to destination.
                                     setTimeout(moveEvent, 100);
                                 });
@@ -1550,6 +1550,13 @@ class GoogleCalendarWorkflow {
         // week.
         this.debug && console.info('cleanUpEvents');
 
+        if (this.cleaningUpEvents) {
+            this.debug && console.warn('already cleaning up events');
+            return;
+        } else {
+            this.cleaningUpEvents = true;
+        }
+
         this.spinner.show();
 
         var currentMoveToDate = this.getCurrentMoveToDate();
@@ -1574,7 +1581,10 @@ class GoogleCalendarWorkflow {
             moveFromDate,
             minMoveToDate,
             maxMoveToDate,
-        ).then(() => this.spinner.hide());
+        ).then(() => {
+            this.spinner.hide();
+            this.cleaningUpEvents = false;
+        });
     }
 
     addSpinner() {
