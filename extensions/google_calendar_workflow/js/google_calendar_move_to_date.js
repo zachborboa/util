@@ -1190,12 +1190,12 @@ class GoogleCalendarWorkflow {
             this.cleanUpEvents();
 
         // Decrease selected event day.
-        } else if (character === 'ArrowLeft') {
+        } else if (character === 'ArrowLeft' && this.getEventBubble()) {
             this.debug && console.log('decrease selected event day; arrow key:', character);
             this.decreaseSelectedEventDay();
 
         // Increase/decrease selected event day.
-        } else if (character === 'ArrowRight') {
+        } else if (character === 'ArrowRight' && this.getEventBubble()) {
             this.debug && console.log('increase selected event day; arrow key:', character);
             this.increaseSelectedEventDay();
 
