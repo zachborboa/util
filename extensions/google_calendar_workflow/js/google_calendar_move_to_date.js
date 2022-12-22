@@ -666,7 +666,8 @@ class GoogleCalendarWorkflow {
                             this.debug && console.log('on event edit page');
                             this.debug && console.log('ready to update event date');
 
-                            var callback = (() => {
+                            this.moveEventToMoveToDate(moveToDate)
+                            .then(() => {
                                 this.debug && console.log('on event edit page callback');
                                 this.eventPageClickSaveButton();
 
@@ -678,7 +679,6 @@ class GoogleCalendarWorkflow {
                                     setTimeout(moveEvent, 100);
                                 });
                             });
-                            this.moveEventToMoveToDate(moveToDate, callback);
                         });
                     });
                 }, 100);
@@ -981,32 +981,31 @@ class GoogleCalendarWorkflow {
         return this.moveToDateInput.value;
     }
 
-    moveEventToMoveToDate(moveToDate, callback) {
-        this.debug && console.info('moveEventToMoveToDate');
+    moveEventToMoveToDate(moveToDate) {
+        this.debug && console.group('moveEventToMoveToDate');
         this.debug && console.log('moveToDate:', moveToDate);
 
         var eventDateInputFormattedDate = this.getEventDateFormattedDate(moveToDate);
 
-        Promise.all([
-            waitUntilElementExists('[aria-label="Start date"]'),
-            waitUntilElementExists('[aria-label="End date"]'),
-            waitUntilElementExists('[aria-label="Title"]'),
-        ]).then(([
-            startDateInput,
-            endDateInput,
-            eventTitleInput,
-        ]) => {
-
-            Promise.resolve()
-            .then(() => setInputValue(startDateInput, eventDateInputFormattedDate))
-            .then(() => setInputValue(endDateInput, eventDateInputFormattedDate))
-            .then(() => eventTitleInput.focus())
-            .then(() => {
-                this.debug && console.log('all done');
-                if (callback) {
-                    this.debug && console.log('calling callback');
-                    callback();
-                }
+        return new Promise((resolve, reject) => {
+            Promise.all([
+                waitUntilElementExists('[aria-label="Start date"]'),
+                waitUntilElementExists('[aria-label="End date"]'),
+                waitUntilElementExists('[aria-label="Title"]'),
+            ]).then(([
+                startDateInput,
+                endDateInput,
+                eventTitleInput,
+            ]) => {
+                Promise.resolve()
+                .then(() => setInputValue(startDateInput, eventDateInputFormattedDate))
+                .then(() => setInputValue(endDateInput, eventDateInputFormattedDate))
+                .then(() => eventTitleInput.focus())
+                .then(() => {
+                    this.debug && console.info('moveEventToMoveToDate all done');
+                    this.debug && console.groupEnd();
+                    resolve();
+                });
             });
         });
     }
@@ -1085,9 +1084,8 @@ class GoogleCalendarWorkflow {
                 }
                 this.debug && console.log('moving event to', currentMoveToDate);
 
-                var callback = this.eventPageClickSaveButton.bind(this);
-
-                this.moveEventToMoveToDate(currentMoveToDate, callback);
+                this.moveEventToMoveToDate(currentMoveToDate)
+                .then(() => this.eventPageClickSaveButton());
             });
 
         // Set calendar event prefix.
@@ -1286,9 +1284,9 @@ class GoogleCalendarWorkflow {
                     }
                     this.debug && console.log('moving event to', currentMoveToDate);
 
-                    var callback = this.eventPageClickSaveButton.bind(this);
+                    this.moveEventToMoveToDate(currentMoveToDate)
+                    .then(() => this.eventPageClickSaveButton());
 
-                    this.moveEventToMoveToDate(currentMoveToDate, callback);
                 } else {
                     this.eventPageClickSaveButton();
                 }
@@ -1663,7 +1661,7 @@ class GoogleCalendarWorkflow {
             } else if (direction === 'increase') {
                 fn = this.getNextDayFormatted;
             }
-            this.debug && console.log('fn:', fn);
+            // this.debug && console.log('fn:', fn);
 
             var startDateInputValue = startDateInput.value;
             this.debug && console.log('startDateInputValue:', startDateInputValue);
