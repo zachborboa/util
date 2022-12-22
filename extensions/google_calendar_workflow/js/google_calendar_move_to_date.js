@@ -674,6 +674,7 @@ class GoogleCalendarWorkflow {
                                 this.eventPageClickSaveButton();
 
                                 this.waitUntilOnCustomWeekPage()
+                                .then(() => waitUntilToastMessageDisappears())
                                 .then(() => {
                                     // Try to move next source event to destination.
                                     setTimeout(moveEvent, 100);
