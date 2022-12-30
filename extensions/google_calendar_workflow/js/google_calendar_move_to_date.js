@@ -635,6 +635,11 @@ class GoogleCalendarWorkflow {
 
                 var moveFromDateCell = this.findCellByDateStringEnding(calendarGridRows, moveFromDateFindString);
                 this.debug && console.log('moveFromDateCell:', moveFromDateCell);
+                if (!moveFromDateCell) {
+                    this.debug && console.warn('move from date cell not found');
+                    resolve();
+                    return;
+                }
 
                 var firstCellWithMinEvents = this.findCellWithMinEvents(calendarGridRows, minMoveToDateFindString, maxMoveToDateFindString);
                 this.debug && console.log('firstCellWithMinEvents:', firstCellWithMinEvents);
