@@ -1402,6 +1402,14 @@ class GoogleCalendarWorkflow {
             this.debug && console.log('existing user settings found:', parsedUserSettings);
         } else {
             this.debug && console.log('existing user settings not found');
+
+            // Set default settings.
+            parsedUserSettings = {
+                'manual': true,
+                'seven': false,
+                'fourteen': false,
+            };
+            this.debug && console.log('using default user settings');
         }
 
         this.debug && console.groupEnd();
@@ -1434,14 +1442,17 @@ class GoogleCalendarWorkflow {
         var parsedUserSettings = this.getUserSettings();
         if (parsedUserSettings !== null) {
             if (parsedUserSettings['manual']) {
+                this.debug && console.log('about to click moveToDateRadioManual');
                 this.moveToDateRadioManual.click();
             }
 
             if (parsedUserSettings['seven']) {
+                this.debug && console.log('about to click moveToDateRadioSeven');
                 this.moveToDateRadioSeven.click();
             }
 
             if (parsedUserSettings['fourteen']) {
+                this.debug && console.log('about to click moveToDateRadioFourteen');
                 this.moveToDateRadioFourteen.click();
             }
 
@@ -1467,6 +1478,7 @@ class GoogleCalendarWorkflow {
 
         var moveToDateRadioManual = document.createElement('input');
         moveToDateRadioManual.addEventListener('change', (event) => {
+            this.debug && console.log('moveToDateRadioManual changed');
 
             // Update move to date when empty.
             var currentMoveToDate = this.getCurrentMoveToDate();
@@ -1489,6 +1501,7 @@ class GoogleCalendarWorkflow {
 
         var moveToDateRadioSeven = document.createElement('input');
         moveToDateRadioSeven.addEventListener('change', (event) => {
+            this.debug && console.log('moveToDateRadioSeven changed');
             this.updateMaxEventsPerCell(event.target.value);
             this.moveToDateInput.disabled = true;
             this.saveUserSettings();
@@ -1504,6 +1517,7 @@ class GoogleCalendarWorkflow {
 
         var moveToDateRadioFourteen = document.createElement('input');
         moveToDateRadioFourteen.addEventListener('change', (event) => {
+            this.debug && console.log('moveToDateRadioFourteen changed');
             this.updateMaxEventsPerCell(event.target.value);
             this.moveToDateInput.disabled = true;
             this.saveUserSettings();
@@ -1520,6 +1534,7 @@ class GoogleCalendarWorkflow {
 
         var moveToDateInput = document.createElement('input');
         moveToDateInput.addEventListener('change', (event) => {
+            this.debug && console.log('moveToDateInput changed');
             this.saveUserSettings();
         });
         moveToDateInput.classList.add('_move-to-date-input');
