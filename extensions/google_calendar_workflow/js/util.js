@@ -62,20 +62,28 @@ function setInputValue(input, value) {
     });
 }
 
-function waitUntilElementExists(selector, baseElement) {
+function waitUntilElementExists(selector, baseElement, timeoutMilliseconds) {
     DEBUG && console.group('waitUntilElementExists:', selector);
     if (baseElement === undefined) {
         baseElement = document;
     }
     return new Promise((resolve, reject) => {
+        const startTime = Date.now();
         var check = () => {
-            var element = baseElement.querySelector(selector);
-            if (element) {
-                DEBUG && console.log('waitUntilElementExists.exists:', selector);
+            const currentTime = Date.now();
+            if (currentTime - startTime > timeoutMilliseconds) {
+                DEBUG && console.warn('element not found within allotted time');
                 DEBUG && console.groupEnd();
-                resolve(element);
+                resolve();
             } else {
-                setTimeout(check, TIMEOUT_MS);
+                var element = baseElement.querySelector(selector);
+                if (element) {
+                    DEBUG && console.log('waitUntilElementExists.exists:', selector);
+                    DEBUG && console.groupEnd();
+                    resolve(element);
+                } else {
+                    setTimeout(check, TIMEOUT_MS);
+                }
             }
         };
         setTimeout(check, TIMEOUT_MS);
@@ -107,7 +115,7 @@ function waitUntilElementVisible(selector, baseElement) {
 function waitUntilToastMessageDisappears() {
     DEBUG && console.group('waitUntilToastMessageDisappears');
     return new Promise((resolve, reject) => {
-        waitUntilElementExists('.wgVzIb')
+        waitUntilElementExists('.wgVzIb', undefined, 3000)
         .then((elementFound) => {
             var check = () => {
                 if (!isVisible(elementFound)) {
