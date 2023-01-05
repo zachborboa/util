@@ -6,6 +6,7 @@ var KeepTabsOpen = function() {
         'settings': [
             {
                 'url_to_open': 'https://accounts.google.com/ServiceLogin?service=cl&continue=https://calendar.google.com/',
+                'incognito': true,
                 'when_patterns_not_found': [
                     'https:\/\/accounts\.google\.com\/ServiceLogin',
                     'https:\/\/calendar\.google\.com\/',
@@ -14,6 +15,7 @@ var KeepTabsOpen = function() {
             },
             {
                 'url_to_open': 'https://accounts.google.com/ServiceLogin?service=mail&continue=https://mail.google.com/',
+                'incognito': true,
                 'when_patterns_not_found': [
                     'https:\/\/accounts\.google\.com\/ServiceLogin',
                     'https:\/\/mail\.google\.com\/',
@@ -92,10 +94,9 @@ KeepTabsOpen.prototype.removePattern = function(pattern, callback) {
 */
 
 KeepTabsOpen.prototype.getUrlsToOpen = function(ref, settings) {
-    var actualUrlsThatOpened = [];
+    var urlsToBeOpened = [];
     for ( var j = 0; j < settings.length; j++ ) {
         var setting = settings[j];
-        var urlToMaybeOpen = setting['url_to_open'];
         var whenPatternsNotFound = setting['when_patterns_not_found'];
         var found = false;
         dance:
@@ -112,15 +113,21 @@ KeepTabsOpen.prototype.getUrlsToOpen = function(ref, settings) {
         }
 
         if ( ! found ) {
-            // Add url to list of urls to open.
-            actualUrlsThatOpened.push(urlToMaybeOpen);
+            if (setting['incognito'] && !chrome.extension.inIncognitoContext) {
+                console.log('skipping incognito url as not in incognito context');
+            } else {
+                console.log('adding url');
 
-            // Add url that will be opened to list of effectively open urls.
-            ref.openUrls.push(urlToMaybeOpen);
+                // Add url to list of urls to open.
+                urlsToBeOpened.push(setting['url_to_open']);
+
+                // Add url that will be opened to list of effectively open urls.
+                ref.openUrls.push(setting['url_to_open']);
+            }
         }
     }
 
-    return actualUrlsThatOpened;
+    return urlsToBeOpened;
 };
 
 KeepTabsOpen.prototype.cron = function() {
@@ -134,9 +141,12 @@ KeepTabsOpen.prototype.cron = function() {
 
             var openUrls = [];
             windows.forEach(function(win) {
+                console.group('window found:', win);
                 win.tabs.forEach(function(tab) {
+                    console.log('tab found:', tab);
                     openUrls.push(tab.url);
                 });
+                console.groupEnd();
             });
             console.log('urls open:', openUrls);
             console.log('--------------------------------------------------------------------------------');
@@ -151,7 +161,11 @@ KeepTabsOpen.prototype.cron = function() {
             if ( urlsToOpen.length ) {
                 for ( var i = 0; i < urlsToOpen.length; i++ ) {
                     var url = urlsToOpen[i];
-                    console.log('opening', url);
+                    if (chrome.extension.inIncognitoContext) {
+                        console.log('opening url (in incognito):', url);
+                    } else {
+                        console.log('opening url (not in incognito):', url);
+                    }
 
                     // For chrome.windows.create:
                     // TODO: Add ability to open incognito windows.
@@ -166,6 +180,7 @@ KeepTabsOpen.prototype.cron = function() {
                     chrome.tabs.create(
                         // object createProperties
                         {
+                            // Use active: false so that the tab does not become the active tab in the window.
                             'active': false,
                             'url': url,
                         },
@@ -198,7 +213,6 @@ chrome.alarms.create(
     'keepTabsOpen.cron',
     // object alarmInfo
     {
-        'when': 1000,
         'periodInMinutes': keepTabsOpen.options.alarmPeriodInMinutes,
     }
 );
