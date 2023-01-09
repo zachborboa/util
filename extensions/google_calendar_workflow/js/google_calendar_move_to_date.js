@@ -1430,6 +1430,10 @@ class GoogleCalendarWorkflow {
         }
 
         localStorage.setItem('settings', JSON.stringify(settings));
+
+        if (this.moveToDateInput.value === '' && settings['moveToDate'] === '') {
+            alert('move to date value empty when saving');
+        }
     }
 
     restoreUserSettings() {
@@ -1457,6 +1461,12 @@ class GoogleCalendarWorkflow {
             }
 
             this.moveToDateInput.value = parsedUserSettings['moveToDate'];
+
+            if (this.moveToDateInput.value === '') {
+                alert('move to date value empty when restoring settings');
+            } else if (this.moveToDateInput.value === null) {
+                alert('move to date value null when restoring settings');
+            }
         }
 
         this.debug && console.groupEnd();
