@@ -89,29 +89,56 @@ class GoogleCalendarWorkflow {
     // Amount of time can elapse before list of recent characters pressed is reset.
     keystrokeDelay = 1000;
 
+    LABEL_AND_CHAR_TO_ACTION = {
+        // button label, button action.
+        '*': 'toggle-prefix',
+        '-': 'toggle-prefix',
+        '0': 'toggle-prefix',
+        '1': 'toggle-prefix',
+        '2': 'toggle-prefix',
+        '3': 'toggle-prefix',
+        '4': 'toggle-prefix',
+        '5': 'toggle-prefix',
+        '6': 'toggle-prefix',
+        '7': 'toggle-prefix',
+        '8': 'toggle-prefix',
+        '9': 'toggle-prefix',
+        'a': 'mark-completed', // awesome
+        'd': 'mark-completed', // done
+        'n': 'mark-completed', // nope
+        'o': 'mark-completed', // ok
+        'x': 'remove-prefix', // remove
+        'X': 'remove-prefix', // remove
+        'DONE': 'mark-completed', // done
+        'NOPE': 'mark-completed', // nope
+        'OKAY': 'mark-completed', // ok
+        'AWESOME': 'mark-completed', // awesome
+    };
+
     FIRST_ROW_BUTTONS = [
-        // button label, button action, button classes
-        ['-', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-dash']],
-        ['0', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-0']],
-        ['1', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-1']],
-        ['2', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-2']],
-        ['3', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-3']],
-        ['4', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-4']],
-        ['5', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-5']],
-        ['X', 'remove-prefix', ['jfk-button', 'jfk-button-standard', 'button-x']],
-        ['*', 'toggle-prefix', ['jfk-button', 'jfk-button-standard', 'button-star']],
+        // button label, button classes
+        ['-', ['jfk-button', 'jfk-button-standard', 'button-dash']],
+        ['0', ['jfk-button', 'jfk-button-standard', 'button-0']],
+        ['1', ['jfk-button', 'jfk-button-standard', 'button-1']],
+        ['2', ['jfk-button', 'jfk-button-standard', 'button-2']],
+        ['3', ['jfk-button', 'jfk-button-standard', 'button-3']],
+        ['4', ['jfk-button', 'jfk-button-standard', 'button-4']],
+        ['5', ['jfk-button', 'jfk-button-standard', 'button-5']],
+        ['X', ['jfk-button', 'jfk-button-standard', 'button-x']],
+        ['*', ['jfk-button', 'jfk-button-standard', 'button-star']],
     ];
 
     SECOND_ROW_BUTTONS = [
-        // button label, button action, button classes
-        ['DONE',    'mark-completed', ['jfk-button', 'jfk-button-default',  'button-d']],
-        ['NOPE',    'mark-completed', ['jfk-button', 'jfk-button-standard', 'button-n']],
-        ['OKAY',    'mark-completed', ['jfk-button', 'jfk-button-standard', 'button-o']],
-        ['AWESOME', 'mark-completed', ['jfk-button', 'jfk-button-standard', 'button-a']],
+        // button label, button classes
+        ['DONE',    ['jfk-button', 'jfk-button-default',  'button-d']],
+        ['NOPE',    ['jfk-button', 'jfk-button-standard', 'button-n']],
+        ['OKAY',    ['jfk-button', 'jfk-button-standard', 'button-o']],
+        ['AWESOME', ['jfk-button', 'jfk-button-standard', 'button-a']],
     ];
 
     BUTTON_LABEL_TO_EVENT_TITLE_PREFIX = {
         // button label, event title prefix
+        '*': '*',
         '-': '-',
         '0': '0.',
         '1': '1.',
@@ -123,32 +150,16 @@ class GoogleCalendarWorkflow {
         '7': '7.',
         '8': '8.',
         '9': '9.',
-        'X': null,
-        '*': '*',
-        'DONE': '✓',
-        'NOPE': '✗',
-        'OKAY': '▣',
-        'AWESOME': 'ツ',
-    };
-
-    BUTTON_SELECTORS = {
-        '*': '.button-star',
-        '-': '.button-dash',
-        '0': '.button-0',
-        '1': '.button-1',
-        '2': '.button-2',
-        '3': '.button-3',
-        '4': '.button-4',
-        '5': '.button-5',
-        '6': '',
-        '7': '',
-        '8': '',
-        '9': '',
-        'a': '.button-a',
-        'd': '.button-d',
-        'n': '.button-n',
-        'o': '.button-o',
-        'x': '.button-x',
+        'AWESOME': 'ツ', // awesome
+        'DONE': '✓', // done
+        'NOPE': '✗', // nope
+        'OKAY': '▣', // ok
+        'X': null, // remove
+        'a': 'ツ', // awesome
+        'd': '✓', // done
+        'n': '✗', // nope
+        'o': '▣', // ok
+        'x': null, // remove
     };
 
     COMPLETED_EVENT_TITLE_PREFIXES = [
@@ -905,8 +916,8 @@ class GoogleCalendarWorkflow {
             var firstRowEventActions = document.createElement('div');
             for (var i in this.FIRST_ROW_BUTTONS) {
                 var buttonLabel = this.FIRST_ROW_BUTTONS[i][0];
-                var buttonAction = this.FIRST_ROW_BUTTONS[i][1];
-                var buttonClassNames = this.FIRST_ROW_BUTTONS[i][2];
+                var buttonAction = this.LABEL_AND_CHAR_TO_ACTION[buttonLabel];
+                var buttonClassNames = this.FIRST_ROW_BUTTONS[i][1];
                 var button = document.createElement('button');
                 button.classList.add(...buttonClassNames);
                 button.innerHTML = '<u>' + buttonLabel[0] + '</u>' + buttonLabel.slice(1);
@@ -919,8 +930,8 @@ class GoogleCalendarWorkflow {
             var secondRowEventActions = document.createElement('div');
             for (var i in this.SECOND_ROW_BUTTONS) {
                 var buttonLabel = this.SECOND_ROW_BUTTONS[i][0];
-                var buttonAction = this.SECOND_ROW_BUTTONS[i][1];
-                var buttonClassNames = this.SECOND_ROW_BUTTONS[i][2];
+                var buttonAction = this.LABEL_AND_CHAR_TO_ACTION[buttonLabel];
+                var buttonClassNames = this.SECOND_ROW_BUTTONS[i][1];
                 var button = document.createElement('button');
                 button.classList.add(...buttonClassNames);
                 button.innerHTML = '<u>' + buttonLabel[0] + '</u>' + buttonLabel.slice(1);
@@ -1127,30 +1138,9 @@ class GoogleCalendarWorkflow {
             }
 
         // Take requested action when event bubble is open and a keyboard shortcut matching the key pressed is found.
-        } else if (eventBubble && character in this.BUTTON_SELECTORS) {
+        } else if (eventBubble && character in this.LABEL_AND_CHAR_TO_ACTION) {
             event.preventDefault();
-
-            var buttonSelector = this.BUTTON_SELECTORS[character];
-
-            // Handle simulated button click without an existing button button
-            // (e.g. for buttons 6, 7, 8, 9).
-            if (buttonSelector === '') {
-
-                var label = character;
-                var action = 'toggle-prefix';
-                var eventTitlePrefix = this.BUTTON_LABEL_TO_EVENT_TITLE_PREFIX[label];
-                this.updateCalendarEventTitle(label, action, eventTitlePrefix);
-
-            // Handle button click (e.g. for buttons *, -, 0, 1, 2, 3, 4, 5, a,
-            // d, n, o, x).
-            } else {
-                this.debug && console.log('button selector:', buttonSelector);
-                var buttonToClick = document.querySelector(buttonSelector);
-                this.debug && console.log('button to click:', buttonToClick);
-                if (buttonToClick) {
-                    buttonToClick.click();
-                }
-            }
+            this.doCharacterAction(character);
 
         // Update move-to date.
         } else if (character === 'j' || character === 'k') {
@@ -1230,6 +1220,21 @@ class GoogleCalendarWorkflow {
         });
     }
 
+    doCharacterAction(character) {
+        this.debug && console.group('doCharacterAction');
+        this.debug && console.log('character:', character);
+
+        // Handle button click (e.g. for buttons *, -, 0, 1, 2, 3, 4, 5, 6, 7,
+        // 8, 9, a, d, n, o, x).
+        var label = character;
+        var action = this.LABEL_AND_CHAR_TO_ACTION[character];
+        var eventTitlePrefix = this.BUTTON_LABEL_TO_EVENT_TITLE_PREFIX[label];
+        this.updateCalendarEventTitle(label, action, eventTitlePrefix);
+
+        this.debug && console.groupEnd();
+    }
+
+    // TODO: Make this a promise.
     updateCalendarEventTitle(
         label,  // from "data-label" (index 0; 0, 1, ..., 6, 7, 8, 9).
         action, // from "data-action" (index 1; toggle-prefix, mark-completed, etc.).
