@@ -7,6 +7,8 @@ var KeepTabsOpen = function() {
             {
                 'url_to_open': 'https://accounts.google.com/ServiceLogin?service=cl&continue=https://calendar.google.com/',
                 'incognito': true,
+                'index': 1,
+                'pinned': true,
                 'when_patterns_not_found': [
                     'https:\/\/accounts\.google\.com\/ServiceLogin',
                     'https:\/\/calendar\.google\.com\/',
@@ -16,6 +18,7 @@ var KeepTabsOpen = function() {
             {
                 'url_to_open': 'https://accounts.google.com/ServiceLogin?service=mail&continue=https://mail.google.com/',
                 'incognito': true,
+                'pinned': true,
                 'when_patterns_not_found': [
                     'https:\/\/accounts\.google\.com\/ServiceLogin',
                     'https:\/\/mail\.google\.com\/',
@@ -93,8 +96,8 @@ KeepTabsOpen.prototype.removePattern = function(pattern, callback) {
 };
 */
 
-KeepTabsOpen.prototype.getUrlsToOpen = function(ref, settings) {
-    var urlsToBeOpened = [];
+KeepTabsOpen.prototype.getUrlAndSettingsToOpen = function(ref, settings) {
+    var urlsAndSettingsToBeOpened = [];
     for ( var j = 0; j < settings.length; j++ ) {
         var setting = settings[j];
         var whenPatternsNotFound = setting['when_patterns_not_found'];
@@ -119,7 +122,7 @@ KeepTabsOpen.prototype.getUrlsToOpen = function(ref, settings) {
                 console.log('adding url');
 
                 // Add url to list of urls to open.
-                urlsToBeOpened.push(setting['url_to_open']);
+                urlsAndSettingsToBeOpened.push(setting);
 
                 // Add url that will be opened to list of effectively open urls.
                 ref.openUrls.push(setting['url_to_open']);
@@ -127,7 +130,7 @@ KeepTabsOpen.prototype.getUrlsToOpen = function(ref, settings) {
         }
     }
 
-    return urlsToBeOpened;
+    return urlsAndSettingsToBeOpened;
 };
 
 KeepTabsOpen.prototype.cron = function() {
@@ -154,13 +157,14 @@ KeepTabsOpen.prototype.cron = function() {
             var ref = {
                 'openUrls': openUrls,
             };
-            var urlsToOpen = keepTabsOpen.getUrlsToOpen(ref, keepTabsOpen.options.settings);
-            console.log('urls to open:', urlsToOpen);
-            console.log('number of urls to open:', urlsToOpen.length);
+            var urlsAndSettingsToOpen = keepTabsOpen.getUrlAndSettingsToOpen(ref, keepTabsOpen.options.settings);
+            console.log('urls to open:', urlsAndSettingsToOpen);
+            console.log('number of urls to open:', urlsAndSettingsToOpen.length);
 
-            if ( urlsToOpen.length ) {
-                for ( var i = 0; i < urlsToOpen.length; i++ ) {
-                    var url = urlsToOpen[i];
+            if ( urlsAndSettingsToOpen.length ) {
+                for ( var i = 0; i < urlsAndSettingsToOpen.length; i++ ) {
+                    var urlAndSettings = urlsAndSettingsToOpen[i];
+                    var url = urlAndSettings['url_to_open'];
                     if (chrome.extension.inIncognitoContext) {
                         console.log('opening url (in incognito):', url);
                     } else {
@@ -177,13 +181,27 @@ KeepTabsOpen.prototype.cron = function() {
                     // For chrome.tabs.create:
                     // TODO: Add ability to open an active tab.
 
+                    var createProperties = {
+                        // Use active: false so that the tab does not become the active tab in the window.
+                        'active': false,
+                        'url': url,
+                    };
+
+                    var index = urlAndSettings['index'];
+                    if (index !== undefined) {
+                        createProperties['index'] = index;
+                    }
+
+                    var pinned = urlAndSettings['pinned'];
+                    if (pinned !== undefined) {
+                        createProperties['pinned'] = pinned;
+                    }
+
+                    console.log('opening tab with properties:', createProperties);
+
                     chrome.tabs.create(
                         // object createProperties
-                        {
-                            // Use active: false so that the tab does not become the active tab in the window.
-                            'active': false,
-                            'url': url,
-                        },
+                        createProperties,
                         // function callback
                         function() {
                         }
