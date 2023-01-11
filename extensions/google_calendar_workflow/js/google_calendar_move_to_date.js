@@ -1165,7 +1165,7 @@ class GoogleCalendarWorkflow {
             this.increaseSelectedEventDay();
 
         } else {
-            this.debug && console.log('other');
+            this.debug && console.log('other character:', character);
         }
     }
 
