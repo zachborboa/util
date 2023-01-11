@@ -187,3 +187,33 @@ div.wgVzIb {
     // height: calc(100% - 48px) !important;
     height: calc(100% - 64px) !important;
 }
+
+.gcw-spinner {
+    left: 212px;
+    pointer-events: none;
+    position: absolute;
+    top: 18px;
+    transition: opacity 0.3s, visibility 0.3s;
+    z-index: 9999;
+
+    // Related to animation:
+    animation: spin 1s linear infinite;
+    border-bottom-color: #f3f3f3;
+    border-left-color: #f3f3f3;
+    border-radius: 50%;
+    border-right-color: #f3f3f3;
+    border-style: solid;
+    border-top-color: #555;
+    border-width: 3px;
+    height: 25px;
+    width: 25px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

@@ -6,60 +6,31 @@ const TEST_ENV = 'TEST';
 const PROD_ENV = 'PROD';
 
 class Spinner {
-    #SPINNER_DELAY_MS = 180;
-
     constructor(options) {
         this.options = options;
         this.env = options.env;
 
-        this.spinnerNode = this.addSpinnerNode();
-        this.spin();
+        this.spinnerNode = this.createSpinnerNode();
+        this.hide();
     }
 
-    addSpinnerNode() {
+    createSpinnerNode() {
         // Fix "ReferenceError: document is not defined" when testing.
         if (typeof document === 'undefined') {
             global.document = {};
             global.document.createElement = (() => {
                 return {
                     style: {},
+                    classList: {
+                        add: function () {},
+                    },
                 };
             });
         }
 
-        var spinnerNode = document.createElement('span');
-        spinnerNode.style.color = '#5f6368';
-        spinnerNode.style.fontFamily = 'monospace';
-        spinnerNode.style.fontSize = 'xxx-large';
-        spinnerNode.style.left = '220px';
-        spinnerNode.style.opacity = '0';
-        spinnerNode.style.pointerEvents = 'none';
-        spinnerNode.style.position = 'absolute';
-        spinnerNode.style.top = '7px';
-        spinnerNode.style.transition = 'opacity 0.3s, visibility 0.3s';
-        spinnerNode.style.zIndex = '9999';
+        var spinnerNode = document.createElement('div');
+        spinnerNode.classList.add('gcw-spinner');
         return spinnerNode;
-    }
-
-    setSpinnerCharacter(character) {
-        return new Promise((resolve, reject) => {
-            setTimeout((() => {
-                this.spinnerNode.innerText = character;
-                resolve();
-            }), this.#SPINNER_DELAY_MS);
-        });
-    }
-
-    spin() {
-        if (this.env !== PROD_ENV) {
-            return;
-        }
-
-        this.setSpinnerCharacter('|')
-            .then(() => this.setSpinnerCharacter('/'))
-            .then(() => this.setSpinnerCharacter('-'))
-            .then(() => this.setSpinnerCharacter('\\'))
-            .then(() => this.spin());
     }
 
     hide() {
