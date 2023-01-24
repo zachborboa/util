@@ -1,3 +1,5 @@
+'use strict';
+
 const TIMEOUT_MS = 100;
 
 function dispatchEvent(obj, event) {
