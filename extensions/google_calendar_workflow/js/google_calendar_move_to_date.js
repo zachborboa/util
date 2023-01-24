@@ -1216,6 +1216,15 @@ class GoogleCalendarWorkflow {
         this.debug && console.log('action: "%s"', action);
         this.debug && console.log('eventTitlePrefix: "%s"', eventTitlePrefix);
 
+        // Ensure move-to-date is set before attempting to mark event completed.
+        if (action === 'mark-completed') {
+            var currentMoveToDate = this.getCurrentMoveToDate();
+            if (currentMoveToDate === '') {
+                this.debug && console.warn('move to date empty');
+                return;
+            }
+        }
+
         this.clickEventBubbleEditButton();
 
         this.waitUntilOnEventEditPage()
