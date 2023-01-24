@@ -5,23 +5,23 @@ var KeepTabsOpen = function() {
         'alarmPeriodInMinutes': 1,
         'settings': [
             {
+                'url_to_open': 'https://accounts.google.com/ServiceLogin?service=mail&continue=https://mail.google.com/',
+                'incognito': true,
+                'pinned': true,
+                'when_patterns_not_found': [
+                    'https:\/\/accounts\.google\.com\/',
+                    'https:\/\/mail\.google\.com\/',
+                ],
+            },
+            {
                 'url_to_open': 'https://accounts.google.com/ServiceLogin?service=cl&continue=https://calendar.google.com/',
                 'incognito': true,
                 'index': 1,
                 'pinned': true,
                 'when_patterns_not_found': [
-                    'https:\/\/accounts\.google\.com\/ServiceLogin',
+                    'https:\/\/accounts\.google\.com\/',
                     'https:\/\/calendar\.google\.com\/',
                     'https:\/\/www\.google\.com\/calendar',
-                ],
-            },
-            {
-                'url_to_open': 'https://accounts.google.com/ServiceLogin?service=mail&continue=https://mail.google.com/',
-                'incognito': true,
-                'pinned': true,
-                'when_patterns_not_found': [
-                    'https:\/\/accounts\.google\.com\/ServiceLogin',
-                    'https:\/\/mail\.google\.com\/',
                 ],
             },
         ],
