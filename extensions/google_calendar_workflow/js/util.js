@@ -117,7 +117,7 @@ function waitUntilElementVisible(selector, baseElement) {
 function waitUntilToastMessageDisappears() {
     DEBUG && console.group('waitUntilToastMessageDisappears');
     return new Promise((resolve, reject) => {
-        waitUntilElementExists('.wgVzIb', undefined, 3000)
+        waitUntilElementExists('.u1KZub', undefined, 3000)
         .then((elementFound) => {
             var check = () => {
                 if (!isVisible(elementFound)) {
