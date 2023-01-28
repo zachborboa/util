@@ -151,8 +151,6 @@ class GoogleCalendarWorkflow {
         this.findEventBubbleInterval;
         this.handleMouseMoveInterval;
 
-        this.addEventListeners();
-
         this.moveToDateRadioManual;
         this.moveToDateRadioSeven;
         this.moveToDateRadioFourteen;
@@ -170,6 +168,7 @@ class GoogleCalendarWorkflow {
             setTimeout(() => {
                 this.updateMoveToDate();
                 this.restoreUserSettings();
+                this.addEventListeners();
             }, 5000);
         }
     }
@@ -1323,6 +1322,39 @@ class GoogleCalendarWorkflow {
             document.addEventListener('mousemove', (event) => {
                 this.handleMouseMove(event);
             });
+
+            this.moveToDateRadioManual.addEventListener('change', (event) => {
+                this.debug && console.log('moveToDateRadioManual changed');
+
+                // Update move to date when empty.
+                var currentMoveToDate = this.getCurrentMoveToDate();
+                if (currentMoveToDate === '') {
+                    this.updateMoveToDate();
+                }
+
+                this.updateMaxEventsPerCell(event.target.value);
+                this.moveToDateInput.disabled = false;
+                this.saveUserSettings();
+            });
+
+            this.moveToDateRadioSeven.addEventListener('change', (event) => {
+                this.debug && console.log('moveToDateRadioSeven changed');
+                this.updateMaxEventsPerCell(event.target.value);
+                this.moveToDateInput.disabled = true;
+                this.saveUserSettings();
+            });
+
+            this.moveToDateRadioFourteen.addEventListener('change', (event) => {
+                this.debug && console.log('moveToDateRadioFourteen changed');
+                this.updateMaxEventsPerCell(event.target.value);
+                this.moveToDateInput.disabled = true;
+                this.saveUserSettings();
+            });
+
+            this.moveToDateInput.addEventListener('change', (event) => {
+                this.debug && console.log('moveToDateInput changed');
+                this.saveUserSettings();
+            });
         }
     }
 
@@ -1431,21 +1463,22 @@ class GoogleCalendarWorkflow {
         var parsedUserSettings = this.getUserSettings();
         if (parsedUserSettings !== null) {
             if (parsedUserSettings['manual']) {
-                this.debug && console.log('about to click moveToDateRadioManual');
-                this.moveToDateRadioManual.click();
+                this.moveToDateForm['max-events-per-cell'].value = 'manual';
+                this.moveToDateInput.disabled = false;
             }
 
             if (parsedUserSettings['seven']) {
-                this.debug && console.log('about to click moveToDateRadioSeven');
-                this.moveToDateRadioSeven.click();
+                this.moveToDateForm['max-events-per-cell'].value = '7';
+                this.moveToDateInput.disabled = true;
             }
 
             if (parsedUserSettings['fourteen']) {
-                this.debug && console.log('about to click moveToDateRadioFourteen');
-                this.moveToDateRadioFourteen.click();
+                this.moveToDateForm['max-events-per-cell'].value = '14';
+                this.moveToDateInput.disabled = true;
             }
 
             this.moveToDateInput.value = parsedUserSettings['moveToDate'];
+            this.debug && console.log('moveToDateInput value is now: "%s"', this.moveToDateInput.value);
 
             if (this.moveToDateInput.value === '') {
                 alert('move to date value empty when restoring settings');
@@ -1464,59 +1497,35 @@ class GoogleCalendarWorkflow {
             return;
         }
 
-        var moveToDateContainer = document.createElement('div');
-        moveToDateContainer.classList.add('_move-to-date-container');
-        moveToDateContainer.style.position = 'absolute';
-        moveToDateContainer.style.right = '165px';
-        moveToDateContainer.style.top = '37px';
-        moveToDateContainer.style.zIndex = '1000';
+        var moveToDateForm = document.createElement('form');
+        moveToDateForm.classList.add('_move-to-date-container');
+        moveToDateForm.style.position = 'absolute';
+        moveToDateForm.style.right = '165px';
+        moveToDateForm.style.top = '37px';
+        moveToDateForm.style.zIndex = '1000';
+        this.moveToDateForm = moveToDateForm;
 
         var moveToDateRadioManual = document.createElement('input');
-        moveToDateRadioManual.addEventListener('change', (event) => {
-            this.debug && console.log('moveToDateRadioManual changed');
-
-            // Update move to date when empty.
-            var currentMoveToDate = this.getCurrentMoveToDate();
-            if (currentMoveToDate === '') {
-                this.updateMoveToDate();
-            }
-
-            this.updateMaxEventsPerCell(event.target.value);
-            this.moveToDateInput.disabled = false;
-            this.saveUserSettings();
-        });
         moveToDateRadioManual.name = 'max-events-per-cell';
         moveToDateRadioManual.type = 'radio';
         moveToDateRadioManual.value = 'manual';
         var moveToDateRadioManualLabel = document.createElement('label');
         moveToDateRadioManualLabel.appendChild(moveToDateRadioManual);
         moveToDateRadioManualLabel.appendChild(document.createTextNode('Manual'));
-        moveToDateContainer.appendChild(moveToDateRadioManualLabel);
+        moveToDateForm.appendChild(moveToDateRadioManualLabel);
         this.moveToDateRadioManual = moveToDateRadioManual;
 
         var moveToDateRadioSeven = document.createElement('input');
-        moveToDateRadioSeven.addEventListener('change', (event) => {
-            this.debug && console.log('moveToDateRadioSeven changed');
-            this.updateMaxEventsPerCell(event.target.value);
-            this.moveToDateInput.disabled = true;
-            this.saveUserSettings();
-        });
         moveToDateRadioSeven.name = 'max-events-per-cell';
         moveToDateRadioSeven.type = 'radio';
         moveToDateRadioSeven.value = '7';
         var moveToDateRadioSevenLabel = document.createElement('label');
         moveToDateRadioSevenLabel.appendChild(moveToDateRadioSeven);
         moveToDateRadioSevenLabel.appendChild(document.createTextNode('7 Events'));
-        moveToDateContainer.appendChild(moveToDateRadioSevenLabel);
+        moveToDateForm.appendChild(moveToDateRadioSevenLabel);
         this.moveToDateRadioSeven = moveToDateRadioSeven;
 
         var moveToDateRadioFourteen = document.createElement('input');
-        moveToDateRadioFourteen.addEventListener('change', (event) => {
-            this.debug && console.log('moveToDateRadioFourteen changed');
-            this.updateMaxEventsPerCell(event.target.value);
-            this.moveToDateInput.disabled = true;
-            this.saveUserSettings();
-        });
         moveToDateRadioFourteen.checked = 'checked';
         moveToDateRadioFourteen.name = 'max-events-per-cell';
         moveToDateRadioFourteen.type = 'radio';
@@ -1524,24 +1533,20 @@ class GoogleCalendarWorkflow {
         var moveToDateRadioFourteenLabel = document.createElement('label');
         moveToDateRadioFourteenLabel.appendChild(moveToDateRadioFourteen);
         moveToDateRadioFourteenLabel.appendChild(document.createTextNode('14 Events'));
-        moveToDateContainer.appendChild(moveToDateRadioFourteenLabel);
+        moveToDateForm.appendChild(moveToDateRadioFourteenLabel);
         this.moveToDateRadioFourteen = moveToDateRadioFourteen;
 
         var moveToDateInput = document.createElement('input');
-        moveToDateInput.addEventListener('change', (event) => {
-            this.debug && console.log('moveToDateInput changed');
-            this.saveUserSettings();
-        });
         moveToDateInput.classList.add('_move-to-date-input');
         moveToDateInput.disabled = true;
         moveToDateInput.placeholder = 'Move-to Date';
         moveToDateInput.style.textAlign = 'center';
         moveToDateInput.type = 'date';
-        moveToDateContainer.appendChild(moveToDateInput);
+        moveToDateForm.appendChild(moveToDateInput);
         this.moveToDateInput = moveToDateInput;
 
-        document.body.appendChild(moveToDateContainer);
-        this.debug && console.log('moveToDateContainer:', moveToDateContainer);
+        document.body.appendChild(moveToDateForm);
+        this.debug && console.log('moveToDateForm:', moveToDateForm);
     }
 
     keepCurrentSelectorsUpdated() {
