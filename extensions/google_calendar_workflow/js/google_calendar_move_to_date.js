@@ -1391,6 +1391,7 @@ class GoogleCalendarWorkflow {
         var topCellDate = this.getTopCellDate(calendarGridRows);
         if (topCellDate !== undefined) {
             this.moveToDateInput.value = this.getInputDateFormattedDate(topCellDate);
+            this.debug && console.log('moveToDateInput value is now: "%s"', this.moveToDateInput.value);
         }
 
         this.debug && console.groupEnd();
@@ -1435,7 +1436,7 @@ class GoogleCalendarWorkflow {
     }
 
     saveUserSettings() {
-        this.debug && console.info('saveUserSettings');
+        this.debug && console.group('saveUserSettings');
 
         var settings = this.getUserSettings();
         settings['manual'] = this.moveToDateRadioManual.checked;
@@ -1443,14 +1444,20 @@ class GoogleCalendarWorkflow {
         settings['fourteen'] = this.moveToDateRadioFourteen.checked;
 
         if (this.moveToDateInput.value !== '') {
+            this.debug && console.log('settings moveToDate:', settings['moveToDate']);
             settings['moveToDate'] = this.moveToDateInput.value;
+            this.debug && console.log('settings moveToDate is now:', settings['moveToDate']);
         }
 
+        this.debug && console.log('saving settings:', settings);
         localStorage.setItem('settings', JSON.stringify(settings));
 
         if (this.moveToDateInput.value === '' && settings['moveToDate'] === '') {
             alert('move to date value empty when saving');
         }
+
+        this.debug && console.log('settings saved:', this.getUserSettings());
+        this.debug && console.groupEnd();
     }
 
     restoreUserSettings() {
