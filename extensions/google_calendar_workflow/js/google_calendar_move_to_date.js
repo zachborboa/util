@@ -684,16 +684,12 @@ class GoogleCalendarWorkflow {
                             this.debug && console.log('ready to update event date');
 
                             this.moveEventToMoveToDate(moveToDate)
+                            .then(() => this.eventPageClickSaveButton())
+                            .then(() => this.waitUntilOnCustomWeekPage())
+                            .then(() => waitUntilToastMessageDisappears())
                             .then(() => {
-                                this.debug && console.log('on event edit page callback');
-                                this.eventPageClickSaveButton();
-
-                                this.waitUntilOnCustomWeekPage()
-                                .then(() => waitUntilToastMessageDisappears())
-                                .then(() => {
-                                    // Try to move next source event to destination.
-                                    setTimeout(moveEvent, 100);
-                                });
+                                // Try to move next source event to destination.
+                                setTimeout(moveEvent, 100);
                             });
                         });
                     });
@@ -968,19 +964,14 @@ class GoogleCalendarWorkflow {
         }, 3000);
     }
 
-    // TODO: Make this a promise to be able to do this:
-    // eventPageClickSaveButton().then(() => waitUntilOnCalendarPage());
     eventPageClickSaveButton() {
         this.debug && console.info('eventPageClickSaveButton');
-        waitUntilElementExists('[aria-label="Save"]')
-        .then((saveButton) => {
-            saveButton.click();
-
-            /*
-            setTimeout(() => {
-                this.updateMoveToDate();
-            }, 500);
-            */
+        return new Promise((resolve, reject) => {
+            waitUntilElementExists('[aria-label="Save"]')
+            .then((saveButton) => {
+                saveButton.click();
+                resolve();
+            });
         });
     }
 
