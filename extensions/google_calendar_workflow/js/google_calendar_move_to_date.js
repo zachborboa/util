@@ -666,7 +666,7 @@ class GoogleCalendarWorkflow {
         this.debug && console.log('updateSourceCell', cell);
 
         document.querySelectorAll('div[role="gridcell"][style]').forEach(
-            node => cell.style.backgroundColor === 'lawngreen' && node.removeAttribute('style')
+            node => node.style.backgroundColor === 'lawngreen' && node.removeAttribute('style')
         );
 
         if (cell) {
