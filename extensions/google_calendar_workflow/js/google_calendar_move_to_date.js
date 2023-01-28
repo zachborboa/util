@@ -587,6 +587,23 @@ class GoogleCalendarWorkflow {
         });
     }
 
+    updateSourceCell(cell) {
+        document.querySelectorAll('div[role="gridcell"][style]').forEach(
+            node => cell.style.backgroundColor === 'lawngreen' && node.removeAttribute('style')
+        );
+
+        cell.style.backgroundColor = 'lawngreen';
+        cell.style.outline = ' 4px solid limegreen';
+    }
+
+    updateDestinationCell(cell) {
+        document.querySelectorAll('div[role="gridcell"][style]').forEach(
+            node => cell.style.backgroundColor === '#e91e63' && node.removeAttribute('style')
+        );
+
+        cell.style.backgroundColor = '#e91e63';
+    }
+
     moveEvents(
         moveFromDate,
         minMoveToDate,
@@ -621,9 +638,11 @@ class GoogleCalendarWorkflow {
                     resolve();
                     return;
                 }
+                this.updateSourceCell(moveFromDateCell);
 
                 var firstCellWithMinEvents = this.findCellWithMinEvents(calendarGridRows, minMoveToDateFindString, maxMoveToDateFindString);
                 this.debug && console.log('firstCellWithMinEvents:', firstCellWithMinEvents);
+                this.updateDestinationCell(firstCellWithMinEvents);
 
                 var moveToDate = this.getCellDate(firstCellWithMinEvents);
                 this.debug && console.log('moving from %s to %s', moveFromDate, moveToDate);
