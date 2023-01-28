@@ -588,20 +588,28 @@ class GoogleCalendarWorkflow {
     }
 
     updateSourceCell(cell) {
+        this.debug && console.log('updateSourceCell', cell);
+
         document.querySelectorAll('div[role="gridcell"][style]').forEach(
             node => cell.style.backgroundColor === 'lawngreen' && node.removeAttribute('style')
         );
 
-        cell.style.backgroundColor = 'lawngreen';
-        cell.style.outline = ' 4px solid limegreen';
+        if (cell) {
+            cell.style.backgroundColor = 'lawngreen';
+            cell.style.outline = ' 4px solid limegreen';
+        }
     }
 
     updateDestinationCell(cell) {
+        this.debug && console.log('updateDestinationCell', cell);
+
         document.querySelectorAll('div[role="gridcell"][style]').forEach(
             node => cell.style.backgroundColor === '#e91e63' && node.removeAttribute('style')
         );
 
-        cell.style.backgroundColor = '#e91e63';
+        if (cell) {
+            cell.style.backgroundColor = '#e91e63';
+        }
     }
 
     moveEvents(
@@ -652,6 +660,8 @@ class GoogleCalendarWorkflow {
                 var sourceEvent = moveFromDateCell.querySelector('[data-eventid]');
                 if (!sourceEvent) {
                     this.debug && console.log('no events found on source cell:', moveFromDateCell);
+                    this.updateSourceCell();
+                    this.updateDestinationCell();
                     resolve();
                     return;
                 } else {
