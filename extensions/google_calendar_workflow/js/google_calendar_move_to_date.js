@@ -658,7 +658,7 @@ class GoogleCalendarWorkflow {
                 } else if (runningCalendarEventCleanup && this.isEditRecurringEventDialogOpen()) {
                     this.clickEditRecurringEventDialogOptionThisEvent();
                 }
-            }, 1000);
+            }, 200);
         });
     }
 
