@@ -679,11 +679,11 @@ class GoogleCalendarWorkflow {
         this.debug && console.log('updateDestinationCell', cell);
 
         document.querySelectorAll('div[role="gridcell"][style]').forEach(
-            node => node.style.backgroundColor === '#e91e63' && node.removeAttribute('style')
+            node => node.style.backgroundColor === 'indianred' && node.removeAttribute('style')
         );
 
         if (cell) {
-            cell.style.backgroundColor = '#e91e63';
+            cell.style.backgroundColor = 'indianred';
         }
     }
 
