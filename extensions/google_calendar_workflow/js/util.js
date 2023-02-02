@@ -45,7 +45,19 @@ function checkInputValue(input, value, resolve) {
 
             setTimeout(() => {
                 dispatchEvent(input, 'input');
-                DEBUG && console.log('input event sent');
+
+                // Focus input after setting value. Without focusing on the
+                // input, the input value is set properly when updating either a
+                // calendar event start date or an end date, but after the
+                // [Save] button is clicked, it's as if nothing changed on the
+                // form, the calendar event does not get updated, and the user
+                // is brought back to the calendar view. Focus the input so that
+                // the calendar event input value change is detected and the
+                // calendar event is updated when the [Save] button is clicked.
+                input.focus();
+                dispatchEvent(input, 'focus');
+
+                DEBUG && console.log('input event sent with focus');
 
                 DEBUG && console.log('value is now "%s"', input.value);
                 checkInputValue(input, value, resolve);
