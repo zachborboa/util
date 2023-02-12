@@ -1295,7 +1295,8 @@ class GoogleCalendarWorkflow {
         var label = character;
         var action = this.LABEL_AND_CHAR_TO_ACTION[character];
         var eventTitlePrefix = this.BUTTON_LABEL_TO_EVENT_TITLE_PREFIX[label];
-        this.updateCalendarEventTitle(label, action, eventTitlePrefix);
+        var autoClickEditRecurringEventDialogOptionThisEvent = true;
+        this.updateCalendarEventTitle(label, action, eventTitlePrefix, autoClickEditRecurringEventDialogOptionThisEvent);
 
         this.debug && console.groupEnd();
     }
@@ -1305,11 +1306,13 @@ class GoogleCalendarWorkflow {
         label,  // from "data-label" (index 0; 0, 1, ..., 6, 7, 8, 9).
         action, // from "data-action" (index 1; toggle-prefix, mark-completed, etc.).
         eventTitlePrefix, // e.g. "2." for label 2.
+        autoClickEditRecurringEventDialogOptionThisEvent = false,
     ) {
         this.debug && console.log('updateCalendarEventTitle');
         this.debug && console.log('label: "%s"', label);
         this.debug && console.log('action: "%s"', action);
         this.debug && console.log('eventTitlePrefix: "%s"', eventTitlePrefix);
+        this.debug && console.log('autoClickEditRecurringEventDialogOptionThisEvent:', autoClickEditRecurringEventDialogOptionThisEvent);
 
         // Ensure move-to-date is set before attempting to mark event completed.
         if (action === 'mark-completed') {
@@ -1355,6 +1358,7 @@ class GoogleCalendarWorkflow {
             );
 
             // Update calendar event.
+            // TODO: Use setInputValue().
             eventTitleInput.focus();
             eventTitleInput.value = newCalendarEventTitle;
 
@@ -1371,7 +1375,8 @@ class GoogleCalendarWorkflow {
                     this.debug && console.log('moving event to', currentMoveToDate);
 
                     this.moveEventToMoveToDate(currentMoveToDate)
-                    .then(() => this.eventPageClickSaveButton());
+                    .then(() => this.eventPageClickSaveButton())
+                    .then(() => this.waitUntilOnCustomWeekPage(autoClickEditRecurringEventDialogOptionThisEvent));
 
                 } else {
                     this.eventPageClickSaveButton();
