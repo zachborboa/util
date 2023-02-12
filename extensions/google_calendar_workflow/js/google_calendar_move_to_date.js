@@ -157,6 +157,8 @@ class GoogleCalendarWorkflow {
         this.moveToDateInput;
         this.addMoveToDateField();
 
+        this.addCustomViewSwitcher();
+
         this.spinner = this.addSpinner();
 
         this.currentDateNode;
@@ -1821,6 +1823,108 @@ class GoogleCalendarWorkflow {
         });
 
         this.debug && console.groupEnd();
+    }
+
+    switchToWeeks(numberOfWeeks) {
+        this.debug && console.info('switchToWeeks');
+        this.debug && console.log('numberOfWeeks:', numberOfWeeks);
+
+        waitUntilElementExists('button[aria-label="Settings menu"]')
+        .then((settingsMenuButton) => {
+            settingsMenuButton.click();
+
+            waitUntilElementExists('ul[aria-label="Settings menu"]')
+            .then((settingsMenu) => {
+                this.debug && console.log('settingsMenu:', settingsMenu);
+                var settingsMenuItems = Array.from(settingsMenu.querySelectorAll('[role="menuitem"]')).filter((item) => {
+                    return item.innerText === 'Settings';
+                });
+                var settingsMenuItem = settingsMenuItems[0];
+                this.debug && console.log('settingsMenuItem:', settingsMenuItem);
+
+                triggerMouseEvent(settingsMenuItem, 'mousedown');
+                triggerMouseEvent(settingsMenuItem, 'mouseup');
+                this.debug && console.log('clicked settingsMenuItem');
+
+                waitUntilElementExists('[aria-label="Set custom view"]')
+                .then((setCustomViewListbox) => {
+                    this.debug && console.log('setCustomViewListbox:', setCustomViewListbox);
+
+                    var selectedSetCustomViewListbox = setCustomViewListbox.querySelector('[aria-selected="true"]');
+                    selectedSetCustomViewListbox.click();
+
+                    waitMilliseconds(500)
+                    .then(() => {
+                        var setCustomViewListboxTwoWeeks = setCustomViewListbox.querySelector('[aria-label="2 weeks"][role="option"]');
+                        var setCustomViewListboxThreeWeeks = setCustomViewListbox.querySelector('[aria-label="3 weeks"][role="option"]');
+                        var setCustomViewListboxFourWeeks = setCustomViewListbox.querySelector('[aria-label="4 weeks"][role="option"]');
+
+                        if (numberOfWeeks === 2) {
+                            setCustomViewListboxTwoWeeks.click();
+                            this.debug && console.log('2 weeks clicked');
+                        } else if (numberOfWeeks === 3) {
+                            setCustomViewListboxThreeWeeks.click();
+                            this.debug && console.log('3 weeks clicked');
+                        } else if (numberOfWeeks === 4) {
+                            setCustomViewListboxFourWeeks.click();
+                            this.debug && console.log('4 weeks clicked');
+                        } else {
+                            this.debug && console.log('unexpected number of weeks');
+                            return;
+                        }
+
+                        waitMilliseconds(500)
+                        .then(() => {
+                            var goBackButton = document.querySelector('[aria-label="Go back"]');
+                            goBackButton.click();
+                            this.debug && console.log('goBackButton clicked');
+                        });
+                    });
+                });
+            });
+        });
+    }
+
+    addCustomViewSwitcher() {
+        // Add buttons to switch number of weeks displayed in custom view.
+        this.debug && console.info('addCustomViewSwitcher');
+
+        if (this.env !== PROD_ENV) {
+            return;
+        }
+
+        var customViewSwitcherContainer = document.createElement('div');
+        customViewSwitcherContainer.classList.add('_custom-view-switcher');
+
+        var switchToTwoWeeks = document.createElement('a');
+        switchToTwoWeeks.innerText = '2 weeks';
+        switchToTwoWeeks.onclick = (event) => {
+            this.debug && console.log('switchToTwoWeeks clicked');
+            event.preventDefault();
+            this.switchToWeeks(2);
+        };
+
+        var switchToThreeWeeks = document.createElement('a');
+        switchToThreeWeeks.innerText = '3 weeks';
+        switchToThreeWeeks.onclick = (event) => {
+            this.debug && console.log('switchToThreeWeeks clicked');
+            event.preventDefault();
+            this.switchToWeeks(3);
+        };
+
+        var switchToFourWeeks = document.createElement('a');
+        switchToFourWeeks.innerText = '4 weeks';
+        switchToFourWeeks.onclick = (event) => {
+            this.debug && console.log('switchToFourWeeks clicked');
+            event.preventDefault();
+            this.switchToWeeks(4);
+        };
+
+        customViewSwitcherContainer.appendChild(switchToTwoWeeks);
+        customViewSwitcherContainer.appendChild(switchToThreeWeeks);
+        customViewSwitcherContainer.appendChild(switchToFourWeeks);
+        this.debug && console.log('customViewSwitcherContainer:', customViewSwitcherContainer);
+        document.body.appendChild(customViewSwitcherContainer);
     }
 
     _getDateComparisonObject(date) {

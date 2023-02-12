@@ -196,3 +196,24 @@ function clickElementAndWaitUntilElementExists(elementToClickSelector, elementTo
         setTimeout(check, 1000);
     });
 }
+
+function waitMilliseconds(milliseconds) {
+    return new Promise(function(resolve, reject) {
+        setTimeout(function() {
+            resolve();
+        }, milliseconds)
+    });
+}
+
+function triggerMouseEvent(targetElement, eventType) {
+    console.info('triggerMouseEvent');
+    console.log('targetElement:', targetElement);
+    console.log('eventType:', eventType);
+
+    var event = new MouseEvent(eventType, {
+        'view': window,
+        'bubbles': true,
+        'cancelable': true,
+    });
+    targetElement.dispatchEvent(event);
+}
