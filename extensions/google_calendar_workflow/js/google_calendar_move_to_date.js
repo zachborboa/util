@@ -647,7 +647,7 @@ class GoogleCalendarWorkflow {
         return false;
     }
 
-    waitUntilOnCustomWeekPage(runningCalendarEventCleanup = false) {
+    waitUntilOnCustomWeekPage(autoClickEditRecurringEventDialogOptionThisEvent = false) {
         this.debug && console.log('waiting until on custom week page');
         return new Promise((resolve, reject) => {
             var checkCustomWeekPageInterval = setInterval(() => {
@@ -655,7 +655,7 @@ class GoogleCalendarWorkflow {
                     this.debug && console.log('now on custom week page');
                     clearInterval(checkCustomWeekPageInterval);
                     resolve();
-                } else if (runningCalendarEventCleanup && this.isEditRecurringEventDialogOpen()) {
+                } else if (autoClickEditRecurringEventDialogOptionThisEvent && this.isEditRecurringEventDialogOpen()) {
                     this.clickEditRecurringEventDialogOptionThisEvent();
                 }
             }, 200);
@@ -758,10 +758,10 @@ class GoogleCalendarWorkflow {
                             this.debug && console.log('on event edit page');
                             this.debug && console.log('ready to update event date');
 
-                            var runningCalendarEventCleanup = true;
+                            var autoClickEditRecurringEventDialogOptionThisEvent = true;
                             this.moveEventToMoveToDate(moveToDate)
                             .then(() => this.eventPageClickSaveButton())
-                            .then(() => this.waitUntilOnCustomWeekPage(runningCalendarEventCleanup))
+                            .then(() => this.waitUntilOnCustomWeekPage(autoClickEditRecurringEventDialogOptionThisEvent))
                             .then(() => waitUntilToastMessageDisappears())
                             .then(() => {
                                 // Try to move next source event to destination.
