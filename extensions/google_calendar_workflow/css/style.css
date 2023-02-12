@@ -239,3 +239,20 @@ div.u1KZub svg {
     transform: rotate(360deg);
   }
 }
+._custom-view-switcher {
+  position: absolute;
+  top: 46px;
+  right: 4px;
+  z-index: 1000;
+}
+._custom-view-switcher a {
+  border-radius: 4px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 5px 4px;
+}
+._custom-view-switcher a:hover {
+  background-color: #fff;
+  border-color: #dadce0;
+}
