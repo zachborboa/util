@@ -1357,14 +1357,10 @@ class GoogleCalendarWorkflow {
                 date,
             );
 
+            Promise.resolve()
             // Update calendar event.
-            // TODO: Use setInputValue().
-            eventTitleInput.focus();
-            eventTitleInput.value = newCalendarEventTitle;
-
-            setTimeout(() => {
-                dispatchEvent(eventTitleInput, 'input');
-
+            .then(() => setInputValue(eventTitleInput, newCalendarEventTitle))
+            .then(() => {
                 // Move event to the current move-to date if marked completed.
                 if (eventCompleted) {
                     var currentMoveToDate = this.getCurrentMoveToDate();
@@ -1381,7 +1377,7 @@ class GoogleCalendarWorkflow {
                 } else {
                     this.eventPageClickSaveButton();
                 }
-            }, 100);
+            });
         });
     }
 
