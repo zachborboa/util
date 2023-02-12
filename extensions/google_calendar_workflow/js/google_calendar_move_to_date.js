@@ -343,7 +343,7 @@ class GoogleCalendarWorkflow {
         eventDate,
         date,
     ) {
-        this.debug && console.info('getNewEventTitle');
+        this.debug && console.group('getNewEventTitle');
         this.debug && console.log('originalCalendarEventTitle: "%s"', originalCalendarEventTitle);
         this.debug && console.log('action:', action);
         this.debug && console.log('eventTitlePrefix:', eventTitlePrefix);
@@ -470,6 +470,7 @@ class GoogleCalendarWorkflow {
         }
 
         this.debug && console.log('newCalendarEventTitle: "%s"', newCalendarEventTitle);
+        this.debug && console.groupEnd();
 
         return newCalendarEventTitle;
     }
@@ -1307,17 +1308,29 @@ class GoogleCalendarWorkflow {
         eventTitlePrefix, // e.g. "2." for label 2.
         autoClickEditRecurringEventDialogOptionThisEvent = false,
     ) {
-        this.debug && console.log('updateCalendarEventTitle');
+        this.debug && console.group('updateCalendarEventTitle');
         this.debug && console.log('label: "%s"', label);
         this.debug && console.log('action: "%s"', action);
         this.debug && console.log('eventTitlePrefix: "%s"', eventTitlePrefix);
         this.debug && console.log('autoClickEditRecurringEventDialogOptionThisEvent:', autoClickEditRecurringEventDialogOptionThisEvent);
+
+        // For certain actions, automatically click the [OK] button when the
+        // "This event" option is selected in the "Edit recurring event" dialog.
+        // This will save the event changes for the individual recurring event
+        // without affecting other recurring events in the series. Without this,
+        // the modal will appear and everything is on pause until the modal is
+        // acted upon.
+        if (['mark-completed', 'remove-prefix', 'toggle-prefix'].includes(action) && !autoClickEditRecurringEventDialogOptionThisEvent) {
+            autoClickEditRecurringEventDialogOptionThisEvent = true;
+            this.debug && console.log('autoClickEditRecurringEventDialogOptionThisEvent is now:', autoClickEditRecurringEventDialogOptionThisEvent);
+        }
 
         // Ensure move-to-date is set before attempting to mark event completed.
         if (action === 'mark-completed') {
             var currentMoveToDate = this.getCurrentMoveToDate();
             if (currentMoveToDate === '') {
                 this.debug && console.warn('move to date empty');
+                this.debug && console.groupEnd();
                 return;
             }
         }
@@ -1371,10 +1384,18 @@ class GoogleCalendarWorkflow {
 
                     this.moveEventToMoveToDate(currentMoveToDate)
                     .then(() => this.eventPageClickSaveButton())
-                    .then(() => this.waitUntilOnCustomWeekPage(autoClickEditRecurringEventDialogOptionThisEvent));
+                    .then(() => this.waitUntilOnCustomWeekPage(autoClickEditRecurringEventDialogOptionThisEvent))
+                    .then(() => {
+                        this.debug && console.groupEnd();
+                    });
 
                 } else {
-                    this.eventPageClickSaveButton();
+                    Promise.resolve()
+                    .then(() => this.eventPageClickSaveButton())
+                    .then(() => this.waitUntilOnCustomWeekPage(autoClickEditRecurringEventDialogOptionThisEvent))
+                    .then(() => {
+                        this.debug && console.groupEnd();
+                    });
                 }
             });
         });
