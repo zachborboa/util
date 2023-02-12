@@ -49,7 +49,7 @@ class GoogleCalendarWorkflow {
     // Oldest available cell date that has been found and should be used.
     topCellDate;
 
-    editEventInterval = -1;
+    editEventTimeout = -1;
 
     // List of recent characters pressed.
     recentCharacterKeysPressedBuffer = [];
@@ -1100,7 +1100,7 @@ class GoogleCalendarWorkflow {
         var character = event.key;
         // this.debug && console.log('character:', character);
 
-        clearInterval(this.editEventInterval);
+        clearTimeout(this.editEventTimeout);
 
         if (event.getModifierState('CapsLock')) {
             this.debug && console.warn('caps lock is on');
@@ -1182,9 +1182,6 @@ class GoogleCalendarWorkflow {
                 ((label, action, eventTitlePrefix) => {
                     return (() => {
                         // console.log('timeout reached');
-                        // console.log('label:', label);
-                        // console.log('action:', action);
-                        // console.log('eventTitlePrefix: "%s"', eventTitlePrefix);
                         this.updateCalendarEventTitle(label, action, eventTitlePrefix);
                     });
                 })(
@@ -1197,7 +1194,7 @@ class GoogleCalendarWorkflow {
             // Wait a bit for another key to be pressed when only 1 key has been
             // pressed.
             if (this.recentCharacterKeysPressedBuffer.length === 1) {
-                this.editEventInterval = setTimeout(updateCalendarEventTitle, 1000);
+                this.editEventTimeout = setTimeout(updateCalendarEventTitle, 1000);
 
             // Otherwise, start updating calendar event without waiting for more
             // key presses.
