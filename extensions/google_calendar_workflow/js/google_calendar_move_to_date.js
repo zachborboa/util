@@ -651,12 +651,13 @@ class GoogleCalendarWorkflow {
     }
 
     waitUntilOnCustomWeekPage(autoClickEditRecurringEventDialogOptionThisEvent = false) {
-        this.debug && console.log('waiting until on custom week page');
+        this.debug && console.group('waiting until on custom week page');
         return new Promise((resolve, reject) => {
             var checkCustomWeekPageInterval = setInterval(() => {
                 if (this.isOnCustomWeekPage()) {
                     this.debug && console.log('now on custom week page');
                     clearInterval(checkCustomWeekPageInterval);
+                    this.debug && console.groupEnd();
                     resolve();
                 } else if (autoClickEditRecurringEventDialogOptionThisEvent && this.isEditRecurringEventDialogOpen()) {
                     this.clickEditRecurringEventDialogOptionThisEvent();
@@ -1044,11 +1045,12 @@ class GoogleCalendarWorkflow {
     }
 
     eventPageClickSaveButton() {
-        this.debug && console.info('eventPageClickSaveButton');
+        this.debug && console.group('eventPageClickSaveButton');
         return new Promise((resolve, reject) => {
             waitUntilElementExists('[aria-label="Save"]')
             .then((saveButton) => {
                 saveButton.click();
+                this.debug && console.groupEnd();
                 resolve();
             });
         });
@@ -1298,6 +1300,7 @@ class GoogleCalendarWorkflow {
         var autoClickEditRecurringEventDialogOptionThisEvent = true;
         this.updateCalendarEventTitle(label, action, eventTitlePrefix, autoClickEditRecurringEventDialogOptionThisEvent);
 
+        this.debug && console.log('doCharacterAction done');
         this.debug && console.groupEnd();
     }
 
@@ -1369,8 +1372,8 @@ class GoogleCalendarWorkflow {
                 date,
             );
 
-            Promise.resolve()
             // Update calendar event.
+            Promise.resolve()
             .then(() => setInputValue(eventTitleInput, newCalendarEventTitle))
             .then(() => {
                 // Move event to the current move-to date if marked completed.
@@ -1386,6 +1389,7 @@ class GoogleCalendarWorkflow {
                     .then(() => this.eventPageClickSaveButton())
                     .then(() => this.waitUntilOnCustomWeekPage(autoClickEditRecurringEventDialogOptionThisEvent))
                     .then(() => {
+                        this.debug && console.log('updateCalendarEventTitle done');
                         this.debug && console.groupEnd();
                     });
 
@@ -1394,6 +1398,7 @@ class GoogleCalendarWorkflow {
                     .then(() => this.eventPageClickSaveButton())
                     .then(() => this.waitUntilOnCustomWeekPage(autoClickEditRecurringEventDialogOptionThisEvent))
                     .then(() => {
+                        this.debug && console.log('updateCalendarEventTitle done');
                         this.debug && console.groupEnd();
                     });
                 }
