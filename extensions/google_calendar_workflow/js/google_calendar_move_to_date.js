@@ -1168,6 +1168,7 @@ class GoogleCalendarWorkflow {
                 var currentMoveToDate = this.getCurrentMoveToDate();
                 if (currentMoveToDate === '') {
                     this.debug && console.warn('move to date empty');
+                    alert('Error: Move to date empty');
                     return;
                 }
                 this.debug && console.log('moving event to', currentMoveToDate);
