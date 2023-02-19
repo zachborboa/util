@@ -574,7 +574,10 @@ class GoogleCalendarWorkflow {
     }
 
     isOnCustomWeekPage() {
-        return window.location.pathname.indexOf('/customweek/') !== -1;
+        return window.location.pathname.indexOf('/customweek/') !== -1 &&
+            document.querySelector('[aria-label="Start date"]') === null &&
+            document.querySelector('[aria-label="End date"]') === null &&
+            document.querySelector('[aria-label="Title"]') === null;
     }
 
     clickEditRecurringEventDialogOptionThisEvent() {
@@ -651,16 +654,20 @@ class GoogleCalendarWorkflow {
     }
 
     waitUntilOnCustomWeekPage(autoClickEditRecurringEventDialogOptionThisEvent = false) {
-        this.debug && console.group('waiting until on custom week page');
+        this.debug && console.group('waitUntilOnCustomWeekPage');
+        this.debug && console.log('waitUntilOnCustomWeekPage.autoClickEditRecurringEventDialogOptionThisEvent:', autoClickEditRecurringEventDialogOptionThisEvent);
         return new Promise((resolve, reject) => {
             var checkCustomWeekPageInterval = setInterval(() => {
                 if (this.isOnCustomWeekPage()) {
-                    this.debug && console.log('now on custom week page');
+                    this.debug && console.log('waitUntilOnCustomWeekPage.isOnCustomWeekPage');
                     clearInterval(checkCustomWeekPageInterval);
                     this.debug && console.groupEnd();
                     resolve();
                 } else if (autoClickEditRecurringEventDialogOptionThisEvent && this.isEditRecurringEventDialogOpen()) {
+                    this.debug && console.log('waitUntilOnCustomWeekPage: autoClickEditRecurringEventDialogOptionThisEvent && isEditRecurringEventDialogOpen');
                     this.clickEditRecurringEventDialogOptionThisEvent();
+                } else {
+                    this.debug && console.log('waitUntilOnCustomWeekPage.else');
                 }
             }, 200);
         });
@@ -833,17 +840,19 @@ class GoogleCalendarWorkflow {
         referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
     }
 
-    // TODO: Make this a promise that clicks event edit button and waits until
-    // on event edit page.
     clickEventBubbleEditButton() {
-        this.debug && console.info('clickEventBubbleEditButton');
-        var editEventButton = document.querySelector('[aria-label="Edit event"]');
-        // this.debug && console.log('editEventButton:', editEventButton);
-        if (editEventButton) {
-            editEventButton.click();
-        } else {
-            this.debug && console.warn('editEventButton not found', editEventButton);
-        }
+        this.debug && console.group('clickEventBubbleEditButton');
+        return new Promise((resolve, reject) => {
+            var editEventButton = document.querySelector('[aria-label="Edit event"]');
+            if (editEventButton) {
+                editEventButton.click();
+                this.debug && console.groupEnd();
+                resolve(editEventButton);
+            } else {
+                this.debug && console.warn('editEventButton not found', editEventButton);
+                this.debug && console.groupEnd();
+            }
+        });
     }
 
     clickEventBubbleOptionsDuplicate() {
@@ -1050,6 +1059,7 @@ class GoogleCalendarWorkflow {
             waitUntilElementExists('[aria-label="Save"]')
             .then((saveButton) => {
                 saveButton.click();
+                this.debug && console.log('eventPageClickSaveButton: save button clicked');
                 this.debug && console.groupEnd();
                 resolve();
             });
@@ -1076,11 +1086,8 @@ class GoogleCalendarWorkflow {
         var eventDateInputFormattedDate = this.getEventDateFormattedDate(moveToDate);
 
         return new Promise((resolve, reject) => {
-            Promise.all([
-                waitUntilElementExists('[aria-label="Start date"]'),
-                waitUntilElementExists('[aria-label="End date"]'),
-                waitUntilElementExists('[aria-label="Title"]'),
-            ]).then(([
+            this.waitUntilOnEventEditPage()
+            .then(([
                 startDateInput,
                 endDateInput,
                 eventTitleInput,
@@ -1161,9 +1168,8 @@ class GoogleCalendarWorkflow {
         // Move event.
         } else if (eventBubble && character === 'm') {
             this.debug && console.log('move event');
-            this.clickEventBubbleEditButton();
-
-            this.waitUntilOnEventEditPage()
+            this.clickEventBubbleEditButton()
+            .then(() => this.waitUntilOnEventEditPage())
             .then(() => {
                 var currentMoveToDate = this.getCurrentMoveToDate();
                 if (currentMoveToDate === '') {
@@ -1271,6 +1277,10 @@ class GoogleCalendarWorkflow {
         this.debug && console.log('waiting until on edit event page');
         return new Promise((resolve, reject) => {
             Promise.all([
+                // Avoid checking if on edit event page using the url match
+                // method as the url isn't reliably updated and will show the
+                // previous url (e.g. /calendar/u/0/r/customweek/[...]) even
+                // when the edit page is being shown.
                 waitUntilElementExists('[aria-label="Start date"]'),
                 waitUntilElementExists('[aria-label="End date"]'),
                 waitUntilElementExists('[aria-label="Title"]'),
@@ -1339,9 +1349,8 @@ class GoogleCalendarWorkflow {
             }
         }
 
-        this.clickEventBubbleEditButton();
-
-        this.waitUntilOnEventEditPage()
+        this.clickEventBubbleEditButton()
+        .then(() => this.waitUntilOnEventEditPage())
         .then(([
             startDateInput,
             endDateInput,
@@ -1390,7 +1399,7 @@ class GoogleCalendarWorkflow {
                     .then(() => this.eventPageClickSaveButton())
                     .then(() => this.waitUntilOnCustomWeekPage(autoClickEditRecurringEventDialogOptionThisEvent))
                     .then(() => {
-                        this.debug && console.log('updateCalendarEventTitle done');
+                        this.debug && console.log('updateCalendarEventTitle done (event completed)');
                         this.debug && console.groupEnd();
                     });
 
@@ -1399,7 +1408,7 @@ class GoogleCalendarWorkflow {
                     .then(() => this.eventPageClickSaveButton())
                     .then(() => this.waitUntilOnCustomWeekPage(autoClickEditRecurringEventDialogOptionThisEvent))
                     .then(() => {
-                        this.debug && console.log('updateCalendarEventTitle done');
+                        this.debug && console.log('updateCalendarEventTitle done (event not completed)');
                         this.debug && console.groupEnd();
                     });
                 }
@@ -1805,9 +1814,8 @@ class GoogleCalendarWorkflow {
 
     changeSelectedEventDay(direction) {
         this.debug && console.group('changeSelectedEventDay:', direction);
-        this.clickEventBubbleEditButton();
-
-        this.waitUntilOnEventEditPage()
+        this.clickEventBubbleEditButton()
+        .then(() => this.waitUntilOnEventEditPage())
         .then(([
             startDateInput,
             endDateInput,
