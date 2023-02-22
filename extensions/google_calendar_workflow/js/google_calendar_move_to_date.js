@@ -581,6 +581,7 @@ class GoogleCalendarWorkflow {
     }
 
     clickEditRecurringEventDialogOptionThisEvent() {
+        this.debug && console.log('clickEditRecurringEventDialogOptionThisEvent');
         var dialog = document.querySelector('[role="dialog"]');
         if (dialog) {
             var dialogLabelledByIdentifier = dialog.getAttribute('aria-labelledby');
@@ -653,9 +654,65 @@ class GoogleCalendarWorkflow {
         return false;
     }
 
-    waitUntilOnCustomWeekPage(autoClickEditRecurringEventDialogOptionThisEvent = false) {
+    clickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk() {
+        this.debug && console.log('clickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk');
+        var dialog = document.querySelector('[role="dialog"]');
+        if (dialog &&
+            dialog.innerText === 'Are you sure?\n' +
+            'You are about to make changes that will only be reflected on your own calendar.\n' +
+            'Cancel\n' +
+            'OK'
+        ) {
+            // Click the "OK" button now that basic checks have passed.
+            var dialogButtons = dialog.querySelectorAll('[role="button"]');;
+            var dialogOkButtons = Array.from(dialogButtons).filter(button => button.innerText === 'OK');
+            if (dialogOkButtons.length !== 1) {
+                alert('Error: Multiple "OK" buttons found');
+            } else {
+                var dialogOkButton = dialogOkButtons[0];
+                dialogOkButton.click();
+                console.log('ok button clicked:', dialogOkButton);
+            }
+        }
+    }
+
+    isAreYouSureDialogOpen() {
+        var dialog = document.querySelector('[role="dialog"]');
+        if (dialog) {
+            var dialogLabelledByIdentifier = dialog.getAttribute('aria-labelledby');
+            if (dialogLabelledByIdentifier) {
+                var dialogLabelledByNode = document.getElementById(dialogLabelledByIdentifier);
+                if (dialogLabelledByNode && dialogLabelledByNode.innerText === 'Edit recurring event') {
+                    this.debug && console.log('dialog open: "Edit recurring event"');
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    isAreYouSureChangesOnlyReflectedOnOwnCalendarDialogOpen() {
+        var dialog = document.querySelector('[role="dialog"]');
+        if (dialog &&
+            dialog.innerText === 'Are you sure?\n' +
+            'You are about to make changes that will only be reflected on your own calendar.\n' +
+            'Cancel\n' +
+            'OK'
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    waitUntilOnCustomWeekPage(
+        autoClickEditRecurringEventDialogOptionThisEvent = false,
+        autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk = false,
+    ) {
         this.debug && console.group('waitUntilOnCustomWeekPage');
         this.debug && console.log('waitUntilOnCustomWeekPage.autoClickEditRecurringEventDialogOptionThisEvent:', autoClickEditRecurringEventDialogOptionThisEvent);
+        this.debug && console.log('waitUntilOnCustomWeekPage.autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk:', autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk);
         return new Promise((resolve, reject) => {
             var checkCustomWeekPageInterval = setInterval(() => {
                 if (this.isOnCustomWeekPage()) {
@@ -665,7 +722,16 @@ class GoogleCalendarWorkflow {
                     resolve();
                 } else if (autoClickEditRecurringEventDialogOptionThisEvent && this.isEditRecurringEventDialogOpen()) {
                     this.debug && console.log('waitUntilOnCustomWeekPage: autoClickEditRecurringEventDialogOptionThisEvent && isEditRecurringEventDialogOpen');
+                    clearInterval(checkCustomWeekPageInterval);
                     this.clickEditRecurringEventDialogOptionThisEvent();
+                    this.debug && console.groupEnd();
+                    resolve();
+                } else if (autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk && this.isAreYouSureChangesOnlyReflectedOnOwnCalendarDialogOpen()) {
+                    this.debug && console.log('waitUntilOnCustomWeekPage: autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk && isAreYouSureDialogOpen');
+                    clearInterval(checkCustomWeekPageInterval);
+                    this.clickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk();
+                    this.debug && console.groupEnd();
+                    resolve();
                 } else {
                     this.debug && console.log('waitUntilOnCustomWeekPage.else');
                 }
@@ -770,9 +836,14 @@ class GoogleCalendarWorkflow {
                             this.debug && console.log('ready to update event date');
 
                             var autoClickEditRecurringEventDialogOptionThisEvent = true;
+                            var autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk = true;
+
                             this.moveEventToMoveToDate(moveToDate)
                             .then(() => this.eventPageClickSaveButton())
-                            .then(() => this.waitUntilOnCustomWeekPage(autoClickEditRecurringEventDialogOptionThisEvent))
+                            .then(() => this.waitUntilOnCustomWeekPage(
+                                autoClickEditRecurringEventDialogOptionThisEvent,
+                                autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
+                            ))
                             .then(() => waitUntilToastMessageDisappears())
                             .then(() => {
                                 // Try to move next source event to destination.
