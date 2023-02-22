@@ -1710,14 +1710,13 @@ class GoogleCalendarWorkflow {
         // week.
         this.debug && console.info('cleanUpEvents');
 
+        this.spinner.show();
+
         if (this.cleaningUpEvents) {
             this.debug && console.warn('already cleaning up events');
+            this.spinner.hide();
             return;
-        } else {
-            this.cleaningUpEvents = true;
         }
-
-        this.spinner.show();
 
         var currentMoveToDate = this.getCurrentMoveToDate();
         if (currentMoveToDate === '') {
@@ -1725,6 +1724,8 @@ class GoogleCalendarWorkflow {
             this.spinner.hide();
             return;
         }
+
+        this.cleaningUpEvents = true;
 
         var moveFromDate = new Date(currentMoveToDate + ' 00:00:00');
         this.debug && console.log('moveFromDate:', moveFromDate);
