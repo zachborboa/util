@@ -1415,6 +1415,7 @@ class GoogleCalendarWorkflow {
             var currentMoveToDate = this.getCurrentMoveToDate();
             if (currentMoveToDate === '') {
                 this.debug && console.warn('move to date empty');
+                alert('Error: Move to date empty');
                 this.debug && console.groupEnd();
                 return;
             }
@@ -1462,6 +1463,7 @@ class GoogleCalendarWorkflow {
                     var currentMoveToDate = this.getCurrentMoveToDate();
                     if (currentMoveToDate === '') {
                         this.debug && console.warn('move to date empty');
+                        alert('Error: Move to date empty');
                         return;
                     }
                     this.debug && console.log('moving event to', currentMoveToDate);
@@ -1792,6 +1794,7 @@ class GoogleCalendarWorkflow {
         var currentMoveToDate = this.getCurrentMoveToDate();
         if (currentMoveToDate === '') {
             this.debug && console.warn('move to date empty');
+            alert('Error: Move to date empty');
             this.spinner.hide();
             return;
         }
