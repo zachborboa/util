@@ -1380,7 +1380,14 @@ class GoogleCalendarWorkflow {
         var action = this.LABEL_AND_CHAR_TO_ACTION[character];
         var eventTitlePrefix = this.BUTTON_LABEL_TO_EVENT_TITLE_PREFIX[label];
         var autoClickEditRecurringEventDialogOptionThisEvent = true;
-        this.updateCalendarEventTitle(label, action, eventTitlePrefix, autoClickEditRecurringEventDialogOptionThisEvent);
+        var autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk = true;
+        this.updateCalendarEventTitle(
+            label,
+            action,
+            eventTitlePrefix,
+            autoClickEditRecurringEventDialogOptionThisEvent,
+            autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
+        );
 
         this.debug && console.log('doCharacterAction done');
         this.debug && console.groupEnd();
@@ -1392,12 +1399,14 @@ class GoogleCalendarWorkflow {
         action, // from "data-action" (index 1; toggle-prefix, mark-completed, etc.).
         eventTitlePrefix, // e.g. "2." for label 2.
         autoClickEditRecurringEventDialogOptionThisEvent = false,
+        autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk = false,
     ) {
         this.debug && console.group('updateCalendarEventTitle');
         this.debug && console.log('label: "%s"', label);
         this.debug && console.log('action: "%s"', action);
         this.debug && console.log('eventTitlePrefix: "%s"', eventTitlePrefix);
         this.debug && console.log('autoClickEditRecurringEventDialogOptionThisEvent:', autoClickEditRecurringEventDialogOptionThisEvent);
+        this.debug && console.log('autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk:', autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk);
 
         // For certain actions, automatically click the [OK] button when the
         // "This event" option is selected in the "Edit recurring event" dialog.
@@ -1470,7 +1479,10 @@ class GoogleCalendarWorkflow {
 
                     this.moveEventToMoveToDate(currentMoveToDate)
                     .then(() => this.eventPageClickSaveButton())
-                    .then(() => this.waitUntilOnCustomWeekPage(autoClickEditRecurringEventDialogOptionThisEvent))
+                    .then(() => this.waitUntilOnCustomWeekPage(
+                        autoClickEditRecurringEventDialogOptionThisEvent,
+                        autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
+                    ))
                     .then(() => {
                         this.debug && console.log('updateCalendarEventTitle done (event completed)');
                         this.debug && console.groupEnd();
@@ -1479,7 +1491,10 @@ class GoogleCalendarWorkflow {
                 } else {
                     Promise.resolve()
                     .then(() => this.eventPageClickSaveButton())
-                    .then(() => this.waitUntilOnCustomWeekPage(autoClickEditRecurringEventDialogOptionThisEvent))
+                    .then(() => this.waitUntilOnCustomWeekPage(
+                        autoClickEditRecurringEventDialogOptionThisEvent,
+                        autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
+                    ))
                     .then(() => {
                         this.debug && console.log('updateCalendarEventTitle done (event not completed)');
                         this.debug && console.groupEnd();
