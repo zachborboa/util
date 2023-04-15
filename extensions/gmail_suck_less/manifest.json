@@ -1,15 +1,6 @@
 {
   "content_scripts": [
     {
-      "all_frames": true,
-      "css": [
-        "css/hangouts_style.css"
-      ],
-      "matches": [
-        "https://hangouts.google.com/*"
-      ]
-    },
-    {
       "js": [
         "js/content_script.js"
       ],
