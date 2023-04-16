@@ -10,6 +10,14 @@
       "matches": [
         "https://mail.google.com/*"
       ]
+    },
+    {
+      "css": [
+        "css/fixed_width_text_style.css"
+      ],
+      "matches": [
+        "https://mail.google.com/*"
+      ]
     }
   ],
   "description": "Make Gmail suck less.",
