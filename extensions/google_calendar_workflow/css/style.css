@@ -256,3 +256,7 @@ div.u1KZub svg {
   background-color: #fff;
   border-color: #dadce0;
 }
+
+[aria-modal=true][role=dialog][aria-labelledby][style] {
+  top: 0 !important;
+}

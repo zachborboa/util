@@ -237,3 +237,8 @@ div.u1KZub {
         padding: 5px 4px;
     }
 }
+
+// Fix calendar events popup being too small.
+[aria-modal="true"][role="dialog"][aria-labelledby][style] {
+    top: 0 !important;
+}
