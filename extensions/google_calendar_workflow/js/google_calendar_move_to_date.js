@@ -297,7 +297,7 @@ class GoogleCalendarWorkflow {
         var topCellDate;
 
         // Use date from input when in manual mode.
-        if (this.moveToDateForm['max-events-per-cell'].value === 'manual') {
+        if (this.moveToDateForm && this.moveToDateForm['max-events-per-cell'].value === 'manual') {
             this.debug && console.log('max events per cell is manual so using current move to date');
             topCellDate = this.getCurrentMoveToDate();
         } else {
