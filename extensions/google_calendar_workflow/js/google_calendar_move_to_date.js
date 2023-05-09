@@ -294,9 +294,12 @@ class GoogleCalendarWorkflow {
 
     getTopCellDate(calendarGridRows) {
         this.debug && console.info('getTopCellDate');
+        var topCellDate;
+
         // Use date from input when in manual mode.
         if (this.options.maxEventsPerCell === 'manual') {
-            this.topCellDate = this.getCurrentMoveToDate();
+            this.debug && console.log('max events per cell is manual so using current move to date');
+            topCellDate = this.getCurrentMoveToDate();
         } else {
             // Calculate if cell date is older than the current top cell date only when a top cell is found.
             var topCell = this.findTopCell(calendarGridRows);
@@ -304,21 +307,22 @@ class GoogleCalendarWorkflow {
                 var cellDate = this.getCellDate(topCell);
                 if (this.topCellDate === undefined) {
                     this.debug && console.log('using newly calculated cellDate:', cellDate);
-                    this.topCellDate = cellDate;
+                    topCellDate = cellDate;
                 } else {
-                    this.debug && console.log('comparing cellDate %s to current topCellDate %s', cellDate, this.topCellDate);
+                    this.debug && console.log('comparing cellDate "%s" to current topCellDate "%s"', cellDate, this.topCellDate);
                     if (this._getDateComparisonObject(cellDate) < this._getDateComparisonObject(this.topCellDate)) {
                         this.debug && console.log('updating current topCellDate');
-                        this.topCellDate = cellDate;
+                        topCellDate = cellDate;
                     } else {
                         this.debug && console.log('keeping current topCellDate');
+                        topCellDate = this.topCellDate;
                     }
                 }
             }
         }
 
-        this.debug && console.log('topCellDate: "%s"', this.topCellDate);
-        return this.topCellDate;
+        this.debug && console.log('topCellDate: "%s"', topCellDate);
+        return topCellDate;
     }
 
     getEventDateFormattedDate(dateString) {
