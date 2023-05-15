@@ -848,7 +848,7 @@ class GoogleCalendarWorkflow {
                                 autoClickEditRecurringEventDialogOptionThisEvent,
                                 autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
                             ))
-                            .then(() => waitUntilToastMessageDisappears())
+                            .then(() => waitUntilEventHasMovedFromCell(sourceEvent, moveFromDateCell))
                             .then(() => {
                                 // Try to move next source event to destination.
                                 setTimeout(moveEvent, 100);

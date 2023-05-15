@@ -125,22 +125,41 @@ function waitUntilElementVisible(selector, baseElement) {
     });
 }
 
-function waitUntilToastMessageDisappears() {
-    DEBUG && console.group('waitUntilToastMessageDisappears');
+function waitUntilEventHasMovedFromCell(sourceEvent, cell) {
+    DEBUG && console.group('waitUntilEventHasMovedFromCell');
+    DEBUG && console.log('sourceEvent:', sourceEvent);
+    DEBUG && console.log('cell:', cell);
     return new Promise((resolve, reject) => {
-        waitUntilElementExists('.u1KZub', undefined, 3000)
-        .then((elementFound) => {
-            var check = () => {
-                if (!isVisible(elementFound)) {
-                    DEBUG && console.log('toast message has disappeared');
-                    DEBUG && console.groupEnd();
-                    resolve(elementFound);
-                } else {
-                    setTimeout(check, TIMEOUT_MS);
-                }
-            };
-            setTimeout(check, TIMEOUT_MS);
-        });
+        var check = () => {
+
+            DEBUG && console.log('cell:', cell);
+            if (document.body.contains(cell)) {
+                DEBUG && console.log('cell still found in body');
+            } else {
+                DEBUG && console.log('cell disappeared');
+            }
+
+            DEBUG && console.log('sourceEvent:', sourceEvent);
+            if (document.body.contains(sourceEvent)) {
+                DEBUG && console.log('sourceEvent still found in body');
+            } else {
+                DEBUG && console.log('sourceEvent disappeared');
+            }
+
+            if (!document.body.contains(sourceEvent)) {
+                DEBUG && console.log('event has disappeared from document.body');
+                DEBUG && console.groupEnd();
+                resolve();
+            } else if (!cell.contains(sourceEvent)) {
+                DEBUG && console.log('event has moved from cell');
+                DEBUG && console.groupEnd();
+                resolve();
+            } else {
+                DEBUG && console.log('cell still contains event');
+                setTimeout(check, TIMEOUT_MS);
+            }
+        };
+        setTimeout(check, TIMEOUT_MS);
     });
 }
 
