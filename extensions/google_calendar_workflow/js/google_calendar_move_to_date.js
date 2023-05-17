@@ -492,6 +492,7 @@ class GoogleCalendarWorkflow {
     findCellByDateStringEnding(calendarGridRows, dateStringEnding) {
         this.debug && console.group('findCellByDateStringEnding');
         this.debug && console.log('dateStringEnding:', dateStringEnding);
+        this.debug && console.log('calendarGridRows.length:', calendarGridRows.length);
 
         var cellFound;
         outer_loop:
@@ -517,6 +518,7 @@ class GoogleCalendarWorkflow {
             this.debug && console.groupEnd();
         }
 
+        this.debug && console.log('cellFound:', cellFound);
         this.debug && console.groupEnd();
         return cellFound;
     }
@@ -798,7 +800,7 @@ class GoogleCalendarWorkflow {
                 var moveFromDateCell = this.findCellByDateStringEnding(calendarGridRows, moveFromDateFindString);
                 this.debug && console.log('moveFromDateCell:', moveFromDateCell);
                 if (!moveFromDateCell) {
-                    this.debug && console.warn('move from date cell not found');
+                    this.debug && console.warn('move from date cell not found. looked for "%s"', moveFromDateFindString);
                     resolve();
                     return;
                 }
