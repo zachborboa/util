@@ -770,6 +770,17 @@ class GoogleCalendarWorkflow {
         }
     }
 
+    waitUntilCalendarGridRows() {
+        return new Promise((resolve, reject) => {
+            waitUntilElementExists('[data-view-heading] [role="presentation"] [role="row"]')
+            .then(() => {
+                var calendarGridRows = document.querySelectorAll('[data-view-heading] [role="presentation"] [role="row"]');
+                this.debug && console.log('calendarGridRows:', calendarGridRows);
+                resolve(calendarGridRows);
+            });
+        });
+    }
+
     moveEvents(
         moveFromDate,
         minMoveToDate,
@@ -794,8 +805,8 @@ class GoogleCalendarWorkflow {
             var moveEvent = (() =>  {
                 this.debug && console.log('moveEvent');
 
-                var calendarGridRows = document.querySelectorAll('[data-view-heading] [role="presentation"] [role="row"]');
-                this.debug && console.log('calendarGridRows:', calendarGridRows);
+                this.waitUntilCalendarGridRows()
+                .then((calendarGridRows) => {
 
                 var moveFromDateCell = this.findCellByDateStringEnding(calendarGridRows, moveFromDateFindString);
                 this.debug && console.log('moveFromDateCell:', moveFromDateCell);
@@ -858,6 +869,8 @@ class GoogleCalendarWorkflow {
                         });
                     });
                 }, 100);
+
+                });
             });
             moveEvent();
 
