@@ -240,5 +240,13 @@ div.u1KZub {
 
 // Fix calendar events popup being too small.
 [aria-modal="true"][role="dialog"][aria-labelledby][style] {
+    bottom: 0;
     top: 0 !important;
+
+    // Anchor list of events to the bottom of the popup.
+    .zC2ZSb {
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
 }

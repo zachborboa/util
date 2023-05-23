@@ -258,5 +258,11 @@ div.u1KZub svg {
 }
 
 [aria-modal=true][role=dialog][aria-labelledby][style] {
+  bottom: 0;
   top: 0 !important;
+}
+[aria-modal=true][role=dialog][aria-labelledby][style] .zC2ZSb {
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
