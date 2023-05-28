@@ -825,7 +825,9 @@ class GoogleCalendarWorkflow {
                     this.debug && console.log('moving from %s to %s', moveFromDate, moveToDate);
                     this.debug && console.log('moving events from this cell', moveFromDateCell, 'to this cell', firstCellWithMinEvents);
 
-                    // Edit event date of first event in source cell.
+                    // Click first event in cell so that the event popup
+                    // appears. Sometimes the event disappears (moves) so check
+                    // that it still exists.
                     var sourceEvent = moveFromDateCell.querySelector('[data-eventid]');
                     if (!sourceEvent) {
                         this.debug && console.log('no events found on source cell:', moveFromDateCell);
@@ -833,42 +835,56 @@ class GoogleCalendarWorkflow {
                         this.updateDestinationCell();
                         resolve();
                         return;
-                    } else {
-                        // this.debug && console.log('sourceEvent:', sourceEvent);
                     }
 
-                    this.debug && console.log('about to click sourceEvent and wait until edit event exists');
-                    setTimeout(() => {
-                        this.debug && console.log('clicking sourceEvent and waiting until edit event exists');
+                    // Edit event date of first event in source cell.
+                    this.debug && console.log('clicking sourceEvent and waiting until edit event exists');
+                    this.debug && console.log('sourceEvent:', sourceEvent);
 
-                        clickElementAndWaitUntilElementExists('[data-eventid]', moveFromDateCell, '[aria-label="Edit event"]')
-                        .then((editEventButton) => {
-                            editEventButton.click();
-                            this.debug && console.log('edit event button clicked');
+                    // Click first calendar event in cell.
+                    var calendarEvent = moveFromDateCell.querySelector('[data-eventid]');
+                    this.debug && console.log('calendarEvent:', calendarEvent);
+                    if (!calendarEvent) {
+                        this.debug && console.log('no event found on source cell:', moveFromDateCell);
+                        resolve();
+                        return;
+                    }
 
-                            this.debug && console.log('waiting until edit event button exists');
-                            this.waitUntilOnEventEditPage()
-                            .then(() => {
-                                this.debug && console.log('on event edit page');
-                                this.debug && console.log('ready to update event date');
+                    calendarEvent.click();
+                    this.debug && console.log('calendar event clicked');
 
-                                var autoClickEditRecurringEventDialogOptionThisEvent = true;
-                                var autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk = true;
+                    // Wait for the popup to appear with the "Edit event" button.
+                    var editEventButton = document.querySelector('[aria-label="Edit event"]');
+                    this.debug && console.log('editEventButton:', editEventButton);
+                    if (!editEventButton) {
+                        this.debug && console.log('no edit event button found for calendar event:', calendarEvent);
+                        resolve();
+                        return;
+                    }
 
-                                this.moveEventToMoveToDate(moveToDate)
-                                .then(() => this.eventPageClickSaveButton())
-                                .then(() => this.waitUntilOnCustomWeekPage(
-                                    autoClickEditRecurringEventDialogOptionThisEvent,
-                                    autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
-                                ))
-                                .then(() => waitUntilEventHasMovedFromCell(sourceEvent, moveFromDateCell))
-                                .then(() => {
-                                    // Try to move next source event to destination.
-                                    setTimeout(moveEvent, 100);
-                                });
-                            });
+                    editEventButton.click();
+                    this.debug && console.log('edit event button clicked');
+
+                    this.waitUntilOnEventEditPage()
+                    .then(() => {
+                        this.debug && console.log('on event edit page');
+                        this.debug && console.log('ready to update event date');
+
+                        var autoClickEditRecurringEventDialogOptionThisEvent = true;
+                        var autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk = true;
+
+                        this.moveEventToMoveToDate(moveToDate)
+                        .then(() => this.eventPageClickSaveButton())
+                        .then(() => this.waitUntilOnCustomWeekPage(
+                            autoClickEditRecurringEventDialogOptionThisEvent,
+                            autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
+                        ))
+                        .then(() => waitUntilEventHasMovedFromCell(sourceEvent, moveFromDateCell))
+                        .then(() => {
+                            // Try to move next source event to destination.
+                            setTimeout(moveEvent, 100);
                         });
-                    }, 100);
+                    });
 
                 });
             });
