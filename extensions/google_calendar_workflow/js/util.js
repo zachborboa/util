@@ -167,6 +167,33 @@ function isVisible(el) {
     return el && el.offsetParent !== null;
 }
 
+function doThingUntilTrue(thingToDoUntilTrue, maxTimeToWaitSeconds) {
+    DEBUG && console.group('doThingUntilTrue');
+    DEBUG && console.log('maxTimeToWaitSeconds:', maxTimeToWaitSeconds);
+
+    const startTime = Date.now();
+    return new Promise((resolve, reject) => {
+        var thingToDoInterval = setInterval(() => {
+            if (thingToDoUntilTrue()) {
+                DEBUG && console.log('thingToDoUntilTrue() success!');
+                clearInterval(thingToDoInterval);
+                resolve();
+                DEBUG && console.groupEnd();
+            } else {
+                DEBUG && console.log('thingToDoUntilTrue() not successful');
+
+                var secondsElapsed = (Date.now() - startTime) / 1000;
+                if (secondsElapsed > maxTimeToWaitSeconds) {
+                    DEBUG && console.log('thingToDoUntilTrue() fail after seconds:', secondsElapsed);
+                    clearInterval(thingToDoInterval);
+                    reject();
+                    DEBUG && console.groupEnd();
+                }
+            }
+        }, 1000);
+    });
+}
+
 function clickElementAndWaitUntilElementExists(elementToClickSelector, elementToClickBase, selector) {
     DEBUG && console.group('clickElementAndWaitUntilElementExists');
     DEBUG && console.log('elementToClickSelector:', elementToClickSelector);

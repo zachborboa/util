@@ -854,20 +854,27 @@ class GoogleCalendarWorkflow {
                     this.debug && console.log('calendar event clicked');
 
                     // Wait for the popup to appear with the "Edit event" button.
-                    var editEventButton = document.querySelector('[aria-label="Edit event"]');
-                    this.debug && console.log('editEventButton:', editEventButton);
-                    if (!editEventButton) {
-                        this.debug && console.log('no edit event button found for calendar event:', calendarEvent);
-                        resolve();
-                        return;
-                    }
+                    doThingUntilTrue(
+                        () => {
+                            var editEventButton = document.querySelector('[aria-label="Edit event"]');
+                            this.debug && console.log('editEventButton:', editEventButton);
+                            if (!editEventButton) {
+                                this.debug && console.log('no edit event button found for calendar event:', calendarEvent);
+                                return false;
+                            } else {
+                                this.debug && console.log('edit event button found for calendar event:', calendarEvent);
 
-                    editEventButton.click();
-                    this.debug && console.log('edit event button clicked');
+                                editEventButton.click();
+                                this.debug && console.log('edit event button clicked');
 
-                    this.waitUntilOnEventEditPage()
+
+                                return true;
+                            }
+                        },
+                        5
+                    )
+                    .then(() => this.waitUntilOnEventEditPage())
                     .then(() => {
-                        this.debug && console.log('on event edit page');
                         this.debug && console.log('ready to update event date');
 
                         var autoClickEditRecurringEventDialogOptionThisEvent = true;
