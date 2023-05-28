@@ -194,55 +194,6 @@ function doThingUntilTrue(thingToDoUntilTrue, maxTimeToWaitSeconds) {
     });
 }
 
-function clickElementAndWaitUntilElementExists(elementToClickSelector, elementToClickBase, selector) {
-    DEBUG && console.group('clickElementAndWaitUntilElementExists');
-    DEBUG && console.log('elementToClickSelector:', elementToClickSelector);
-    DEBUG && console.log('selector:', selector);
-
-    return new Promise((resolve, reject) => {
-        // Amount of time can elapse before clicking element again.
-        const clickAgainDelay = 5000;
-
-        var elementToClick = elementToClickBase.querySelector(elementToClickSelector);
-        if (elementToClick) {
-            elementToClick.click();
-            // DEBUG && console.log('elementToClick clicked:', elementToClick);
-        } else {
-            DEBUG && console.warn('elementToClick not found using selector:', elementToClickSelector);
-        }
-
-        var lastClickedTime = Date.now();
-
-        const check = () => {
-            var element = document.querySelector(selector);
-            if (element) {
-                DEBUG && console.log('element using selector "%s" found', selector);
-                resolve(element);
-                DEBUG && console.groupEnd();
-            } else {
-                const currentTime = Date.now();
-                DEBUG && console.log(currentTime - lastClickedTime, currentTime - lastClickedTime > clickAgainDelay);
-
-                if (currentTime - lastClickedTime > clickAgainDelay) {
-
-                    var elementToClick = elementToClickBase.querySelector(elementToClickSelector);
-                    if (elementToClick) {
-                        elementToClick.click();
-                        // DEBUG && console.log('elementToClick clicked:', elementToClick);
-                    } else {
-                        DEBUG && console.warn('elementToClick not found using selector:', elementToClickSelector);
-                    }
-
-                    lastClickedTime = currentTime;
-                }
-
-                setTimeout(check, 1000);
-            }
-        };
-        setTimeout(check, 1000);
-    });
-}
-
 function waitMilliseconds(milliseconds) {
     return new Promise(function(resolve, reject) {
         setTimeout(function() {
