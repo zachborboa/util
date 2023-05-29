@@ -977,12 +977,33 @@ class GoogleCalendarWorkflow {
                 optionsButton.click();
             })
             .then(() => {
-                return waitUntilElementVisible('[aria-label="Duplicate"]')
+                // Update: The aria-label attribute ([aria-label="Duplicate"])
+                // seems to have disappeared so this no longer works:
+                //   waitUntilElementVisible('[aria-label="Duplicate"]')
+                return new Promise((resolve, reject) => {
+                        var menus = document.querySelectorAll('[role="menu"]');
+                        for (var i = 0; i < menus.length; i++) {
+                            var menu = menus[i];
+                            console.log(i, menu);
+                            if (menu.innerText.indexOf('\nDuplicate\n') !== -1) {
+                                var menuItems = menu.querySelectorAll('[role="menuitem"]');
+                                for (var j = 0; j < menuItems.length; j++) {
+                                    var menuItem = menuItems[j];
+                                    if (menuItem.innerText === 'Duplicate') {
+                                        resolve(menuItem);
+                                        break;
+                                    }
+                                }
+
+                                break;
+                            }
+                        }
+                    })
                     // Add delay before simulating click on the duplicate
                     // option. Without the delay, it seems to not trigger the
                     // simulated click.
                     .then((duplicateEventOption) => {
-                        this.debug && console.log('duplicate event option found');
+                        this.debug && console.log('duplicate event option found:', duplicateEventOption);
                         return new Promise(resolve => {
                             this.debug && console.log('waiting');
                             setTimeout(() => {
