@@ -165,6 +165,7 @@ class GoogleCalendarWorkflow {
         this.keepCurrentSelectorsUpdated();
 
         this.cleaningUpEvents = false;
+        this.cleaningUpEventsCanceled = false;
 
         if (this.env === PROD_ENV) {
             setTimeout(() => {
@@ -781,6 +782,18 @@ class GoogleCalendarWorkflow {
         });
     }
 
+    checkToExit(condition, reject, message) {
+        this.debug && console.info('checkToExit');
+
+        if (condition) {
+            this.debug && console.warn(message);
+            reject();
+            return true;
+        }
+
+        return false;
+    }
+
     moveEvents(
         moveFromDate,
         minMoveToDate,
@@ -804,6 +817,11 @@ class GoogleCalendarWorkflow {
 
             var moveEvent = (() =>  {
                 this.debug && console.log('moveEvent');
+
+                if (this.checkToExit(this.cleaningUpEventsCanceled, reject, 'cleaning up events canceled')) {
+                    this.cleaningUpEventsCanceled = false;
+                    return;
+                }
 
                 this.waitUntilCalendarGridRows()
                 .then((calendarGridRows) => {
@@ -866,7 +884,6 @@ class GoogleCalendarWorkflow {
 
                                 editEventButton.click();
                                 this.debug && console.log('edit event button clicked');
-
 
                                 return true;
                             }
@@ -1263,6 +1280,7 @@ class GoogleCalendarWorkflow {
 
         if (character === 'Escape') {
             this.debug && console.log('escape pressed. canceling');
+            this.cleaningUpEventsCanceled = true;
             return;
         }
 
