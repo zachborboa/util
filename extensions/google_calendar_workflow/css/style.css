@@ -260,10 +260,13 @@ div.u1KZub svg {
 [aria-modal=true][role=dialog][aria-labelledby][style] {
   bottom: 0;
   top: 0 !important;
-  min-width: 500px;
+  min-width: 800px;
 }
 [aria-modal=true][role=dialog][aria-labelledby][style] .zC2ZSb {
   bottom: 0;
   left: 0;
   right: 0;
+}
+[aria-modal=true][role=dialog][aria-labelledby][style] > span {
+  min-width: 800px;
 }

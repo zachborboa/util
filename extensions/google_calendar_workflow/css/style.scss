@@ -250,6 +250,9 @@ div.u1KZub {
         right: 0;
     }
 
-    // Increase width of the calendar event popup.
-    min-width: 500px;
+    // Increase width of the calendar event popup and shadow.
+    min-width: 800px;
+    > span {
+        min-width: 800px;
+    }
 }
