@@ -17,11 +17,7 @@
         "js/content_script_navigation.js"
       ],
       "matches": [
-        "https://news.ycombinator.com/",
-        "https://news.ycombinator.com/ask",
-        "https://news.ycombinator.com/best",
-        "https://news.ycombinator.com/from*",
-        "https://news.ycombinator.com/news*"
+        "https://news.ycombinator.com/*"
       ]
     },
     {
