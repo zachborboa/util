@@ -1879,13 +1879,12 @@ class GoogleCalendarWorkflow {
         // week.
         this.debug && console.info('cleanUpEvents');
 
-        this.spinner.show();
-
         if (this.cleaningUpEvents) {
             this.debug && console.warn('already cleaning up events');
-            this.spinner.hide();
             return;
         }
+
+        this.spinner.show();
 
         var currentMoveToDate = this.getCurrentMoveToDate();
         if (currentMoveToDate === '') {
