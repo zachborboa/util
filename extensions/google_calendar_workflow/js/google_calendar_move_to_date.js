@@ -1278,7 +1278,7 @@ class GoogleCalendarWorkflow {
             return;
         }
 
-        if (character === 'Escape') {
+        if (this.cleaningUpEvents && character === 'Escape') {
             this.debug && console.log('escape pressed. canceling');
             this.cleaningUpEventsCanceled = true;
             return;
