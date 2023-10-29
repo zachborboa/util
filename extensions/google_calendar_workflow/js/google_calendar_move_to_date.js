@@ -1422,6 +1422,10 @@ class GoogleCalendarWorkflow {
 
         } else {
             this.debug && console.log('other character:', character);
+
+            if (event.getModifierState('CapsLock')) {
+                alert('Error: caps lock is on');
+            }
         }
     }
 
