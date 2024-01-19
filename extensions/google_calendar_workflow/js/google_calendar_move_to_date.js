@@ -225,7 +225,7 @@ class GoogleCalendarWorkflow {
             this.debug && console.log('monthDate:', monthDate);
 
             // "Oct 17, 2019".
-            var monthDateYear = monthDate + ', ' + this.getCalendarYear();
+            var monthDateYear = monthDate + ', ' + this.getCalendarYear(monthDate.split(' ')[0]);
             this.debug && console.log('monthDateYear:', monthDateYear);
 
             cellDate = monthDateYear;
@@ -840,7 +840,8 @@ class GoogleCalendarWorkflow {
                     this.updateDestinationCell(firstCellWithMinEvents);
 
                     var moveToDate = this.getCellDate(firstCellWithMinEvents);
-                    this.debug && console.log('moving from %s to %s', moveFromDate, moveToDate);
+                    this.debug && console.log('moving from "%s"', moveFromDate);
+                    this.debug && console.log('moving to "%s"', moveToDate);
                     this.debug && console.log('moving events from this cell', moveFromDateCell, 'to this cell', firstCellWithMinEvents);
 
                     // Click first event in cell so that the event popup
@@ -918,8 +919,15 @@ class GoogleCalendarWorkflow {
         });
     }
 
-    getCalendarYear() {
-        this.debug && console.info('getCalendarYear');
+    getDiffInDays(endDate) {
+        var diffInMs = new Date(endDate) - new Date();
+        var diffInDays = Math.abs(diffInMs / (1000 * 60 * 60 * 24));
+        return diffInDays;
+    }
+
+    getCalendarYear(monthName) {
+        this.debug && console.group('getCalendarYear');
+        this.debug && console.log('monthName:', monthName);
 
         var pathname = window.location.toString();
         this.debug && console.log('pathname:', pathname);
@@ -943,6 +951,16 @@ class GoogleCalendarWorkflow {
         } else {
             calendarYear = matchResult[1];
         }
+        this.debug && console.log('calendarYear:', calendarYear);
+
+        // Sanity check year. Shouldn't be too far away.
+        var diffInDays = this.getDiffInDays(monthName + " 1," + calendarYear);
+        this.debug && console.log('diffInDays:', diffInDays);
+
+        if (diffInDays > 100) {
+            calendarYear -= 1;
+            this.debug && console.log('calendarYear:', calendarYear);
+        }
 
         if (calendarYear) {
             this.debug && console.log('calendarYear:', calendarYear);
@@ -950,6 +968,7 @@ class GoogleCalendarWorkflow {
             this.debug && console.warn('calendar year not found');
         }
 
+        this.debug && console.groupEnd();
         return calendarYear;
     }
 
