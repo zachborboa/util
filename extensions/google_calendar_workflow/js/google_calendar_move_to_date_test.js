@@ -1923,3 +1923,6 @@ allTestsPass = allTestsPass && worflow.getNewEventTitle(
 ) === '1. Do thing';
 
 console.log('\nallTestsPass:', allTestsPass);
+if (!allTestsPass) {
+    process.exit(1);
+}
