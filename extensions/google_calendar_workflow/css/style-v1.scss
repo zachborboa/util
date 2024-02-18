@@ -237,22 +237,3 @@ div.u1KZub {
         padding: 5px 4px;
     }
 }
-
-// Fix calendar events popup being too small.
-[aria-modal="true"][role="dialog"][aria-labelledby][style] {
-    bottom: 0;
-    top: 0 !important;
-
-    // Anchor list of events to the bottom of the popup.
-    .zC2ZSb {
-        bottom: 0;
-        left: 0;
-        right: 0;
-    }
-
-    // Increase width of the calendar event popup and shadow.
-    min-width: 800px;
-    > span {
-        min-width: 800px;
-    }
-}
