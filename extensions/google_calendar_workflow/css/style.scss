@@ -1,7 +1,21 @@
-// Fix calendar events popup being too small.
-[aria-modal="true"][role="dialog"][aria-labelledby][style] {
+// Target calendar events popup without targeting the individual event popup.
+[aria-modal="true"][role="dialog"][aria-labelledby] {
+    // Testing:
+    // border: 5px solid blue;
+
+    border: 5px solid gray;
+
+    // BEGIN fix calendar events popup being too small.
+
+    // Push calendar events popup to fill the available height.
     bottom: 0;
     top: 0 !important;
+
+    // Try to fix list of calendar events going right past viewport.
+    left: 0 !important;
+
+    // Increase width of the calendar event popup and shadow.
+    min-width: 500px;
 
     // Anchor list of events to the bottom of the popup.
     [data-dialog-heading-id] {
@@ -17,9 +31,24 @@
         }
     }
 
+    // END fix calendar events popup being too small.
+}
+
+// Target individual calendar event popup without targeting the events popup.
+[aria-modal="true"][role="dialog"][aria-labelledby][data-layout-mode="bubble"] {
+    // Testing:
+    // border: 5px solid red;
+
+    border: 5px solid gray;
+
     // Increase width of the calendar event popup and shadow.
-    min-width: 800px;
-    > span {
-        min-width: 800px;
+    min-width: 500px;
+
+    [data-eventid] {
+        // Testing:
+        // background-color: lightgreen;
+
+        max-width: 500px;
+        width: 500px;
     }
 }
