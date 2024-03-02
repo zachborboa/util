@@ -1635,17 +1635,21 @@ class GoogleCalendarWorkflow {
 
     addEventListeners() {
         if (this.env === PROD_ENV) {
+            /*
             document.addEventListener('click', (event) => {
                 this.handleClick(event);
             }, false);
+            */
 
             document.addEventListener('keydown', (event) => {
                 this.handleKeyEvent(event);
             }, false);
 
+            /*
             document.addEventListener('mousemove', (event) => {
                 this.handleMouseMove(event);
             });
+            */
 
             this.moveToDateRadioManual.addEventListener('change', (event) => {
                 this.debug && console.log('moveToDateRadioManual changed');
