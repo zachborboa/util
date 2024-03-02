@@ -2119,7 +2119,7 @@ class GoogleCalendarWorkflow {
         }
 
         var customViewSwitcherContainer = document.createElement('div');
-        customViewSwitcherContainer.classList.add('_custom-view-switcher');
+        customViewSwitcherContainer.classList.add('_gcw-custom-view-switcher');
 
         var switchToTwoWeeks = document.createElement('a');
         switchToTwoWeeks.innerText = '2 weeks';

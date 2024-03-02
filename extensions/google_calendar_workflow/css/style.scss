@@ -83,3 +83,24 @@
         transform: rotate(360deg);
     }
 }
+
+// Custom View Switcher.
+._gcw-custom-view-switcher {
+    position: absolute;
+    top: 46px;
+    right: 4px;
+    z-index: 1000;
+
+    a {
+        &:hover {
+            background-color: #fff;
+            border-color: #dadce0;
+        }
+
+        border-radius: 4px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        font-size: 12px;
+        padding: 5px 4px;
+    }
+}
