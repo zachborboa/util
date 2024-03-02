@@ -29,7 +29,7 @@ class Spinner {
         }
 
         var spinnerNode = document.createElement('div');
-        spinnerNode.classList.add('gcw-spinner');
+        spinnerNode.classList.add('_gcw-spinner');
         return spinnerNode;
     }
 
