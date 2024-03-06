@@ -587,8 +587,50 @@ class GoogleCalendarWorkflow {
             document.querySelector('[aria-label="Title"]') === null;
     }
 
+    dismissSendUpdateEmailsToExistingGoogleCalendarGuestsDialog() {
+        this.debug && console.info('dismissSendUpdateEmailsToExistingGoogleCalendarGuestsDialog');
+
+        return new Promise((resolve, reject) => {
+            waitMilliseconds(500)
+            .then(() => waitUntilElementExists('[role="dialog"]', undefined, 3000))
+            .then((dialog) => {
+                if (dialog) {
+                    var dialogLabelledByIdentifier = dialog.getAttribute('aria-labelledby');
+                    if (dialogLabelledByIdentifier) {
+
+                        // Ensure that current dialog is "Would you like to send update emails to existing Google Calendar guests?".
+                        var dialogLabelledByNode = document.getElementById(dialogLabelledByIdentifier);
+                        if (dialogLabelledByNode && dialogLabelledByNode.innerText === 'Would you like to send update emails to existing Google Calendar guests?') {
+
+                            // Click the "Don't send" button.
+                            var dialogButtons = dialog.querySelectorAll('[role="button"]');
+                            var dialogDontSendButtons = Array.from(dialogButtons).filter(button => button.innerText === 'Don\'t send');
+                            if (dialogDontSendButtons.length !== 1) {
+                                alert('Error: Multiple "Don\'t send" buttons found');
+                            } else {
+                                var dialogDontSendButton = dialogDontSendButtons[0];
+
+                                dialogDontSendButton.style.backgroundColor = 'lawngreen';
+                                dialogDontSendButton.style.outline = '5px dashed #333';
+
+                                dialogDontSendButton.click();
+                                console.log('"Don\'t send" button clicked:', dialogDontSendButton);
+                            }
+                        }
+                    }
+                }
+
+                resolve();
+            });
+        });
+    }
+
     clickEditRecurringEventDialogOptionThisEvent() {
-        this.debug && console.log('clickEditRecurringEventDialogOptionThisEvent');
+        this.debug && console.info('clickEditRecurringEventDialogOptionThisEvent');
+
+        return new Promise((resolve, reject) => {
+            this.debug && console.info('clickEditRecurringEventDialogOptionThisEvent inside');
+
         var dialog = document.querySelector('[role="dialog"]');
         if (dialog) {
             var dialogLabelledByIdentifier = dialog.getAttribute('aria-labelledby');
@@ -643,6 +685,9 @@ class GoogleCalendarWorkflow {
                 }
             }
         }
+
+            resolve();
+        });
     }
 
     isEditRecurringEventDialogOpen() {
@@ -730,9 +775,12 @@ class GoogleCalendarWorkflow {
                 } else if (autoClickEditRecurringEventDialogOptionThisEvent && this.isEditRecurringEventDialogOpen()) {
                     this.debug && console.log('waitUntilOnCustomWeekPage: autoClickEditRecurringEventDialogOptionThisEvent && isEditRecurringEventDialogOpen');
                     clearInterval(checkCustomWeekPageInterval);
-                    this.clickEditRecurringEventDialogOptionThisEvent();
-                    this.debug && console.groupEnd();
-                    resolve();
+                    this.clickEditRecurringEventDialogOptionThisEvent()
+                    .then(() => this.dismissSendUpdateEmailsToExistingGoogleCalendarGuestsDialog())
+                    .then(() => {
+                        this.debug && console.groupEnd();
+                        resolve();
+                    })
                 } else if (autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk && this.isAreYouSureChangesOnlyReflectedOnOwnCalendarDialogOpen()) {
                     this.debug && console.log('waitUntilOnCustomWeekPage: autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk && isAreYouSureDialogOpen');
                     clearInterval(checkCustomWeekPageInterval);
@@ -772,6 +820,8 @@ class GoogleCalendarWorkflow {
     }
 
     waitUntilCalendarGridRows() {
+        this.debug && console.info('waitUntilCalendarGridRows');
+
         return new Promise((resolve, reject) => {
             waitUntilElementExists('[data-view-heading] [role="presentation"] [role="row"]')
             .then(() => {
