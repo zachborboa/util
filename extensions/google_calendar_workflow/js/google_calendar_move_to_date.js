@@ -629,62 +629,60 @@ class GoogleCalendarWorkflow {
         this.debug && console.info('clickEditRecurringEventDialogOptionThisEvent');
 
         return new Promise((resolve, reject) => {
-            this.debug && console.info('clickEditRecurringEventDialogOptionThisEvent inside');
+            var dialog = document.querySelector('[role="dialog"]');
+            if (dialog) {
+                var dialogLabelledByIdentifier = dialog.getAttribute('aria-labelledby');
+                if (dialogLabelledByIdentifier) {
 
-        var dialog = document.querySelector('[role="dialog"]');
-        if (dialog) {
-            var dialogLabelledByIdentifier = dialog.getAttribute('aria-labelledby');
-            if (dialogLabelledByIdentifier) {
+                    // Ensure that current dialog is "Edit recurring event".
+                    var dialogLabelledByNode = document.getElementById(dialogLabelledByIdentifier);
+                    if (dialogLabelledByNode && dialogLabelledByNode.innerText === 'Edit recurring event') {
 
-                // Ensure that current dialog is "Edit recurring event".
-                var dialogLabelledByNode = document.getElementById(dialogLabelledByIdentifier);
-                if (dialogLabelledByNode && dialogLabelledByNode.innerText === 'Edit recurring event') {
+                        // Remove option highlights.
+                        dialog.querySelectorAll('[role="radiogroup"] [id^="label-"]').forEach(
+                            node => node.removeAttribute('style')
+                        );
 
-                    // Remove option highlights.
-                    dialog.querySelectorAll('[role="radiogroup"] [id^="label-"]').forEach(
-                        node => node.removeAttribute('style')
-                    );
+                        // Ensure that the "This event" option is selected (and not
+                        // the "This and following events" option or any other
+                        // option).
+                        var dialogRadioChecked = dialog.querySelector('[type="radio"]:checked');
+                        if (dialogRadioChecked) {
+                            var dialogRadioLabelledByIdentifier = dialogRadioChecked.getAttribute('aria-labelledby');
+                            if (dialogRadioLabelledByIdentifier) {
+                                var dialogRadioLabelledByNode = document.getElementById(dialogRadioLabelledByIdentifier);
+                                dialogRadioLabelledByNode && this.debug && console.log('current selected option: "%s"', dialogRadioLabelledByNode.innerText);
+                                if (dialogRadioLabelledByNode) {
+                                    if (dialogRadioLabelledByNode.innerText === 'This event') {
+                                        console.log('OK - "This event" is selected');
 
-                    // Ensure that the "This event" option is selected (and not
-                    // the "This and following events" option or any other
-                    // option).
-                    var dialogRadioChecked = dialog.querySelector('[type="radio"]:checked');
-                    if (dialogRadioChecked) {
-                        var dialogRadioLabelledByIdentifier = dialogRadioChecked.getAttribute('aria-labelledby');
-                        if (dialogRadioLabelledByIdentifier) {
-                            var dialogRadioLabelledByNode = document.getElementById(dialogRadioLabelledByIdentifier);
-                            dialogRadioLabelledByNode && this.debug && console.log('current selected option: "%s"', dialogRadioLabelledByNode.innerText);
-                            if (dialogRadioLabelledByNode) {
-                                if (dialogRadioLabelledByNode.innerText === 'This event') {
-                                    console.log('OK - "This event" is selected');
+                                        dialogRadioLabelledByNode.style.backgroundColor = 'lawngreen';
+                                        dialogRadioLabelledByNode.style.outline = '1px dashed #333';
 
-                                    dialogRadioLabelledByNode.style.backgroundColor = 'lawngreen';
-                                    dialogRadioLabelledByNode.style.outline = '1px dashed #333';
+                                        // Click the "OK" button now that basic
+                                        // checks have passed.
+                                        var dialogButtons = dialog.querySelectorAll('[role="button"]');;
+                                        var dialogOkButtons = Array.from(dialogButtons).filter(button => button.innerText === 'OK');
+                                        if (dialogOkButtons.length !== 1) {
+                                            alert('Error: Multiple "OK" buttons found');
+                                        } else {
+                                            var dialogOkButton = dialogOkButtons[0];
+                                            dialogOkButton.click();
+                                            console.log('ok button clicked:', dialogOkButton);
+                                        }
 
-                                    // Click the "OK" button now that basic
-                                    // checks have passed.
-                                    var dialogButtons = dialog.querySelectorAll('[role="button"]');;
-                                    var dialogOkButtons = Array.from(dialogButtons).filter(button => button.innerText === 'OK');
-                                    if (dialogOkButtons.length !== 1) {
-                                        alert('Error: Multiple "OK" buttons found');
                                     } else {
-                                        var dialogOkButton = dialogOkButtons[0];
-                                        dialogOkButton.click();
-                                        console.log('ok button clicked:', dialogOkButton);
+                                        console.warn('FAIL - "This event" isn\'t selected yet');
+
+                                        dialogRadioLabelledByNode.style.backgroundColor = 'red';
+                                        dialogRadioLabelledByNode.style.outline = '1px dashed #333';
                                     }
-
-                                } else {
-                                    console.warn('FAIL - "This event" isn\'t selected yet');
-
-                                    dialogRadioLabelledByNode.style.backgroundColor = 'red';
-                                    dialogRadioLabelledByNode.style.outline = '1px dashed #333';
                                 }
                             }
                         }
                     }
                 }
             }
-        }
 
             resolve();
         });
