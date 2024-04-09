@@ -141,6 +141,24 @@ div > .aCl .akj {
         max-height: 100%;
         max-width: 768px !important;
     }
+
+    // Improve styling of code blocks in email message body.
+    // Target inline code blocks:
+    p > code {
+        background-color: #ddd;
+        display: inline-block;
+        // margin: 10px 10px 10px 5px;
+        outline: 1px solid;
+        padding: 4px 5px 3px 5px;
+    }
+    // Target root code blocks:
+    pre > code {
+        background-color: #ddd;
+        display: inline-block;
+        margin: 10px 10px 10px 5px;
+        outline: 1px solid;
+        padding: 15px 10px;
+    }
 }
 
 /* Disabled as chat position has been set to the left side of the inbox.

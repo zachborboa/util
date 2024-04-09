@@ -106,6 +106,19 @@ div > .aCl .akj {
   max-height: 100%;
   max-width: 768px !important;
 }
+.ii p > code {
+  background-color: #ddd;
+  display: inline-block;
+  outline: 1px solid;
+  padding: 4px 5px 3px 5px;
+}
+.ii pre > code {
+  background-color: #ddd;
+  display: inline-block;
+  margin: 10px 10px 10px 5px;
+  outline: 1px solid;
+  padding: 15px 10px;
+}
 
 /* Disabled as chat position has been set to the left side of the inbox.
 
