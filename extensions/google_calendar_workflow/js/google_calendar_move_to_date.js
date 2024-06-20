@@ -581,7 +581,10 @@ class GoogleCalendarWorkflow {
     }
 
     isOnCustomWeekPage() {
-        return window.location.pathname.indexOf('/customweek/') !== -1 &&
+        return (
+            window.location.pathname.endsWith('/customweek') ||
+            window.location.pathname.indexOf('/customweek/') !== -1
+        ) &&
             document.querySelector('[aria-label="Start date"]') === null &&
             document.querySelector('[aria-label="End date"]') === null &&
             document.querySelector('[aria-label="Title"]') === null;
