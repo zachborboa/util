@@ -1574,14 +1574,13 @@ class GoogleCalendarWorkflow {
             this.debug && console.log('autoClickEditRecurringEventDialogOptionThisEvent is now:', autoClickEditRecurringEventDialogOptionThisEvent);
         }
 
-        // Ensure move-to-date is set before attempting to mark event completed.
+        // Warn when move-to-date isn't set when marking event completed.
+        // Previously, a move-to-date was required. Now, an event can be marked
+        // completed without moving it.
         if (action === 'mark-completed') {
             var currentMoveToDate = this.getCurrentMoveToDate();
             if (currentMoveToDate === '') {
                 this.debug && console.warn('move to date empty');
-                alert('Error: Move to date empty');
-                this.debug && console.groupEnd();
-                return;
             }
         }
 
@@ -1626,22 +1625,31 @@ class GoogleCalendarWorkflow {
                 if (eventCompleted) {
                     var currentMoveToDate = this.getCurrentMoveToDate();
                     if (currentMoveToDate === '') {
-                        this.debug && console.warn('move to date empty');
-                        alert('Error: Move to date empty');
-                        return;
-                    }
-                    this.debug && console.log('moving event to', currentMoveToDate);
+                        this.debug && console.warn('move to date empty so event will not be moved');
 
-                    this.moveEventToMoveToDate(currentMoveToDate)
-                    .then(() => this.eventPageClickSaveButton())
-                    .then(() => this.waitUntilOnCustomWeekPage(
-                        autoClickEditRecurringEventDialogOptionThisEvent,
-                        autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
-                    ))
-                    .then(() => {
-                        this.debug && console.log('updateCalendarEventTitle done (event completed)');
-                        this.debug && console.groupEnd();
-                    });
+                        this.eventPageClickSaveButton()
+                        .then(() => this.waitUntilOnCustomWeekPage(
+                            autoClickEditRecurringEventDialogOptionThisEvent,
+                            autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
+                        ))
+                        .then(() => {
+                            this.debug && console.log('updateCalendarEventTitle done (event completed without moving)');
+                            this.debug && console.groupEnd();
+                        });
+                    } else {
+                        this.debug && console.log('moving event to', currentMoveToDate);
+
+                        this.moveEventToMoveToDate(currentMoveToDate)
+                        .then(() => this.eventPageClickSaveButton())
+                        .then(() => this.waitUntilOnCustomWeekPage(
+                            autoClickEditRecurringEventDialogOptionThisEvent,
+                            autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
+                        ))
+                        .then(() => {
+                            this.debug && console.log('updateCalendarEventTitle done (event completed with moving)');
+                            this.debug && console.groupEnd();
+                        });
+                    }
 
                 } else {
                     Promise.resolve()
@@ -1867,7 +1875,7 @@ class GoogleCalendarWorkflow {
             this.debug && console.log('moveToDateInput value is now: "%s"', this.moveToDateInput.value);
 
             if (this.moveToDateInput.value === '') {
-                alert('move to date value empty when restoring settings');
+                // alert('move to date value empty when restoring settings');
             } else if (this.moveToDateInput.value === null) {
                 alert('move to date value null when restoring settings');
             }
