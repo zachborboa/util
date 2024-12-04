@@ -664,7 +664,7 @@ class GoogleCalendarWorkflow {
 
                                         // Click the "OK" button now that basic
                                         // checks have passed.
-                                        var dialogButtons = dialog.querySelectorAll('[role="button"]');;
+                                        var dialogButtons = dialog.querySelectorAll('[data-mdc-dialog-action="ok"]');;
                                         var dialogOkButtons = Array.from(dialogButtons).filter(button => button.innerText === 'OK');
                                         if (dialogOkButtons.length === 0) {
                                             console.warn('No "OK" buttons found');
