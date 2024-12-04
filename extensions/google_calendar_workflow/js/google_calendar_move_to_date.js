@@ -666,7 +666,11 @@ class GoogleCalendarWorkflow {
                                         // checks have passed.
                                         var dialogButtons = dialog.querySelectorAll('[role="button"]');;
                                         var dialogOkButtons = Array.from(dialogButtons).filter(button => button.innerText === 'OK');
-                                        if (dialogOkButtons.length !== 1) {
+                                        if (dialogOkButtons.length === 0) {
+                                            console.warn('No "OK" buttons found');
+                                            alert('Error: No "OK" buttons found');
+                                        } else if (dialogOkButtons.length !== 1) {
+                                            console.warn('Multiple "OK" buttons found:', dialogOkButtons);
                                             alert('Error: Multiple "OK" buttons found');
                                         } else {
                                             var dialogOkButton = dialogOkButtons[0];
@@ -719,7 +723,11 @@ class GoogleCalendarWorkflow {
             // Click the "OK" button now that basic checks have passed.
             var dialogButtons = dialog.querySelectorAll('[role="button"]');;
             var dialogOkButtons = Array.from(dialogButtons).filter(button => button.innerText === 'OK');
-            if (dialogOkButtons.length !== 1) {
+            if (dialogOkButtons.length === 0) {
+                console.warn('No "OK" buttons found');
+                alert('Error: No "OK" buttons found');
+            } else if (dialogOkButtons.length !== 1) {
+                console.warn('Multiple "OK" buttons found:', dialogOkButtons);
                 alert('Error: Multiple "OK" buttons found');
             } else {
                 var dialogOkButton = dialogOkButtons[0];
