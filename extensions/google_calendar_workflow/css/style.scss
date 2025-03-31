@@ -17,18 +17,10 @@
     // Increase width of the calendar event popup and shadow.
     min-width: 500px;
 
-    // Anchor list of events to the bottom of the popup.
-    [data-dialog-heading-id] {
-        bottom: 0;
-        left: 0;
-        position: absolute;
-        right: 0;
-        top: 0;
-
-        div:nth-of-type(2) {
-            // Remove "max-height: 480px;".
-            max-height: inherit;
-        }
+    // Make list of events in the popup fill the available vertical space.
+    div[role="presentation"]:nth-of-type(2) {
+        // Remove "max-height: 480px;".
+        max-height: inherit;
     }
 
     // END fix calendar events popup being too small.
