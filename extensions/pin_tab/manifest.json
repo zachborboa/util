@@ -15,7 +15,7 @@
     "16": "img/icon-16x16.png",
     "48": "img/icon-48x48.png"
   },
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Pin Tab",
   "options_page": "html/options.html",
   "permissions": [

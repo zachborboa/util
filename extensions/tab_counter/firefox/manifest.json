@@ -11,7 +11,7 @@
   },
   "browser_action": {},
   "description": "Display how many tabs are open.",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Tab Counter",
   "permissions": [
     "tabs"

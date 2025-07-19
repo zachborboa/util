@@ -5,7 +5,7 @@
     ]
   },
   "description": "Redirect requests using url pattern matching.",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Redirect Requests",
   "permissions": [
     "*://*/*",

@@ -15,7 +15,7 @@
     }
   ],
   "description": "Give the weather search page a clean look.",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Weather Homepage",
   "version": "0.0.1"
 }

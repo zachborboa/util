@@ -14,7 +14,7 @@
     "16": "img/icon-16x16.png",
     "48": "img/icon-32x32.png"
   },
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Extensions Button",
   "permissions": [
     "tabs",

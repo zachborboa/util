@@ -6,7 +6,7 @@
   },
   "description": "Log all requests to the background page.",
   "incognito": "split",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Request Viewer",
   "permissions": [
     "*://*/*",

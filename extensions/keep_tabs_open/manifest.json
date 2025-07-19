@@ -16,7 +16,7 @@
     "48": "img/icon-48x48.png"
   },
   "incognito": "split",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Keep Tabs Open",
   "options_page": "html/options.html",
   "permissions": [

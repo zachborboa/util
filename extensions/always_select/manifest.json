@@ -16,7 +16,7 @@
     "16": "img/icon16.png",
     "48": "img/icon48.png"
   },
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Always Select",
   "version": "1.0.0"
 }

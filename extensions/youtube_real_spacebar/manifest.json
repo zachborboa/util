@@ -15,7 +15,7 @@
     }
   ],
   "description": "Spacebar plays/pauses YouTube as expected.",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "YouTube Real Spacebar",
   "permissions": [
     "https://www.youtube.com/*"
