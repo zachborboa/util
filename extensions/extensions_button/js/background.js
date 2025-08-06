@@ -10,24 +10,24 @@ function updateCounter() {
             });
         });
 
-        if ( chrome.browserAction ) {
+        if ( chrome.action ) {
             // Set tooltip.
             var title = [
                 'Tab Counter',
                 'tabs: ' + tabs.length,
                 'windows: ' + windows.length,
             ].join('\n');
-            chrome.browserAction.setTitle({
+            chrome.action.setTitle({
                 'title': title,
             });
 
             // Set extension icon text.
             var text = tabs.length + '';
-            chrome.browserAction.setBadgeText({
+            chrome.action.setBadgeText({
                 text: text,
             });
         } else {
-            console.warn('chrome.browserAction is:', chrome.browserAction);
+            console.warn('chrome.action is:', chrome.action);
         }
     });
 }
@@ -48,7 +48,7 @@ chrome.tabs.onRemoved.addListener(function(
 });
 
 // Open extensions page when extension button pressed.
-chrome.browserAction.onClicked.addListener(function(tab) {
+chrome.action.onClicked.addListener(function(tab) {
     chrome.tabs.query({ 'url': 'chrome://extensions/' }, function(tabs) {
         for ( var i = 0; i < tabs.length; i++ ) {
             chrome.tabs.update(tabs[i].id, {
