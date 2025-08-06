@@ -1,14 +1,14 @@
 {
   "background": {
-    "scripts": [
-      "js/background.js"
-    ]
+    "service_worker": "js/background.js"
   },
-  "browser_action": {
-    "default_icon": "img/icon-48x48.png",
+  "action": {
+    "default_icon": {
+      "16": "img/icon-16x16.png",
+      "32": "img/icon-48x48.png"
+    },
     "default_title": "Pin Tab"
   },
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "description": "Automatically pin tabs based on url patterns and quickly pin and unpin your tabs.",
   "icons": {
     "128": "img/icon-128x128.png",

@@ -188,8 +188,8 @@ PinTab.prototype.getMatchingTabCount = function(callback) {
 var pinTab = new PinTab();
 
 // Pin the active tab when the browser action icon is clicked.
-chrome.browserAction.onClicked.addListener(function() {
-    DEBUG && console.info( 'chrome.browserAction.onClicked' );
+chrome.action.onClicked.addListener(function() {
+    DEBUG && console.info( 'chrome.action.onClicked' );
     chrome.windows.getCurrent({
         'populate': true,
         'windowTypes': ['normal',],
