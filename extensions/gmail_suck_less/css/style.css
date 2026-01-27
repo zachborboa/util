@@ -105,6 +105,7 @@ div > .aCl .akj {
   height: auto;
   max-height: 100%;
   max-width: 768px !important;
+  width: unset;
 }
 .ii p > code {
   background-color: #ddd;
