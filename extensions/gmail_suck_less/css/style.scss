@@ -137,14 +137,14 @@ div > .aCl .akj {
     // <img alt="" src="1600x900.png" />).
     // ).
     img {
-        height: auto;
-        max-height: 100%;
-        max-width: 768px !important;
+        // height: auto;
+        // max-height: 100%;
+        // max-width: 768px !important;
 
         // Note: Unsetting the width here because trying to fix a bug where a
         // 1x30 pixel is being displayed as an image of 667x20010 (yes 20,010
         // pixels in height).
-        width: unset;
+        // width: unset;
     }
 
     // Improve styling of code blocks in email message body.

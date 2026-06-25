@@ -101,12 +101,6 @@ div > .aCl .akj {
 .ii span[style]:not([style*="color:#b7b7b7"]) {
   font-size: medium !important;
 }
-.ii img {
-  height: auto;
-  max-height: 100%;
-  max-width: 768px !important;
-  width: unset;
-}
 .ii p > code {
   background-color: #ddd;
   display: inline-block;
