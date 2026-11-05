@@ -1,28 +1,24 @@
 chrome.webRequest.onBeforeRequest.addListener(
     function (details) {
-        console.group('RedirectRequests::onBeforeRequest', details.requestId, details.type, details.method, details.url);
+        console.group(
+            'RedirectRequests::onBeforeRequest',
+            details.requestId,
+            details.type,
+            details.method,
+            details.url,
+        );
 
         var urlPatterns = [
-            [
-                'https://www.example.com/before.html',
-                'https://www.example.com/after.html',
-            ],
-            [
-                /^https:\/\/www\.example\.com\/before\.html/,
-                'https://www.example.com/after.html',
-            ],
-            [
-                /^(https:\/\/www\.example\.com\/)before\.html/,
-                '$1after.html',
-            ],
-
+            ['https://www.example.com/before.html', 'https://www.example.com/after.html'],
+            [/^https:\/\/www\.example\.com\/before\.html/, 'https://www.example.com/after.html'],
+            [/^(https:\/\/www\.example\.com\/)before\.html/, '$1after.html'],
         ];
         var redirectUrl = false;
         for (var i = 0; i < urlPatterns.length; i++) {
             var pattern = urlPatterns[i];
             var find = pattern[0];
             var replace = pattern[1];
-            var findType = typeof(find);
+            var findType = typeof find;
             if (findType === 'object') {
                 if (details.url.match(find)) {
                     console.log('pattern matched', find);
@@ -36,7 +32,6 @@ chrome.webRequest.onBeforeRequest.addListener(
                     break;
                 }
             }
-
         }
 
         var returnObj = {};
@@ -49,22 +44,22 @@ chrome.webRequest.onBeforeRequest.addListener(
         return returnObj;
     },
     {
-        urls: ["<all_urls>"],
+        urls: ['<all_urls>'],
         types: [
-            "csp_report",
-            "font",
-            "image",
-            "main_frame",
-            "media",
-            "object",
-            "other",
-            "ping",
-            "script",
-            "stylesheet",
-            "sub_frame",
-            "websocket",
-            "xmlhttprequest"
-        ]
+            'csp_report',
+            'font',
+            'image',
+            'main_frame',
+            'media',
+            'object',
+            'other',
+            'ping',
+            'script',
+            'stylesheet',
+            'sub_frame',
+            'websocket',
+            'xmlhttprequest',
+        ],
     },
-    ["blocking"]
+    ['blocking'],
 );

@@ -2,9 +2,7 @@ chrome.webRequest.onBeforeRequest.addListener(
     function (details) {
         console.group('BlockRequests::onBeforeRequest', details.requestId, details.method, details.url);
 
-        var urlPatterns = [
-            /^https:\/\/example\.evil\.com\//,
-        ];
+        var urlPatterns = [/^https:\/\/example\.evil\.com\//];
         var blockRequest = false;
         for (var i = 0; i < urlPatterns.length; i++) {
             var pattern = urlPatterns[i];
@@ -25,22 +23,22 @@ chrome.webRequest.onBeforeRequest.addListener(
         return returnObj;
     },
     {
-        urls: ["<all_urls>"],
+        urls: ['<all_urls>'],
         types: [
-            "csp_report",
-            "font",
-            "image",
-            "main_frame",
-            "media",
-            "object",
-            "other",
-            "ping",
-            "script",
-            "stylesheet",
-            "sub_frame",
-            "websocket",
-            "xmlhttprequest"
-        ]
+            'csp_report',
+            'font',
+            'image',
+            'main_frame',
+            'media',
+            'object',
+            'other',
+            'ping',
+            'script',
+            'stylesheet',
+            'sub_frame',
+            'websocket',
+            'xmlhttprequest',
+        ],
     },
-    ["blocking"]
+    ['blocking'],
 );

@@ -1,4 +1,4 @@
-const allowPaste = function(event) {
+const allowPaste = function (event) {
     event.stopImmediatePropagation();
     return true;
 };

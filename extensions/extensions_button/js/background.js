@@ -1,22 +1,18 @@
 function updateCounter() {
-    chrome.windows.getAll({populate: true}, function(wins) {
+    chrome.windows.getAll({ populate: true }, function (wins) {
         // Count tabs and windows.
         var windows = [];
         var tabs = [];
-        wins.forEach(function(win) {
+        wins.forEach(function (win) {
             windows.push(win);
-            win.tabs.forEach(function(tab){
+            win.tabs.forEach(function (tab) {
                 tabs.push(tab.url);
             });
         });
 
-        if ( chrome.action ) {
+        if (chrome.action) {
             // Set tooltip.
-            var title = [
-                'Tab Counter',
-                'tabs: ' + tabs.length,
-                'windows: ' + windows.length,
-            ].join('\n');
+            var title = ['Tab Counter', 'tabs: ' + tabs.length, 'windows: ' + windows.length].join('\n');
             chrome.action.setTitle({
                 'title': title,
             });
@@ -35,22 +31,19 @@ function updateCounter() {
 // TODO: Update counter when a window (last tab) is closed for number of windows to be accurate.
 
 // Fired when a tab is created.
-chrome.tabs.onCreated.addListener(function(
-    /* Tab */ tab ) {
+chrome.tabs.onCreated.addListener(function (/* Tab */ tab) {
     updateCounter();
 });
 
 // Fired when a tab is closed.
-chrome.tabs.onRemoved.addListener(function(
-    /* integer */ tabId,
-    /* object */ removeInfo ) {
+chrome.tabs.onRemoved.addListener(function (/* integer */ tabId, /* object */ removeInfo) {
     updateCounter();
 });
 
 // Open extensions page when extension button pressed.
-chrome.action.onClicked.addListener(function(tab) {
-    chrome.tabs.query({ 'url': 'chrome://extensions/' }, function(tabs) {
-        for ( var i = 0; i < tabs.length; i++ ) {
+chrome.action.onClicked.addListener(function (tab) {
+    chrome.tabs.query({ 'url': 'chrome://extensions/' }, function (tabs) {
+        for (var i = 0; i < tabs.length; i++) {
             chrome.tabs.update(tabs[i].id, {
                 'active': true,
             });

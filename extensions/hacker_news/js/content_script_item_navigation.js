@@ -16,7 +16,7 @@ function documentClick(event) {
 
     // Toggle comment collapse when comment is clicked.
     var targetParents = getElementParents(target, '.comment');
-    if (target.classList.contains('comment') || targetParents.length ) {
+    if (target.classList.contains('comment') || targetParents.length) {
         var comment = getElementParents(target, '.athing')[0];
         var commentToggle = comment.querySelector('.togg');
         commentToggle.click();

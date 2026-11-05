@@ -27,7 +27,7 @@ class Workflow {
         for (var i = 0; i < this.events.length; i++) {
             console.group('calendarEvent', i);
 
-            var calendarEvent = {...this.events[i]};
+            var calendarEvent = { ...this.events[i] };
             console.log('calendarEvent:', calendarEvent);
 
             var eventTitleIsNumbered = /^(?:\*\*\* )?(\d+)\. /.test(calendarEvent.title);
@@ -144,23 +144,16 @@ class Workflow {
                 'old_title': targetEvent.title,
                 'new_title': this.getEventTitleWithIncreasedPriority(targetEvent),
             });
-
         } else if (
             calendarEventMetadata['priority_found'] === true &&
-            (
-                targetEvent['priority'] === null ||
-                targetEvent['priority'] === undefined
-            )) {
+            (targetEvent['priority'] === null || targetEvent['priority'] === undefined)
+        ) {
             calendarEventChanges.push({
                 'event': targetEvent,
                 'old_title': targetEvent.title,
                 'new_title': this.getEventTitleWithPriority(targetEvent, calendarEventMetadata['priority_next_lowest']),
             });
-
-        } else if (
-            calendarEventMetadata['priority_found'] === true &&
-            targetEvent['priority'] !== null) {
-
+        } else if (calendarEventMetadata['priority_found'] === true && targetEvent['priority'] !== null) {
             var eventPriority = this.getEventPriority(targetEvent);
             var updatedTargetEventPriority = eventPriority === null ? FIXME : eventPriority - 1;
             calendarEventChanges.push({
@@ -177,24 +170,29 @@ class Workflow {
 
                     if (calendarEvent['priority'] !== null) {
                         if (calendarEvent['priority'] >= updatedTargetEventPriority) {
-                            console.log('found calendar event has priority %s >= %s', calendarEvent['priority'], updatedTargetEventPriority);
+                            console.log(
+                                'found calendar event has priority %s >= %s',
+                                calendarEvent['priority'],
+                                updatedTargetEventPriority,
+                            );
 
                             var calendarEventChange = {
                                 'event': calendarEvent,
                                 'old_title': calendarEvent.title,
-                                'new_title': this.getEventTitleWithPriority(calendarEvent, calendarEvent['priority'] + 1),
+                                'new_title': this.getEventTitleWithPriority(
+                                    calendarEvent,
+                                    calendarEvent['priority'] + 1,
+                                ),
                                 //'new_title': this.getEventTitleWithPriority(calendarEvent, calendarEvent['priority'] - 1),
                             };
                             console.log('calendarEventChange:', calendarEventChange);
                             calendarEventChanges.push(calendarEventChange);
-
                         } else {
                             console.log('found calendar event has OTHER priority %s', calendarEvent['priority']);
                         }
                     }
                 }
             }
-
         } else {
             console.error('Error: unhandled case');
         }
@@ -246,11 +244,7 @@ var calendarEvent_doTheMostImportantThing = {
     'title': 'Do the most important thing',
 };
 
-var calendarEvents = [
-    calendarEvent_doThing,
-    calendarEvent_doTheImportantThing,
-    calendarEvent_doTheMostImportantThing,
-];
+var calendarEvents = [calendarEvent_doThing, calendarEvent_doTheImportantThing, calendarEvent_doTheMostImportantThing];
 
 var wf = new Workflow();
 wf.setEvents(calendarEvents);
@@ -259,11 +253,7 @@ function diff(string_1, string_2) {
     const { spawnSync } = require('child_process');
 
     const command = 'diff';
-    const args = [
-        '--unified',
-        `<(echo "${string_1}")`,
-        `<(echo "${string_2}")`,
-    ];
+    const args = ['--unified', `<(echo "${string_1}")`, `<(echo "${string_2}")`];
     const options = {
         'shell': '/bin/bash',
     };
@@ -335,173 +325,173 @@ function doThingAndExpect(obj, funcName, args, expectations) {
 
 var allTestsPass = true;
 
-allTestsPass = allTestsPass && doThingAndExpect(
-    wf,
-    'increaseEventPriority',
-    [
-        calendarEvent_doTheImportantThing,
-    ],
-    [
-        {
-            'id': calendarEvent_doThing.id,
-            'title': 'Do thing',
-            'is_numbered': false,
-            'priority': null,
-        },
-        {
-            'id': calendarEvent_doTheImportantThing.id,
-            'title': '1. Do the important thing',
-            'is_numbered': true,
-            'priority': 1,
-        },
-        {
-            'id': calendarEvent_doTheMostImportantThing.id,
-            'title': 'Do the most important thing',
-            'is_numbered': false,
-            'priority': null,
-        },
-    ],
-);
+allTestsPass =
+    allTestsPass &&
+    doThingAndExpect(
+        wf,
+        'increaseEventPriority',
+        [calendarEvent_doTheImportantThing],
+        [
+            {
+                'id': calendarEvent_doThing.id,
+                'title': 'Do thing',
+                'is_numbered': false,
+                'priority': null,
+            },
+            {
+                'id': calendarEvent_doTheImportantThing.id,
+                'title': '1. Do the important thing',
+                'is_numbered': true,
+                'priority': 1,
+            },
+            {
+                'id': calendarEvent_doTheMostImportantThing.id,
+                'title': 'Do the most important thing',
+                'is_numbered': false,
+                'priority': null,
+            },
+        ],
+    );
 
-allTestsPass = allTestsPass && doThingAndExpect(
-    wf,
-    'increaseEventPriority',
-    [
-        calendarEvent_doTheMostImportantThing,
-    ],
-    [
-        {
-            'id': calendarEvent_doThing.id,
-            'title': 'Do thing',
-            'is_numbered': false,
-            'priority': null,
-        },
-        {
-            'id': calendarEvent_doTheImportantThing.id,
-            'title': '1. Do the important thing',
-            'is_numbered': true,
-            'priority': 1,
-        },
-        {
-            'id': calendarEvent_doTheMostImportantThing.id,
-            'title': '2. Do the most important thing',
-            'is_numbered': true,
-            'priority': 2,
-        },
-    ],
-);
+allTestsPass =
+    allTestsPass &&
+    doThingAndExpect(
+        wf,
+        'increaseEventPriority',
+        [calendarEvent_doTheMostImportantThing],
+        [
+            {
+                'id': calendarEvent_doThing.id,
+                'title': 'Do thing',
+                'is_numbered': false,
+                'priority': null,
+            },
+            {
+                'id': calendarEvent_doTheImportantThing.id,
+                'title': '1. Do the important thing',
+                'is_numbered': true,
+                'priority': 1,
+            },
+            {
+                'id': calendarEvent_doTheMostImportantThing.id,
+                'title': '2. Do the most important thing',
+                'is_numbered': true,
+                'priority': 2,
+            },
+        ],
+    );
 
-allTestsPass = allTestsPass && doThingAndExpect(
-    wf,
-    'increaseEventPriority',
-    [
-        calendarEvent_doTheMostImportantThing,
-    ],
-    [
-        {
-            'id': calendarEvent_doThing.id,
-            'title': 'Do thing',
-            'is_numbered': false,
-            'priority': null,
-        },
-        {
-            'id': calendarEvent_doTheImportantThing.id,
-            'title': '2. Do the important thing',
-            'is_numbered': true,
-            'priority': 2,
-        },
-        {
-            'id': calendarEvent_doTheMostImportantThing.id,
-            'title': '1. Do the most important thing',
-            'is_numbered': true,
-            'priority': 1,
-        },
-    ],
-);
+allTestsPass =
+    allTestsPass &&
+    doThingAndExpect(
+        wf,
+        'increaseEventPriority',
+        [calendarEvent_doTheMostImportantThing],
+        [
+            {
+                'id': calendarEvent_doThing.id,
+                'title': 'Do thing',
+                'is_numbered': false,
+                'priority': null,
+            },
+            {
+                'id': calendarEvent_doTheImportantThing.id,
+                'title': '2. Do the important thing',
+                'is_numbered': true,
+                'priority': 2,
+            },
+            {
+                'id': calendarEvent_doTheMostImportantThing.id,
+                'title': '1. Do the most important thing',
+                'is_numbered': true,
+                'priority': 1,
+            },
+        ],
+    );
 
-allTestsPass = allTestsPass && doThingAndExpect(
-    wf,
-    'increaseEventPriority',
-    [
-        calendarEvent_doThing,
-    ],
-    [
-        {
-            'id': calendarEvent_doThing.id,
-            'title': '3. Do thing',
-            'is_numbered': true,
-            'priority': 3,
-        },
-        {
-            'id': calendarEvent_doTheImportantThing.id,
-            'title': '2. Do the important thing',
-            'is_numbered': true,
-            'priority': 2,
-        },
-        {
-            'id': calendarEvent_doTheMostImportantThing.id,
-            'title': '1. Do the most important thing',
-            'is_numbered': true,
-            'priority': 1,
-        },
-    ],
-);
+allTestsPass =
+    allTestsPass &&
+    doThingAndExpect(
+        wf,
+        'increaseEventPriority',
+        [calendarEvent_doThing],
+        [
+            {
+                'id': calendarEvent_doThing.id,
+                'title': '3. Do thing',
+                'is_numbered': true,
+                'priority': 3,
+            },
+            {
+                'id': calendarEvent_doTheImportantThing.id,
+                'title': '2. Do the important thing',
+                'is_numbered': true,
+                'priority': 2,
+            },
+            {
+                'id': calendarEvent_doTheMostImportantThing.id,
+                'title': '1. Do the most important thing',
+                'is_numbered': true,
+                'priority': 1,
+            },
+        ],
+    );
 
-allTestsPass = allTestsPass && doThingAndExpect(
-    wf,
-    'increaseEventPriority',
-    [
-        calendarEvent_doThing,
-    ],
-    [
-        {
-            'id': calendarEvent_doThing.id,
-            'title': '2. Do thing',
-            'is_numbered': true,
-            'priority': 2,
-        },
-        {
-            'id': calendarEvent_doTheImportantThing.id,
-            'title': '3. Do the important thing',
-            'is_numbered': true,
-            'priority': 3,
-        },
-        {
-            'id': calendarEvent_doTheMostImportantThing.id,
-            'title': '1. Do the most important thing',
-            'is_numbered': true,
-            'priority': 1,
-        },
-    ],
-);
+allTestsPass =
+    allTestsPass &&
+    doThingAndExpect(
+        wf,
+        'increaseEventPriority',
+        [calendarEvent_doThing],
+        [
+            {
+                'id': calendarEvent_doThing.id,
+                'title': '2. Do thing',
+                'is_numbered': true,
+                'priority': 2,
+            },
+            {
+                'id': calendarEvent_doTheImportantThing.id,
+                'title': '3. Do the important thing',
+                'is_numbered': true,
+                'priority': 3,
+            },
+            {
+                'id': calendarEvent_doTheMostImportantThing.id,
+                'title': '1. Do the most important thing',
+                'is_numbered': true,
+                'priority': 1,
+            },
+        ],
+    );
 
-allTestsPass = allTestsPass && doThingAndExpect(
-    wf,
-    'increaseEventPriority',
-    [
-        calendarEvent_doTheImportantThing,
-    ],
-    [
-        {
-            'id': calendarEvent_doThing.id,
-            'title': '3. Do thing',
-            'is_numbered': true,
-            'priority': 3,
-        },
-        {
-            'id': calendarEvent_doTheImportantThing.id,
-            'title': '2. Do the important thing',
-            'is_numbered': true,
-            'priority': 2,
-        },
-        {
-            'id': calendarEvent_doTheMostImportantThing.id,
-            'title': '1. Do the most important thing',
-            'is_numbered': true,
-            'priority': 1,
-        },
-    ],
-);
+allTestsPass =
+    allTestsPass &&
+    doThingAndExpect(
+        wf,
+        'increaseEventPriority',
+        [calendarEvent_doTheImportantThing],
+        [
+            {
+                'id': calendarEvent_doThing.id,
+                'title': '3. Do thing',
+                'is_numbered': true,
+                'priority': 3,
+            },
+            {
+                'id': calendarEvent_doTheImportantThing.id,
+                'title': '2. Do the important thing',
+                'is_numbered': true,
+                'priority': 2,
+            },
+            {
+                'id': calendarEvent_doTheMostImportantThing.id,
+                'title': '1. Do the most important thing',
+                'is_numbered': true,
+                'priority': 1,
+            },
+        ],
+    );
 
 // TESTING:
 // calendarEvents = increaseEventPriority(calendarEvent_doTheMostImportantThing, calendarEvents);

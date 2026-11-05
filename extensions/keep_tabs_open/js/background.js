@@ -1,20 +1,19 @@
 console.info('background.js');
 
-var KeepTabsOpen = function() {
+var KeepTabsOpen = function () {
     this.options = {
         'alarmPeriodInMinutes': 1,
         'settings': [
             {
-                'url_to_open': 'https://accounts.google.com/ServiceLogin?service=mail&continue=https://mail.google.com/',
+                'url_to_open':
+                    'https://accounts.google.com/ServiceLogin?service=mail&continue=https://mail.google.com/',
                 'incognito': true,
                 'pinned': true,
-                'when_patterns_not_found': [
-                    'https:\/\/accounts\.google\.com\/',
-                    'https:\/\/mail\.google\.com\/',
-                ],
+                'when_patterns_not_found': ['https:\/\/accounts\.google\.com\/', 'https:\/\/mail\.google\.com\/'],
             },
             {
-                'url_to_open': 'https://accounts.google.com/ServiceLogin?service=cl&continue=https://calendar.google.com/',
+                'url_to_open':
+                    'https://accounts.google.com/ServiceLogin?service=cl&continue=https://calendar.google.com/',
                 'incognito': true,
                 'index': 1,
                 'pinned': true,
@@ -29,11 +28,11 @@ var KeepTabsOpen = function() {
     this.init();
 };
 
-KeepTabsOpen.prototype.init = function() {
+KeepTabsOpen.prototype.init = function () {
     console.info('KeepTabsOpen.prototype.init');
-    this.get(null, function(items) {
+    this.get(null, function (items) {
         console.info('this.get callback');
-        if ( items.length ) {
+        if (items.length) {
             keepTabsOpen.options = items;
             console.info('options updated:', keepTabsOpen.options);
         } else {
@@ -42,11 +41,11 @@ KeepTabsOpen.prototype.init = function() {
     });
 };
 
-KeepTabsOpen.prototype.get = function(key, callback) {
+KeepTabsOpen.prototype.get = function (key, callback) {
     console.info('KeepTabsOpen.prototype.get key:', key);
-    chrome.storage.sync.get(key, function(items) {
+    chrome.storage.sync.get(key, function (items) {
         console.log('KeepTabsOpen.prototype.get callback for key:', key);
-        if ( chrome.runtime.lastError ) {
+        if (chrome.runtime.lastError) {
             console.warn('chrome.runtime.lastError.message', chrome.runtime.lastError.message);
         } else {
             console.log('items:', items);
@@ -96,26 +95,25 @@ KeepTabsOpen.prototype.removePattern = function(pattern, callback) {
 };
 */
 
-KeepTabsOpen.prototype.getUrlAndSettingsToOpen = function(ref, settings) {
+KeepTabsOpen.prototype.getUrlAndSettingsToOpen = function (ref, settings) {
     var urlsAndSettingsToBeOpened = [];
-    for ( var j = 0; j < settings.length; j++ ) {
+    for (var j = 0; j < settings.length; j++) {
         var setting = settings[j];
         var whenPatternsNotFound = setting['when_patterns_not_found'];
         var found = false;
-        dance:
-        for ( var k = 0; k < whenPatternsNotFound.length; k++ ) {
+        dance: for (var k = 0; k < whenPatternsNotFound.length; k++) {
             var pattern = whenPatternsNotFound[k];
             var regex = RegExp(pattern);
-            for ( var m = 0; m < ref.openUrls.length; m++ ) {
+            for (var m = 0; m < ref.openUrls.length; m++) {
                 var openUrl = ref.openUrls[m];
-                if ( regex.test(openUrl) ) {
+                if (regex.test(openUrl)) {
                     found = true;
                     break dance;
                 }
             }
         }
 
-        if ( ! found ) {
+        if (!found) {
             if (setting['incognito'] && !chrome.extension.inIncognitoContext) {
                 console.log('skipping incognito url as not in incognito context');
             } else {
@@ -133,19 +131,18 @@ KeepTabsOpen.prototype.getUrlAndSettingsToOpen = function(ref, settings) {
     return urlsAndSettingsToBeOpened;
 };
 
-KeepTabsOpen.prototype.cron = function() {
+KeepTabsOpen.prototype.cron = function () {
     chrome.windows.getAll(
         // object getInfo
         {
             'populate': true,
         },
         // function callback
-        function( windows ) {
-
+        function (windows) {
             var openUrls = [];
-            windows.forEach(function(win) {
+            windows.forEach(function (win) {
                 console.group('window found:', win);
-                win.tabs.forEach(function(tab) {
+                win.tabs.forEach(function (tab) {
                     console.log('tab found:', tab);
                     openUrls.push(tab.url);
                 });
@@ -161,8 +158,8 @@ KeepTabsOpen.prototype.cron = function() {
             console.log('urls to open:', urlsAndSettingsToOpen);
             console.log('number of urls to open:', urlsAndSettingsToOpen.length);
 
-            if ( urlsAndSettingsToOpen.length ) {
-                for ( var i = 0; i < urlsAndSettingsToOpen.length; i++ ) {
+            if (urlsAndSettingsToOpen.length) {
+                for (var i = 0; i < urlsAndSettingsToOpen.length; i++) {
                     var urlAndSettings = urlsAndSettingsToOpen[i];
                     var url = urlAndSettings['url_to_open'];
                     if (chrome.extension.inIncognitoContext) {
@@ -203,20 +200,19 @@ KeepTabsOpen.prototype.cron = function() {
                         // object createProperties
                         createProperties,
                         // function callback
-                        function() {
-                        }
+                        function () {},
                     );
                 }
             }
-        }
+        },
     );
 };
 
 var keepTabsOpen = new KeepTabsOpen();
 
-chrome.alarms.onAlarm.addListener(function( alarm ) {
+chrome.alarms.onAlarm.addListener(function (alarm) {
     console.info('chrome.alarms.onAlarm.addListener callback', alarm);
-    if ( alarm.name === 'keepTabsOpen.cron' ) {
+    if (alarm.name === 'keepTabsOpen.cron') {
         keepTabsOpen.cron();
     }
 });
@@ -232,7 +228,7 @@ chrome.alarms.create(
     // object alarmInfo
     {
         'periodInMinutes': keepTabsOpen.options.alarmPeriodInMinutes,
-    }
+    },
 );
 
 keepTabsOpen.cron();

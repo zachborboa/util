@@ -3,13 +3,10 @@
 const TIMEOUT_MS = 100;
 
 function dispatchEvent(obj, event) {
-    var evt = new Event(
-        event,
-        {
-            target: obj,
-            bubbles: true,
-        }
-    );
+    var evt = new Event(event, {
+        target: obj,
+        bubbles: true,
+    });
     obj.dispatchEvent(evt);
 }
 
@@ -33,12 +30,22 @@ function checkInputValue(input, value, resolve) {
                     DEBUG && console.groupEnd();
                     resolve();
                 } else {
-                    DEBUG && console.log('value no longer matches (desired value: "%s", current input value: "%s")', value, input.value);
+                    DEBUG &&
+                        console.log(
+                            'value no longer matches (desired value: "%s", current input value: "%s")',
+                            value,
+                            input.value,
+                        );
                     checkInputValue(input, value, resolve);
                 }
             }, TIMEOUT_MS);
         } else {
-            DEBUG && console.log('value does not match (desired value: "%s", current input value: "%s")', value, input.value);
+            DEBUG &&
+                console.log(
+                    'value does not match (desired value: "%s", current input value: "%s")',
+                    value,
+                    input.value,
+                );
 
             input.value = value;
             DEBUG && console.log('value set (current input value: "%s")', input.value);
@@ -109,8 +116,7 @@ function waitUntilElementVisible(selector, baseElement) {
         baseElement = document;
     }
     return new Promise((resolve, reject) => {
-        waitUntilElementExists(selector, baseElement)
-        .then((elementFound) => {
+        waitUntilElementExists(selector, baseElement).then((elementFound) => {
             var check = () => {
                 if (isVisible(elementFound)) {
                     DEBUG && console.log('waitUntilElementVisible.found:', selector);
@@ -131,7 +137,6 @@ function waitUntilEventHasMovedFromCell(sourceEvent, cell) {
     DEBUG && console.log('cell:', cell);
     return new Promise((resolve, reject) => {
         var check = () => {
-
             DEBUG && console.log('cell:', cell);
             if (document.body.contains(cell)) {
                 DEBUG && console.log('cell still found in body');
@@ -195,10 +200,10 @@ function doThingUntilTrue(thingToDoUntilTrue, maxTimeToWaitSeconds) {
 }
 
 function waitMilliseconds(milliseconds) {
-    return new Promise(function(resolve, reject) {
-        setTimeout(function() {
+    return new Promise(function (resolve, reject) {
+        setTimeout(function () {
             resolve();
-        }, milliseconds)
+        }, milliseconds);
     });
 }
 

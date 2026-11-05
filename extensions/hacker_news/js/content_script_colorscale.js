@@ -11,23 +11,22 @@ const RED = new Color(230, 124, 115);
 const YELLOW = new Color(255, 214, 102);
 const GREEN = new Color(87, 187, 138);
 
-
 function Interpolate(start, end, steps, count) {
     var s = start;
     var e = end;
-    var final = s + (((e - s) / steps) * count);
+    var final = s + ((e - s) / steps) * count;
     return Math.floor(final);
 }
 
 function Color(_r, _g, _b) {
     var r, g, b;
-    var setColors = function(_r, _g, _b) {
+    var setColors = function (_r, _g, _b) {
         r = _r;
         g = _g;
         b = _b;
     };
     setColors(_r, _g, _b);
-    this.getColors = function() {
+    this.getColors = function () {
         var colors = {
             r: r,
             g: g,
@@ -41,8 +40,8 @@ function highlightNodes(nodePairsToHighlight, maxValue) {
     for (const nodePair of nodePairsToHighlight) {
         var node = nodePair[0];
         var nodeValue = nodePair[1];
-        var relativeValueForThreshold = nodeValue / maxValue * 100;
-        var relativeValueForColor = nodeValue / maxValue * 100;
+        var relativeValueForThreshold = (nodeValue / maxValue) * 100;
+        var relativeValueForColor = (nodeValue / maxValue) * 100;
 
         node.style.color = '#000';
 

@@ -18,14 +18,14 @@ class Spinner {
         // Fix "ReferenceError: document is not defined" when testing.
         if (typeof document === 'undefined') {
             global.document = {};
-            global.document.createElement = (() => {
+            global.document.createElement = () => {
                 return {
                     style: {},
                     classList: {
                         add: function () {},
                     },
                 };
-            });
+            };
         }
 
         var spinnerNode = document.createElement('div');
@@ -101,9 +101,9 @@ class GoogleCalendarWorkflow {
 
     SECOND_ROW_BUTTONS = [
         // button label, button classes
-        ['DONE',    ['jfk-button', 'jfk-button-default',  'button-d']],
-        ['NOPE',    ['jfk-button', 'jfk-button-standard', 'button-n']],
-        ['OKAY',    ['jfk-button', 'jfk-button-standard', 'button-o']],
+        ['DONE', ['jfk-button', 'jfk-button-default', 'button-d']],
+        ['NOPE', ['jfk-button', 'jfk-button-standard', 'button-n']],
+        ['OKAY', ['jfk-button', 'jfk-button-standard', 'button-o']],
         ['AWESOME', ['jfk-button', 'jfk-button-standard', 'button-a']],
     ];
 
@@ -133,12 +133,7 @@ class GoogleCalendarWorkflow {
         'x': null, // remove
     };
 
-    COMPLETED_EVENT_TITLE_PREFIXES = [
-        '✓',
-        '✗',
-        '▣',
-        'ツ',
-    ];
+    COMPLETED_EVENT_TITLE_PREFIXES = ['✓', '✗', '▣', 'ツ'];
 
     constructor(options) {
         this.options = options;
@@ -246,8 +241,7 @@ class GoogleCalendarWorkflow {
         var topCell;
 
         // Check top to bottom.
-        outer_loop:
-        for (var rowIndex = 0; rowIndex < calendarGridRows.length; rowIndex++) {
+        outer_loop: for (var rowIndex = 0; rowIndex < calendarGridRows.length; rowIndex++) {
             this.debug && console.group('rowIndex:', rowIndex);
 
             var row = calendarGridRows[rowIndex];
@@ -270,8 +264,7 @@ class GoogleCalendarWorkflow {
 
                 // Determine if current top cell should be cleared now that it has the maximum number of events per
                 // cell.
-                if (this.topCellDate !== undefined &&
-                    cellEventsFound === this.options.maxEventsPerCell) {
+                if (this.topCellDate !== undefined && cellEventsFound === this.options.maxEventsPerCell) {
                     var cellDate = this.getCellDate(cell);
                     if (cellDate === this.topCellDate) {
                         this.topCellDate = undefined;
@@ -310,7 +303,8 @@ class GoogleCalendarWorkflow {
                     this.debug && console.log('using newly calculated cellDate:', cellDate);
                     topCellDate = cellDate;
                 } else {
-                    this.debug && console.log('comparing cellDate "%s" to current topCellDate "%s"', cellDate, this.topCellDate);
+                    this.debug &&
+                        console.log('comparing cellDate "%s" to current topCellDate "%s"', cellDate, this.topCellDate);
                     if (this._getDateComparisonObject(cellDate) < this._getDateComparisonObject(this.topCellDate)) {
                         this.debug && console.log('updating current topCellDate');
                         topCellDate = cellDate;
@@ -340,14 +334,7 @@ class GoogleCalendarWorkflow {
         return eventDateFormatted;
     }
 
-    getNewEventTitle(
-        originalCalendarEventTitle,
-        action,
-        eventTitlePrefix,
-        eventCompleted,
-        eventDate,
-        date,
-    ) {
+    getNewEventTitle(originalCalendarEventTitle, action, eventTitlePrefix, eventCompleted, eventDate, date) {
         this.debug && console.group('getNewEventTitle');
         this.debug && console.log('originalCalendarEventTitle: "%s"', originalCalendarEventTitle);
         this.debug && console.log('action:', action);
@@ -393,23 +380,44 @@ class GoogleCalendarWorkflow {
         }
 
         // "*** 1. " + * -> "1. "
-        else if (action === 'toggle-prefix' && eventTitlePrefix === '*' && eventTitleStartsWithStarPrefix && eventTitleIsNumbered) {
+        else if (
+            action === 'toggle-prefix' &&
+            eventTitlePrefix === '*' &&
+            eventTitleStartsWithStarPrefix &&
+            eventTitleIsNumbered
+        ) {
             newCalendarEventTitle = newCalendarEventTitle.replace(/^\*\*\* /, '');
         }
 
         // "*** - " + - -> "*** "
-        else if (action === 'toggle-prefix' && eventTitlePrefix === '-' && eventTitleStartsWithStarPrefix && newCalendarEventTitle.match(/\*\*\* - /)) {
+        else if (
+            action === 'toggle-prefix' &&
+            eventTitlePrefix === '-' &&
+            eventTitleStartsWithStarPrefix &&
+            newCalendarEventTitle.match(/\*\*\* - /)
+        ) {
             newCalendarEventTitle = newCalendarEventTitle.replace(/^\*\*\* - /, '*** ');
         }
 
         // "*** " + - -> "- "
-        else if (action === 'toggle-prefix' && eventTitlePrefix === '-' && eventTitleStartsWithStarPrefix && newCalendarEventTitle.match(/\*\*\* /)) {
+        else if (
+            action === 'toggle-prefix' &&
+            eventTitlePrefix === '-' &&
+            eventTitleStartsWithStarPrefix &&
+            newCalendarEventTitle.match(/\*\*\* /)
+        ) {
             newCalendarEventTitle = newCalendarEventTitle.replace(/^\*\*\* /, '- ');
         }
 
         // "*** 1. " + 2. -> "*** 2. "
-        else if (action === 'toggle-prefix' && eventTitleStartsWithStarPrefix && eventTitleIsNumbered && replaceEventTitleNumber) {
-            newCalendarEventTitle = '*** ' + eventTitlePrefix + ' ' + newCalendarEventTitle.replace(/^\*\*\* \d+\. /, '');
+        else if (
+            action === 'toggle-prefix' &&
+            eventTitleStartsWithStarPrefix &&
+            eventTitleIsNumbered &&
+            replaceEventTitleNumber
+        ) {
+            newCalendarEventTitle =
+                '*** ' + eventTitlePrefix + ' ' + newCalendarEventTitle.replace(/^\*\*\* \d+\. /, '');
         }
 
         // "*** 1. " + 1. -> "*** "
@@ -426,9 +434,7 @@ class GoogleCalendarWorkflow {
         else if (action === 'toggle-prefix' && eventTitlePrefix === '-' && eventTitleStartsWithNumber) {
             // Remove any existing leading number prefix (e.g. "1. " in "1. My Calendar Event").
             newCalendarEventTitle = newCalendarEventTitle.replace(/^\d+\. /, '');
-        }
-
-        else if (action === 'toggle-prefix' && eventTitleStartsWithPrefix) {
+        } else if (action === 'toggle-prefix' && eventTitleStartsWithPrefix) {
             // Remove existing prefix if it is the same prefix as the hotkey.
             newCalendarEventTitle = newCalendarEventTitle.substr((eventTitlePrefix + ' ').length);
         }
@@ -469,9 +475,7 @@ class GoogleCalendarWorkflow {
         // the new calendar event title when the event is marked
         // completed (done, nope, okay, awesome).
         if (eventCompleted) {
-            newCalendarEventTitle += ';' +
-                ' ' + todayFormattedDate + ';' +
-                ' event date: ' + eventDate;
+            newCalendarEventTitle += ';' + ' ' + todayFormattedDate + ';' + ' event date: ' + eventDate;
         }
 
         this.debug && console.log('newCalendarEventTitle: "%s"', newCalendarEventTitle);
@@ -496,8 +500,7 @@ class GoogleCalendarWorkflow {
         this.debug && console.log('calendarGridRows.length:', calendarGridRows.length);
 
         var cellFound;
-        outer_loop:
-        for (var rowIndex = 0; rowIndex < calendarGridRows.length; rowIndex++) {
+        outer_loop: for (var rowIndex = 0; rowIndex < calendarGridRows.length; rowIndex++) {
             this.debug && console.group('rowIndex:', rowIndex);
 
             var row = calendarGridRows[rowIndex];
@@ -532,8 +535,7 @@ class GoogleCalendarWorkflow {
         var minMoveToDayFound = false;
         var maxMoveToDayFound = false;
 
-        outer_loop:
-        for (var rowIndex = 0; rowIndex < calendarGridRows.length; rowIndex++) {
+        outer_loop: for (var rowIndex = 0; rowIndex < calendarGridRows.length; rowIndex++) {
             this.debug && console.group('rowIndex:', rowIndex);
 
             var row = calendarGridRows[rowIndex];
@@ -547,10 +549,7 @@ class GoogleCalendarWorkflow {
                 var cellEventsFound = this.countEventsInCell(cell);
 
                 this.debug && console.log('cell', cellIndex, cellEventsFound, cell);
-                if (
-                    (minEvents === null || cellEventsFound < minEvents) &&
-                    !(minMoveToDayFound && maxMoveToDayFound)
-                ) {
+                if ((minEvents === null || cellEventsFound < minEvents) && !(minMoveToDayFound && maxMoveToDayFound)) {
                     this.debug && console.log('updating cellFound');
                     minEvents = cellEventsFound;
                     cellFound = cell;
@@ -582,12 +581,12 @@ class GoogleCalendarWorkflow {
 
     isOnCustomWeekPage() {
         return (
-            window.location.pathname.endsWith('/customweek') ||
-            window.location.pathname.indexOf('/customweek/') !== -1
-        ) &&
+            (window.location.pathname.endsWith('/customweek') ||
+                window.location.pathname.indexOf('/customweek/') !== -1) &&
             document.querySelector('[aria-label="Start date"]') === null &&
             document.querySelector('[aria-label="End date"]') === null &&
-            document.querySelector('[aria-label="Title"]') === null;
+            document.querySelector('[aria-label="Title"]') === null
+        );
     }
 
     dismissSendUpdateEmailsToExistingGoogleCalendarGuestsDialog() {
@@ -595,36 +594,40 @@ class GoogleCalendarWorkflow {
 
         return new Promise((resolve, reject) => {
             waitMilliseconds(500)
-            .then(() => waitUntilElementExists('[role="dialog"]', undefined, 3000))
-            .then((dialog) => {
-                if (dialog) {
-                    var dialogLabelledByIdentifier = dialog.getAttribute('aria-labelledby');
-                    if (dialogLabelledByIdentifier) {
+                .then(() => waitUntilElementExists('[role="dialog"]', undefined, 3000))
+                .then((dialog) => {
+                    if (dialog) {
+                        var dialogLabelledByIdentifier = dialog.getAttribute('aria-labelledby');
+                        if (dialogLabelledByIdentifier) {
+                            // Ensure that current dialog is "Would you like to send update emails to existing Google Calendar guests?".
+                            var dialogLabelledByNode = document.getElementById(dialogLabelledByIdentifier);
+                            if (
+                                dialogLabelledByNode &&
+                                dialogLabelledByNode.innerText ===
+                                    'Would you like to send update emails to existing Google Calendar guests?'
+                            ) {
+                                // Click the "Don't send" button.
+                                var dialogButtons = dialog.querySelectorAll('[role="button"]');
+                                var dialogDontSendButtons = Array.from(dialogButtons).filter(
+                                    (button) => button.innerText === "Don't send",
+                                );
+                                if (dialogDontSendButtons.length !== 1) {
+                                    alert('Error: Multiple "Don\'t send" buttons found');
+                                } else {
+                                    var dialogDontSendButton = dialogDontSendButtons[0];
 
-                        // Ensure that current dialog is "Would you like to send update emails to existing Google Calendar guests?".
-                        var dialogLabelledByNode = document.getElementById(dialogLabelledByIdentifier);
-                        if (dialogLabelledByNode && dialogLabelledByNode.innerText === 'Would you like to send update emails to existing Google Calendar guests?') {
+                                    dialogDontSendButton.style.backgroundColor = 'lawngreen';
+                                    dialogDontSendButton.style.outline = '5px dashed #333';
 
-                            // Click the "Don't send" button.
-                            var dialogButtons = dialog.querySelectorAll('[role="button"]');
-                            var dialogDontSendButtons = Array.from(dialogButtons).filter(button => button.innerText === 'Don\'t send');
-                            if (dialogDontSendButtons.length !== 1) {
-                                alert('Error: Multiple "Don\'t send" buttons found');
-                            } else {
-                                var dialogDontSendButton = dialogDontSendButtons[0];
-
-                                dialogDontSendButton.style.backgroundColor = 'lawngreen';
-                                dialogDontSendButton.style.outline = '5px dashed #333';
-
-                                dialogDontSendButton.click();
-                                console.log('"Don\'t send" button clicked:', dialogDontSendButton);
+                                    dialogDontSendButton.click();
+                                    console.log('"Don\'t send" button clicked:', dialogDontSendButton);
+                                }
                             }
                         }
                     }
-                }
 
-                resolve();
-            });
+                    resolve();
+                });
         });
     }
 
@@ -636,15 +639,13 @@ class GoogleCalendarWorkflow {
             if (dialog) {
                 var dialogLabelledByIdentifier = dialog.getAttribute('aria-labelledby');
                 if (dialogLabelledByIdentifier) {
-
                     // Ensure that current dialog is "Edit recurring event".
                     var dialogLabelledByNode = document.getElementById(dialogLabelledByIdentifier);
                     if (dialogLabelledByNode && dialogLabelledByNode.innerText === 'Edit recurring event') {
-
                         // Remove option highlights.
-                        dialog.querySelectorAll('[role="radiogroup"] [id^="label-"]').forEach(
-                            node => node.removeAttribute('style')
-                        );
+                        dialog
+                            .querySelectorAll('[role="radiogroup"] [id^="label-"]')
+                            .forEach((node) => node.removeAttribute('style'));
 
                         // Ensure that the "This event" option is selected (and not
                         // the "This and following events" option or any other
@@ -653,8 +654,12 @@ class GoogleCalendarWorkflow {
                         if (dialogRadioChecked) {
                             var dialogRadioLabelledByIdentifier = dialogRadioChecked.getAttribute('aria-labelledby');
                             if (dialogRadioLabelledByIdentifier) {
-                                var dialogRadioLabelledByNode = document.getElementById(dialogRadioLabelledByIdentifier);
-                                dialogRadioLabelledByNode && this.debug && console.log('current selected option: "%s"', dialogRadioLabelledByNode.innerText);
+                                var dialogRadioLabelledByNode = document.getElementById(
+                                    dialogRadioLabelledByIdentifier,
+                                );
+                                dialogRadioLabelledByNode &&
+                                    this.debug &&
+                                    console.log('current selected option: "%s"', dialogRadioLabelledByNode.innerText);
                                 if (dialogRadioLabelledByNode) {
                                     if (dialogRadioLabelledByNode.innerText === 'This event') {
                                         console.log('OK - "This event" is selected');
@@ -664,8 +669,10 @@ class GoogleCalendarWorkflow {
 
                                         // Click the "OK" button now that basic
                                         // checks have passed.
-                                        var dialogButtons = dialog.querySelectorAll('[data-mdc-dialog-action="ok"]');;
-                                        var dialogOkButtons = Array.from(dialogButtons).filter(button => button.innerText === 'OK');
+                                        var dialogButtons = dialog.querySelectorAll('[data-mdc-dialog-action="ok"]');
+                                        var dialogOkButtons = Array.from(dialogButtons).filter(
+                                            (button) => button.innerText === 'OK',
+                                        );
                                         if (dialogOkButtons.length === 0) {
                                             console.warn('No "OK" buttons found');
                                             alert('Error: No "OK" buttons found');
@@ -677,7 +684,6 @@ class GoogleCalendarWorkflow {
                                             dialogOkButton.click();
                                             console.log('ok button clicked:', dialogOkButton);
                                         }
-
                                     } else {
                                         console.warn('FAIL - "This event" isn\'t selected yet');
 
@@ -714,15 +720,17 @@ class GoogleCalendarWorkflow {
     clickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk() {
         this.debug && console.log('clickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk');
         var dialog = document.querySelector('[role="dialog"]');
-        if (dialog &&
-            dialog.innerText === 'Are you sure?\n' +
-            'You are about to make changes that will only be reflected on your own calendar.\n' +
-            'Cancel\n' +
-            'OK'
+        if (
+            dialog &&
+            dialog.innerText ===
+                'Are you sure?\n' +
+                    'You are about to make changes that will only be reflected on your own calendar.\n' +
+                    'Cancel\n' +
+                    'OK'
         ) {
             // Click the "OK" button now that basic checks have passed.
-            var dialogButtons = dialog.querySelectorAll('[role="button"]');;
-            var dialogOkButtons = Array.from(dialogButtons).filter(button => button.innerText === 'OK');
+            var dialogButtons = dialog.querySelectorAll('[role="button"]');
+            var dialogOkButtons = Array.from(dialogButtons).filter((button) => button.innerText === 'OK');
             if (dialogOkButtons.length === 0) {
                 console.warn('No "OK" buttons found');
                 alert('Error: No "OK" buttons found');
@@ -755,11 +763,13 @@ class GoogleCalendarWorkflow {
 
     isAreYouSureChangesOnlyReflectedOnOwnCalendarDialogOpen() {
         var dialog = document.querySelector('[role="dialog"]');
-        if (dialog &&
-            dialog.innerText === 'Are you sure?\n' +
-            'You are about to make changes that will only be reflected on your own calendar.\n' +
-            'Cancel\n' +
-            'OK'
+        if (
+            dialog &&
+            dialog.innerText ===
+                'Are you sure?\n' +
+                    'You are about to make changes that will only be reflected on your own calendar.\n' +
+                    'Cancel\n' +
+                    'OK'
         ) {
             return true;
         }
@@ -772,8 +782,16 @@ class GoogleCalendarWorkflow {
         autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk = false,
     ) {
         this.debug && console.group('waitUntilOnCustomWeekPage');
-        this.debug && console.log('waitUntilOnCustomWeekPage.autoClickEditRecurringEventDialogOptionThisEvent:', autoClickEditRecurringEventDialogOptionThisEvent);
-        this.debug && console.log('waitUntilOnCustomWeekPage.autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk:', autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk);
+        this.debug &&
+            console.log(
+                'waitUntilOnCustomWeekPage.autoClickEditRecurringEventDialogOptionThisEvent:',
+                autoClickEditRecurringEventDialogOptionThisEvent,
+            );
+        this.debug &&
+            console.log(
+                'waitUntilOnCustomWeekPage.autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk:',
+                autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
+            );
         return new Promise((resolve, reject) => {
             var checkCustomWeekPageInterval = setInterval(() => {
                 if (this.isOnCustomWeekPage()) {
@@ -782,16 +800,25 @@ class GoogleCalendarWorkflow {
                     this.debug && console.groupEnd();
                     resolve();
                 } else if (autoClickEditRecurringEventDialogOptionThisEvent && this.isEditRecurringEventDialogOpen()) {
-                    this.debug && console.log('waitUntilOnCustomWeekPage: autoClickEditRecurringEventDialogOptionThisEvent && isEditRecurringEventDialogOpen');
+                    this.debug &&
+                        console.log(
+                            'waitUntilOnCustomWeekPage: autoClickEditRecurringEventDialogOptionThisEvent && isEditRecurringEventDialogOpen',
+                        );
                     clearInterval(checkCustomWeekPageInterval);
                     this.clickEditRecurringEventDialogOptionThisEvent()
-                    .then(() => this.dismissSendUpdateEmailsToExistingGoogleCalendarGuestsDialog())
-                    .then(() => {
-                        this.debug && console.groupEnd();
-                        resolve();
-                    })
-                } else if (autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk && this.isAreYouSureChangesOnlyReflectedOnOwnCalendarDialogOpen()) {
-                    this.debug && console.log('waitUntilOnCustomWeekPage: autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk && isAreYouSureDialogOpen');
+                        .then(() => this.dismissSendUpdateEmailsToExistingGoogleCalendarGuestsDialog())
+                        .then(() => {
+                            this.debug && console.groupEnd();
+                            resolve();
+                        });
+                } else if (
+                    autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk &&
+                    this.isAreYouSureChangesOnlyReflectedOnOwnCalendarDialogOpen()
+                ) {
+                    this.debug &&
+                        console.log(
+                            'waitUntilOnCustomWeekPage: autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk && isAreYouSureDialogOpen',
+                        );
                     clearInterval(checkCustomWeekPageInterval);
                     this.clickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk();
                     this.debug && console.groupEnd();
@@ -806,9 +833,9 @@ class GoogleCalendarWorkflow {
     updateSourceCell(cell) {
         this.debug && console.log('updateSourceCell', cell);
 
-        document.querySelectorAll('div[role="gridcell"][style]').forEach(
-            node => node.style.backgroundColor === 'lawngreen' && node.removeAttribute('style')
-        );
+        document
+            .querySelectorAll('div[role="gridcell"][style]')
+            .forEach((node) => node.style.backgroundColor === 'lawngreen' && node.removeAttribute('style'));
 
         if (cell) {
             cell.style.backgroundColor = 'lawngreen';
@@ -819,9 +846,9 @@ class GoogleCalendarWorkflow {
     updateDestinationCell(cell) {
         this.debug && console.log('updateDestinationCell', cell);
 
-        document.querySelectorAll('div[role="gridcell"][style]').forEach(
-            node => node.style.backgroundColor === 'indianred' && node.removeAttribute('style')
-        );
+        document
+            .querySelectorAll('div[role="gridcell"][style]')
+            .forEach((node) => node.style.backgroundColor === 'indianred' && node.removeAttribute('style'));
 
         if (cell) {
             cell.style.backgroundColor = 'indianred';
@@ -832,9 +859,10 @@ class GoogleCalendarWorkflow {
         this.debug && console.info('waitUntilCalendarGridRows');
 
         return new Promise((resolve, reject) => {
-            waitUntilElementExists('[data-view-heading] [role="presentation"] [role="row"]')
-            .then(() => {
-                var calendarGridRows = document.querySelectorAll('[data-view-heading] [role="presentation"] [role="row"]');
+            waitUntilElementExists('[data-view-heading] [role="presentation"] [role="row"]').then(() => {
+                var calendarGridRows = document.querySelectorAll(
+                    '[data-view-heading] [role="presentation"] [role="row"]',
+                );
                 this.debug && console.log('calendarGridRows:', calendarGridRows);
                 resolve(calendarGridRows);
             });
@@ -853,11 +881,7 @@ class GoogleCalendarWorkflow {
         return false;
     }
 
-    moveEvents(
-        moveFromDate,
-        minMoveToDate,
-        maxMoveToDate,
-    ) {
+    moveEvents(moveFromDate, minMoveToDate, maxMoveToDate) {
         return new Promise((resolve, reject) => {
             // Find row containing both min day and max day. Check top to bottom.
             this.debug && console.group('moveEvents');
@@ -865,16 +889,28 @@ class GoogleCalendarWorkflow {
             this.debug && console.log('minMoveToDate: %s', minMoveToDate);
             this.debug && console.log('maxMoveToDate: %s', maxMoveToDate);
 
-            var moveFromDateFindString = ', ' + new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric'}).format(moveFromDate);
+            var moveFromDateFindString =
+                ', ' +
+                new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).format(
+                    moveFromDate,
+                );
             this.debug && console.log('moveFromDateFindString: "%s"', moveFromDateFindString);
 
-            var minMoveToDateFindString = ', ' + new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric'}).format(minMoveToDate);
+            var minMoveToDateFindString =
+                ', ' +
+                new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).format(
+                    minMoveToDate,
+                );
             this.debug && console.log('minMoveToDateFindString: "%s"', minMoveToDateFindString);
 
-            var maxMoveToDateFindString = ', ' + new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric'}).format(maxMoveToDate);
+            var maxMoveToDateFindString =
+                ', ' +
+                new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).format(
+                    maxMoveToDate,
+                );
             this.debug && console.log('maxMoveToDateFindString: "%s"', maxMoveToDateFindString);
 
-            var moveEvent = (() =>  {
+            var moveEvent = () => {
                 this.debug && console.log('moveEvent');
 
                 if (this.checkToExit(this.cleaningUpEventsCanceled, reject, 'cleaning up events canceled')) {
@@ -882,26 +918,35 @@ class GoogleCalendarWorkflow {
                     return;
                 }
 
-                this.waitUntilCalendarGridRows()
-                .then((calendarGridRows) => {
-
+                this.waitUntilCalendarGridRows().then((calendarGridRows) => {
                     var moveFromDateCell = this.findCellByDateStringEnding(calendarGridRows, moveFromDateFindString);
                     this.debug && console.log('moveFromDateCell:', moveFromDateCell);
                     if (!moveFromDateCell) {
-                        this.debug && console.warn('move from date cell not found. looked for "%s"', moveFromDateFindString);
+                        this.debug &&
+                            console.warn('move from date cell not found. looked for "%s"', moveFromDateFindString);
                         resolve();
                         return;
                     }
                     this.updateSourceCell(moveFromDateCell);
 
-                    var firstCellWithMinEvents = this.findCellWithMinEvents(calendarGridRows, minMoveToDateFindString, maxMoveToDateFindString);
+                    var firstCellWithMinEvents = this.findCellWithMinEvents(
+                        calendarGridRows,
+                        minMoveToDateFindString,
+                        maxMoveToDateFindString,
+                    );
                     this.debug && console.log('firstCellWithMinEvents:', firstCellWithMinEvents);
                     this.updateDestinationCell(firstCellWithMinEvents);
 
                     var moveToDate = this.getCellDate(firstCellWithMinEvents);
                     this.debug && console.log('moving from "%s"', moveFromDate);
                     this.debug && console.log('moving to "%s"', moveToDate);
-                    this.debug && console.log('moving events from this cell', moveFromDateCell, 'to this cell', firstCellWithMinEvents);
+                    this.debug &&
+                        console.log(
+                            'moving events from this cell',
+                            moveFromDateCell,
+                            'to this cell',
+                            firstCellWithMinEvents,
+                        );
 
                     // Click first event in cell so that the event popup
                     // appears. Sometimes the event disappears (moves) so check
@@ -932,46 +977,44 @@ class GoogleCalendarWorkflow {
                     this.debug && console.log('calendar event clicked');
 
                     // Wait for the popup to appear with the "Edit event" button.
-                    doThingUntilTrue(
-                        () => {
-                            var editEventButton = document.querySelector('[aria-label="Edit event"]');
-                            this.debug && console.log('editEventButton:', editEventButton);
-                            if (!editEventButton) {
-                                this.debug && console.log('no edit event button found for calendar event:', calendarEvent);
-                                return false;
-                            } else {
-                                this.debug && console.log('edit event button found for calendar event:', calendarEvent);
+                    doThingUntilTrue(() => {
+                        var editEventButton = document.querySelector('[aria-label="Edit event"]');
+                        this.debug && console.log('editEventButton:', editEventButton);
+                        if (!editEventButton) {
+                            this.debug && console.log('no edit event button found for calendar event:', calendarEvent);
+                            return false;
+                        } else {
+                            this.debug && console.log('edit event button found for calendar event:', calendarEvent);
 
-                                editEventButton.click();
-                                this.debug && console.log('edit event button clicked');
+                            editEventButton.click();
+                            this.debug && console.log('edit event button clicked');
 
-                                return true;
-                            }
-                        },
-                        5
-                    )
-                    .then(() => this.waitUntilOnEventEditPage())
-                    .then(() => {
-                        this.debug && console.log('ready to update event date');
-
-                        var autoClickEditRecurringEventDialogOptionThisEvent = true;
-                        var autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk = true;
-
-                        this.moveEventToMoveToDate(moveToDate)
-                        .then(() => this.eventPageClickSaveButton())
-                        .then(() => this.waitUntilOnCustomWeekPage(
-                            autoClickEditRecurringEventDialogOptionThisEvent,
-                            autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
-                        ))
-                        .then(() => waitUntilEventHasMovedFromCell(sourceEvent, moveFromDateCell))
+                            return true;
+                        }
+                    }, 5)
+                        .then(() => this.waitUntilOnEventEditPage())
                         .then(() => {
-                            // Try to move next source event to destination.
-                            setTimeout(moveEvent, 100);
-                        });
-                    });
+                            this.debug && console.log('ready to update event date');
 
+                            var autoClickEditRecurringEventDialogOptionThisEvent = true;
+                            var autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk = true;
+
+                            this.moveEventToMoveToDate(moveToDate)
+                                .then(() => this.eventPageClickSaveButton())
+                                .then(() =>
+                                    this.waitUntilOnCustomWeekPage(
+                                        autoClickEditRecurringEventDialogOptionThisEvent,
+                                        autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
+                                    ),
+                                )
+                                .then(() => waitUntilEventHasMovedFromCell(sourceEvent, moveFromDateCell))
+                                .then(() => {
+                                    // Try to move next source event to destination.
+                                    setTimeout(moveEvent, 100);
+                                });
+                        });
                 });
-            });
+            };
             moveEvent();
 
             this.debug && console.groupEnd();
@@ -1000,20 +1043,18 @@ class GoogleCalendarWorkflow {
         var matchResult = pathname.match(/\/(\d\d\d\d)\//);
         var calendarYear;
         if (matchResult === null) {
-
             // Attempt to fetch calendar year from current page.
             var currentMonthAndYearNode = document.querySelector('.rSoRzd');
             if (currentMonthAndYearNode && currentMonthAndYearNode.innerText.match(/ (\d\d\d\d)$/)) {
                 calendarYear = currentMonthAndYearNode.innerText.match(/ (\d\d\d\d)$/)[1];
             }
-
         } else {
             calendarYear = matchResult[1];
         }
         this.debug && console.log('calendarYear:', calendarYear);
 
         // Sanity check year. Shouldn't be too far away.
-        var diffInDays = this.getDiffInDays(monthName + " 1," + calendarYear);
+        var diffInDays = this.getDiffInDays(monthName + ' 1,' + calendarYear);
         this.debug && console.log('diffInDays:', diffInDays);
 
         if (diffInDays > 100) {
@@ -1068,72 +1109,74 @@ class GoogleCalendarWorkflow {
 
         return new Promise((resolve, reject) => {
             waitUntilElementVisible('[aria-label="Options"]')
-            .then((optionsButton) => {
-                optionsButton.click();
-            })
-            .then(() => {
-                // Update: The aria-label attribute ([aria-label="Duplicate"])
-                // seems to have disappeared so this no longer works:
-                //   waitUntilElementVisible('[aria-label="Duplicate"]')
-                return new Promise((resolve, reject) => {
-                        var menus = document.querySelectorAll('[role="menu"]');
-                        for (var i = 0; i < menus.length; i++) {
-                            var menu = menus[i];
-                            console.log(i, menu);
-                            if (menu.innerText.indexOf('\nDuplicate\n') !== -1) {
-                                var menuItems = menu.querySelectorAll('[role="menuitem"]');
-                                for (var j = 0; j < menuItems.length; j++) {
-                                    var menuItem = menuItems[j];
-                                    if (menuItem.innerText === 'Duplicate') {
-                                        resolve(menuItem);
-                                        break;
+                .then((optionsButton) => {
+                    optionsButton.click();
+                })
+                .then(() => {
+                    // Update: The aria-label attribute ([aria-label="Duplicate"])
+                    // seems to have disappeared so this no longer works:
+                    //   waitUntilElementVisible('[aria-label="Duplicate"]')
+                    return (
+                        new Promise((resolve, reject) => {
+                            var menus = document.querySelectorAll('[role="menu"]');
+                            for (var i = 0; i < menus.length; i++) {
+                                var menu = menus[i];
+                                console.log(i, menu);
+                                if (menu.innerText.indexOf('\nDuplicate\n') !== -1) {
+                                    var menuItems = menu.querySelectorAll('[role="menuitem"]');
+                                    for (var j = 0; j < menuItems.length; j++) {
+                                        var menuItem = menuItems[j];
+                                        if (menuItem.innerText === 'Duplicate') {
+                                            resolve(menuItem);
+                                            break;
+                                        }
                                     }
+
+                                    break;
                                 }
-
-                                break;
                             }
-                        }
-                    })
-                    // Add delay before simulating click on the duplicate
-                    // option. Without the delay, it seems to not trigger the
-                    // simulated click.
-                    .then((duplicateEventOption) => {
-                        this.debug && console.log('duplicate event option found:', duplicateEventOption);
-                        return new Promise(resolve => {
-                            this.debug && console.log('waiting');
-                            setTimeout(() => {
-                                this.debug && console.log('wait done');
-                                resolve(duplicateEventOption);
-                            }, 200);
-                        });
-                    })
-                    .then((duplicateEventOption) => {
-                        // Click using a "mousedown" event followed by a
-                        // "mouseup" event as calling .click() on the object
-                        // doesn't seem to trigger the click action to
-                        // duplicate the event:
-                        //   duplicateEventOption.click();
-
-                        duplicateEventOption.dispatchEvent(
-                            new Event('mousedown', {
-                                'bubbles': true,
+                        })
+                            // Add delay before simulating click on the duplicate
+                            // option. Without the delay, it seems to not trigger the
+                            // simulated click.
+                            .then((duplicateEventOption) => {
+                                this.debug && console.log('duplicate event option found:', duplicateEventOption);
+                                return new Promise((resolve) => {
+                                    this.debug && console.log('waiting');
+                                    setTimeout(() => {
+                                        this.debug && console.log('wait done');
+                                        resolve(duplicateEventOption);
+                                    }, 200);
+                                });
                             })
-                        );
+                            .then((duplicateEventOption) => {
+                                // Click using a "mousedown" event followed by a
+                                // "mouseup" event as calling .click() on the object
+                                // doesn't seem to trigger the click action to
+                                // duplicate the event:
+                                //   duplicateEventOption.click();
 
-                        duplicateEventOption.dispatchEvent(
-                            new Event('mouseup', {
-                                'bubbles': true,
+                                duplicateEventOption.dispatchEvent(
+                                    new Event('mousedown', {
+                                        'bubbles': true,
+                                    }),
+                                );
+
+                                duplicateEventOption.dispatchEvent(
+                                    new Event('mouseup', {
+                                        'bubbles': true,
+                                    }),
+                                );
+
+                                this.debug && console.log('duplicate event option clicked');
                             })
-                        );
-
-                        this.debug && console.log('duplicate event option clicked');
-                    });
-            })
-            .then(() => {
-                this.debug && console.log('finally resolving');
-                resolve();
-                this.debug && console.groupEnd();
-            });
+                    );
+                })
+                .then(() => {
+                    this.debug && console.log('finally resolving');
+                    resolve();
+                    this.debug && console.groupEnd();
+                });
         });
     }
 
@@ -1170,7 +1213,7 @@ class GoogleCalendarWorkflow {
         var eventBubbleVisible = eventBubble && isVisible(eventBubble);
         if (eventBubble && eventBubbleVisible && eventActionContainer) {
             var eventBubbleRect = eventBubble.getBoundingClientRect();
-            var top = (eventBubbleRect.y + eventBubbleRect.height);
+            var top = eventBubbleRect.y + eventBubbleRect.height;
             var left = eventBubbleRect.x;
             // console.log(top, left);
             if (top && left) {
@@ -1178,7 +1221,7 @@ class GoogleCalendarWorkflow {
                 eventActionContainer.style.left = left + 'px';
                 this.showEventActionContainer(eventActionContainer);
             }
-        } else if ((!eventBubble || !eventBubbleVisible) && eventActionContainer)  {
+        } else if ((!eventBubble || !eventBubbleVisible) && eventActionContainer) {
             this.hideEventActionContainer(eventActionContainer);
         }
     }
@@ -1285,8 +1328,7 @@ class GoogleCalendarWorkflow {
     eventPageClickSaveButton() {
         this.debug && console.group('eventPageClickSaveButton');
         return new Promise((resolve, reject) => {
-            waitUntilElementExists('[aria-label="Save"]')
-            .then((saveButton) => {
+            waitUntilElementExists('[aria-label="Save"]').then((saveButton) => {
                 saveButton.click();
                 this.debug && console.log('eventPageClickSaveButton: save button clicked');
                 this.debug && console.groupEnd();
@@ -1315,21 +1357,16 @@ class GoogleCalendarWorkflow {
         var eventDateInputFormattedDate = this.getEventDateFormattedDate(moveToDate);
 
         return new Promise((resolve, reject) => {
-            this.waitUntilOnEventEditPage()
-            .then(([
-                startDateInput,
-                endDateInput,
-                eventTitleInput,
-            ]) => {
+            this.waitUntilOnEventEditPage().then(([startDateInput, endDateInput, eventTitleInput]) => {
                 Promise.resolve()
-                .then(() => setInputValue(startDateInput, eventDateInputFormattedDate))
-                .then(() => setInputValue(endDateInput, eventDateInputFormattedDate))
-                .then(() => eventTitleInput.focus())
-                .then(() => {
-                    this.debug && console.info('moveEventToMoveToDate all done');
-                    this.debug && console.groupEnd();
-                    resolve();
-                });
+                    .then(() => setInputValue(startDateInput, eventDateInputFormattedDate))
+                    .then(() => setInputValue(endDateInput, eventDateInputFormattedDate))
+                    .then(() => eventTitleInput.focus())
+                    .then(() => {
+                        this.debug && console.info('moveEventToMoveToDate all done');
+                        this.debug && console.groupEnd();
+                        resolve();
+                    });
             });
         });
     }
@@ -1390,45 +1427,42 @@ class GoogleCalendarWorkflow {
             this.debug && console.log('delete event');
             this.clickEventBubbleDeleteButton();
 
-        // Copy event (duplicate).
+            // Copy event (duplicate).
         } else if (eventBubble && character === 'c') {
             this.debug && console.log('copy event');
             this.clickEventBubbleOptionsDuplicate();
 
-        // Move event.
+            // Move event.
         } else if (eventBubble && character === 'm') {
             this.debug && console.log('move event');
             this.clickEventBubbleEditButton()
-            .then(() => this.waitUntilOnEventEditPage())
-            .then(() => {
-                var currentMoveToDate = this.getCurrentMoveToDate();
-                if (currentMoveToDate === '') {
-                    this.debug && console.warn('move to date empty');
-                    alert('Error: Move to date empty');
-                    return;
-                }
-                this.debug && console.log('moving event to', currentMoveToDate);
+                .then(() => this.waitUntilOnEventEditPage())
+                .then(() => {
+                    var currentMoveToDate = this.getCurrentMoveToDate();
+                    if (currentMoveToDate === '') {
+                        this.debug && console.warn('move to date empty');
+                        alert('Error: Move to date empty');
+                        return;
+                    }
+                    this.debug && console.log('moving event to', currentMoveToDate);
 
-                this.moveEventToMoveToDate(currentMoveToDate)
-                .then(() => this.eventPageClickSaveButton());
-            });
+                    this.moveEventToMoveToDate(currentMoveToDate).then(() => this.eventPageClickSaveButton());
+                });
 
-        // Set calendar event prefix.
+            // Set calendar event prefix.
         } else if (eventBubble && this.recentCharacterKeysPressedBuffer.length) {
             this.debug && console.log('set calendar event prefix');
             event.preventDefault();
 
-            var updateCalendarEventTitle = (
-                ((label, action, eventTitlePrefix) => {
-                    return (() => {
-                        // console.log('timeout reached');
-                        this.updateCalendarEventTitle(label, action, eventTitlePrefix);
-                    });
-                })(
-                    character, // label
-                    'toggle-prefix', // action
-                    this.recentCharacterKeysPressedBuffer.join('') + '.', // eventTitlePrefix
-                )
+            var updateCalendarEventTitle = ((label, action, eventTitlePrefix) => {
+                return () => {
+                    // console.log('timeout reached');
+                    this.updateCalendarEventTitle(label, action, eventTitlePrefix);
+                };
+            })(
+                character, // label
+                'toggle-prefix', // action
+                this.recentCharacterKeysPressedBuffer.join('') + '.', // eventTitlePrefix
             );
 
             // Wait a bit for another key to be pressed when only 1 key has been
@@ -1436,38 +1470,40 @@ class GoogleCalendarWorkflow {
             if (this.recentCharacterKeysPressedBuffer.length === 1) {
                 this.editEventTimeout = setTimeout(updateCalendarEventTitle, 1000);
 
-            // Otherwise, start updating calendar event without waiting for more
-            // key presses.
+                // Otherwise, start updating calendar event without waiting for more
+                // key presses.
             } else {
                 updateCalendarEventTitle();
             }
 
-        // Take requested action when event bubble is open and a keyboard shortcut matching the key pressed is found.
+            // Take requested action when event bubble is open and a keyboard shortcut matching the key pressed is found.
         } else if (eventBubble && character in this.LABEL_AND_CHAR_TO_ACTION) {
             event.preventDefault();
             this.doCharacterAction(character);
 
-        // Update move-to date.
+            // Update move-to date.
         } else if (character === 'j' || character === 'k') {
             this.debug && console.log('update move-to date');
             setTimeout(() => {
                 this.updateMoveToDate();
             }, 3000);
 
-        // Clean up calendar events.
+            // Clean up calendar events.
         } else if (character === 'f') {
             this.debug && console.log('clean up calendar events');
 
             // Allow key press to take action when the focus is an
             // input that is a radio button.
             // <input type="radio" />
-            if (event.target.nodeName === 'INPUT' &&
+            if (
+                event.target.nodeName === 'INPUT' &&
                 event.target.hasAttribute('type') &&
-                event.target.getAttribute('type') === 'radio') {
+                event.target.getAttribute('type') === 'radio'
+            ) {
                 this.debug && console.log('inside radio input. ok');
 
-            // Ignore "f" key press when focus is inside an input element.
-            // <input />
+                // Ignore "f" key press when focus is inside an input element.
+                // <input />
             } else if (event.target.nodeName === 'INPUT') {
                 this.debug && console.log('inside other input type:', event.target.nodeName);
                 return;
@@ -1488,16 +1524,15 @@ class GoogleCalendarWorkflow {
 
             this.cleanUpEvents();
 
-        // Decrease selected event day.
+            // Decrease selected event day.
         } else if (character === 'ArrowLeft' && this.getEventBubble()) {
             this.debug && console.log('decrease selected event day; arrow key:', character);
             this.decreaseSelectedEventDay();
 
-        // Increase/decrease selected event day.
+            // Increase/decrease selected event day.
         } else if (character === 'ArrowRight' && this.getEventBubble()) {
             this.debug && console.log('increase selected event day; arrow key:', character);
             this.increaseSelectedEventDay();
-
         } else {
             this.debug && console.log('other character:', character);
 
@@ -1518,17 +1553,9 @@ class GoogleCalendarWorkflow {
                 waitUntilElementExists('[aria-label="Start date"]'),
                 waitUntilElementExists('[aria-label="End date"]'),
                 waitUntilElementExists('[aria-label="Title"]'),
-            ]).then(([
-                startDateInput,
-                endDateInput,
-                eventTitleInput,
-            ]) => {
+            ]).then(([startDateInput, endDateInput, eventTitleInput]) => {
                 this.debug && console.log('now on edit event page');
-                resolve([
-                    startDateInput,
-                    endDateInput,
-                    eventTitleInput,
-                ]);
+                resolve([startDateInput, endDateInput, eventTitleInput]);
             });
         });
     }
@@ -1558,7 +1585,7 @@ class GoogleCalendarWorkflow {
 
     // TODO: Make this a promise.
     updateCalendarEventTitle(
-        label,  // from "data-label" (index 0; 0, 1, ..., 6, 7, 8, 9).
+        label, // from "data-label" (index 0; 0, 1, ..., 6, 7, 8, 9).
         action, // from "data-action" (index 1; toggle-prefix, mark-completed, etc.).
         eventTitlePrefix, // e.g. "2." for label 2.
         autoClickEditRecurringEventDialogOptionThisEvent = false,
@@ -1568,8 +1595,16 @@ class GoogleCalendarWorkflow {
         this.debug && console.log('label: "%s"', label);
         this.debug && console.log('action: "%s"', action);
         this.debug && console.log('eventTitlePrefix: "%s"', eventTitlePrefix);
-        this.debug && console.log('autoClickEditRecurringEventDialogOptionThisEvent:', autoClickEditRecurringEventDialogOptionThisEvent);
-        this.debug && console.log('autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk:', autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk);
+        this.debug &&
+            console.log(
+                'autoClickEditRecurringEventDialogOptionThisEvent:',
+                autoClickEditRecurringEventDialogOptionThisEvent,
+            );
+        this.debug &&
+            console.log(
+                'autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk:',
+                autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
+            );
 
         // For certain actions, automatically click the [OK] button when the
         // "This event" option is selected in the "Edit recurring event" dialog.
@@ -1577,9 +1612,16 @@ class GoogleCalendarWorkflow {
         // without affecting other recurring events in the series. Without this,
         // the modal will appear and everything is on pause until the modal is
         // acted upon.
-        if (['mark-completed', 'remove-prefix', 'toggle-prefix'].includes(action) && !autoClickEditRecurringEventDialogOptionThisEvent) {
+        if (
+            ['mark-completed', 'remove-prefix', 'toggle-prefix'].includes(action) &&
+            !autoClickEditRecurringEventDialogOptionThisEvent
+        ) {
             autoClickEditRecurringEventDialogOptionThisEvent = true;
-            this.debug && console.log('autoClickEditRecurringEventDialogOptionThisEvent is now:', autoClickEditRecurringEventDialogOptionThisEvent);
+            this.debug &&
+                console.log(
+                    'autoClickEditRecurringEventDialogOptionThisEvent is now:',
+                    autoClickEditRecurringEventDialogOptionThisEvent,
+                );
         }
 
         // Warn when move-to-date isn't set when marking event completed.
@@ -1593,86 +1635,90 @@ class GoogleCalendarWorkflow {
         }
 
         this.clickEventBubbleEditButton()
-        .then(() => this.waitUntilOnEventEditPage())
-        .then(([
-            startDateInput,
-            endDateInput,
-            eventTitleInput,
-        ]) => {
+            .then(() => this.waitUntilOnEventEditPage())
+            .then(([startDateInput, endDateInput, eventTitleInput]) => {
+                var eventCompleted = this.COMPLETED_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix);
+                this.debug && console.log('eventCompleted:', eventCompleted);
 
-            var eventCompleted = this.COMPLETED_EVENT_TITLE_PREFIXES.includes(eventTitlePrefix);
-            this.debug && console.log('eventCompleted:', eventCompleted);
+                var originalCalendarEventTitle = eventTitleInput.value;
+                this.debug && console.log('originalCalendarEventTitle:', originalCalendarEventTitle);
 
-            var originalCalendarEventTitle = eventTitleInput.value;
-            this.debug && console.log('originalCalendarEventTitle:', originalCalendarEventTitle);
-
-            // Format event date as a date or a date range.
-            var eventDate;
-            if (endDateInput.value !== startDateInput.value) {
-                eventDate = startDateInput.value + ' - ' + endDateInput.value;
-            } else {
-                eventDate = startDateInput.value;
-            }
-            this.debug && console.log('eventDate:', eventDate);
-
-            var date = new Date();
-            var newCalendarEventTitle = this.getNewEventTitle(
-                originalCalendarEventTitle,
-                action,
-                eventTitlePrefix,
-                eventCompleted,
-                eventDate,
-                date,
-            );
-
-            // Update calendar event.
-            Promise.resolve()
-            .then(() => setInputValue(eventTitleInput, newCalendarEventTitle))
-            .then(() => {
-                // Move event to the current move-to date if marked completed.
-                if (eventCompleted) {
-                    var currentMoveToDate = this.getCurrentMoveToDate();
-                    if (currentMoveToDate === '') {
-                        this.debug && console.warn('move to date empty so event will not be moved');
-
-                        this.eventPageClickSaveButton()
-                        .then(() => this.waitUntilOnCustomWeekPage(
-                            autoClickEditRecurringEventDialogOptionThisEvent,
-                            autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
-                        ))
-                        .then(() => {
-                            this.debug && console.log('updateCalendarEventTitle done (event completed without moving)');
-                            this.debug && console.groupEnd();
-                        });
-                    } else {
-                        this.debug && console.log('moving event to', currentMoveToDate);
-
-                        this.moveEventToMoveToDate(currentMoveToDate)
-                        .then(() => this.eventPageClickSaveButton())
-                        .then(() => this.waitUntilOnCustomWeekPage(
-                            autoClickEditRecurringEventDialogOptionThisEvent,
-                            autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
-                        ))
-                        .then(() => {
-                            this.debug && console.log('updateCalendarEventTitle done (event completed with moving)');
-                            this.debug && console.groupEnd();
-                        });
-                    }
-
+                // Format event date as a date or a date range.
+                var eventDate;
+                if (endDateInput.value !== startDateInput.value) {
+                    eventDate = startDateInput.value + ' - ' + endDateInput.value;
                 } else {
-                    Promise.resolve()
-                    .then(() => this.eventPageClickSaveButton())
-                    .then(() => this.waitUntilOnCustomWeekPage(
-                        autoClickEditRecurringEventDialogOptionThisEvent,
-                        autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
-                    ))
-                    .then(() => {
-                        this.debug && console.log('updateCalendarEventTitle done (event not completed)');
-                        this.debug && console.groupEnd();
-                    });
+                    eventDate = startDateInput.value;
                 }
+                this.debug && console.log('eventDate:', eventDate);
+
+                var date = new Date();
+                var newCalendarEventTitle = this.getNewEventTitle(
+                    originalCalendarEventTitle,
+                    action,
+                    eventTitlePrefix,
+                    eventCompleted,
+                    eventDate,
+                    date,
+                );
+
+                // Update calendar event.
+                Promise.resolve()
+                    .then(() => setInputValue(eventTitleInput, newCalendarEventTitle))
+                    .then(() => {
+                        // Move event to the current move-to date if marked completed.
+                        if (eventCompleted) {
+                            var currentMoveToDate = this.getCurrentMoveToDate();
+                            if (currentMoveToDate === '') {
+                                this.debug && console.warn('move to date empty so event will not be moved');
+
+                                this.eventPageClickSaveButton()
+                                    .then(() =>
+                                        this.waitUntilOnCustomWeekPage(
+                                            autoClickEditRecurringEventDialogOptionThisEvent,
+                                            autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
+                                        ),
+                                    )
+                                    .then(() => {
+                                        this.debug &&
+                                            console.log(
+                                                'updateCalendarEventTitle done (event completed without moving)',
+                                            );
+                                        this.debug && console.groupEnd();
+                                    });
+                            } else {
+                                this.debug && console.log('moving event to', currentMoveToDate);
+
+                                this.moveEventToMoveToDate(currentMoveToDate)
+                                    .then(() => this.eventPageClickSaveButton())
+                                    .then(() =>
+                                        this.waitUntilOnCustomWeekPage(
+                                            autoClickEditRecurringEventDialogOptionThisEvent,
+                                            autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
+                                        ),
+                                    )
+                                    .then(() => {
+                                        this.debug &&
+                                            console.log('updateCalendarEventTitle done (event completed with moving)');
+                                        this.debug && console.groupEnd();
+                                    });
+                            }
+                        } else {
+                            Promise.resolve()
+                                .then(() => this.eventPageClickSaveButton())
+                                .then(() =>
+                                    this.waitUntilOnCustomWeekPage(
+                                        autoClickEditRecurringEventDialogOptionThisEvent,
+                                        autoClickAreYouSureChangesOnlyReflectedOnOwnCalendarOptionOk,
+                                    ),
+                                )
+                                .then(() => {
+                                    this.debug && console.log('updateCalendarEventTitle done (event not completed)');
+                                    this.debug && console.groupEnd();
+                                });
+                        }
+                    });
             });
-        });
     }
 
     handleButtonClick(event) {
@@ -1708,9 +1754,13 @@ class GoogleCalendarWorkflow {
             }, false);
             */
 
-            document.addEventListener('keydown', (event) => {
-                this.handleKeyEvent(event);
-            }, false);
+            document.addEventListener(
+                'keydown',
+                (event) => {
+                    this.handleKeyEvent(event);
+                },
+                false,
+            );
 
             /*
             document.addEventListener('mousemove', (event) => {
@@ -2001,11 +2051,7 @@ class GoogleCalendarWorkflow {
         minMoveToDate.setDate(minMoveToDate.getDate() - (7 + 6));
         this.debug && console.log('minMoveToDate:', minMoveToDate);
 
-        this.moveEvents(
-            moveFromDate,
-            minMoveToDate,
-            maxMoveToDate,
-        ).then(() => {
+        this.moveEvents(moveFromDate, minMoveToDate, maxMoveToDate).then(() => {
             this.spinner.hide();
             this.cleaningUpEvents = false;
         });
@@ -2037,12 +2083,9 @@ class GoogleCalendarWorkflow {
             dateObj.getFullYear(),
             [
                 (parseInt(dateObj.getMonth().toString()) + 1).length === 1 ? '0' : '',
-                (parseInt(dateObj.getMonth().toString()) + 1),
+                parseInt(dateObj.getMonth().toString()) + 1,
             ].join(''),
-            [
-                dateObj.getDate().toString().length === 1 ? '0' : '',
-                dateObj.getDate().toString(),
-            ].join(''),
+            [dateObj.getDate().toString().length === 1 ? '0' : '', dateObj.getDate().toString()].join(''),
         ].join('-');
         this.debug && console.log('dayFormatted:', dayFormatted);
         return dayFormatted;
@@ -2079,44 +2122,40 @@ class GoogleCalendarWorkflow {
     changeSelectedEventDay(direction) {
         this.debug && console.group('changeSelectedEventDay:', direction);
         this.clickEventBubbleEditButton()
-        .then(() => this.waitUntilOnEventEditPage())
-        .then(([
-            startDateInput,
-            endDateInput,
-            eventTitleInput,
-        ]) => {
-            this.debug && console.log('on event edit page');
-            this.debug && console.log('will change selected event day:', direction);
+            .then(() => this.waitUntilOnEventEditPage())
+            .then(([startDateInput, endDateInput, eventTitleInput]) => {
+                this.debug && console.log('on event edit page');
+                this.debug && console.log('will change selected event day:', direction);
 
-            var fn;
-            if (direction === 'decrease') {
-                fn = this.getPreviousDayFormatted;
-            } else if (direction === 'increase') {
-                fn = this.getNextDayFormatted;
-            }
-            // this.debug && console.log('fn:', fn);
+                var fn;
+                if (direction === 'decrease') {
+                    fn = this.getPreviousDayFormatted;
+                } else if (direction === 'increase') {
+                    fn = this.getNextDayFormatted;
+                }
+                // this.debug && console.log('fn:', fn);
 
-            var startDateInputValue = startDateInput.value;
-            this.debug && console.log('startDateInputValue:', startDateInputValue);
+                var startDateInputValue = startDateInput.value;
+                this.debug && console.log('startDateInputValue:', startDateInputValue);
 
-            var newStartDateInputValue = fn.call(this, new Date(startDateInputValue));
-            this.debug && console.log('newStartDateInputValue:', newStartDateInputValue);
+                var newStartDateInputValue = fn.call(this, new Date(startDateInputValue));
+                this.debug && console.log('newStartDateInputValue:', newStartDateInputValue);
 
-            var endDateInputValue = endDateInput.value;
-            this.debug && console.log('endDateInputValue:', endDateInputValue);
+                var endDateInputValue = endDateInput.value;
+                this.debug && console.log('endDateInputValue:', endDateInputValue);
 
-            var newEndDateInputValue = fn.call(this, new Date(endDateInputValue));
-            this.debug && console.log('newEndDateInputValue:', newEndDateInputValue);
+                var newEndDateInputValue = fn.call(this, new Date(endDateInputValue));
+                this.debug && console.log('newEndDateInputValue:', newEndDateInputValue);
 
-            Promise.resolve()
-            .then(() => setInputValue(startDateInput, newStartDateInputValue))
-            .then(() => setInputValue(endDateInput, newEndDateInputValue))
-            .then(() => eventTitleInput.focus())
-            .then(() => {
-                this.debug && console.log('done updating start and end dates');
-                this.eventPageClickSaveButton();
+                Promise.resolve()
+                    .then(() => setInputValue(startDateInput, newStartDateInputValue))
+                    .then(() => setInputValue(endDateInput, newEndDateInputValue))
+                    .then(() => eventTitleInput.focus())
+                    .then(() => {
+                        this.debug && console.log('done updating start and end dates');
+                        this.eventPageClickSaveButton();
+                    });
             });
-        });
 
         this.debug && console.groupEnd();
     }
@@ -2125,16 +2164,16 @@ class GoogleCalendarWorkflow {
         this.debug && console.info('switchToWeeks');
         this.debug && console.log('numberOfWeeks:', numberOfWeeks);
 
-        waitUntilElementExists('button[aria-label="Settings menu"]')
-        .then((settingsMenuButton) => {
+        waitUntilElementExists('button[aria-label="Settings menu"]').then((settingsMenuButton) => {
             settingsMenuButton.click();
 
-            waitUntilElementExists('ul[aria-label="Settings menu"]')
-            .then((settingsMenu) => {
+            waitUntilElementExists('ul[aria-label="Settings menu"]').then((settingsMenu) => {
                 this.debug && console.log('settingsMenu:', settingsMenu);
-                var settingsMenuItems = Array.from(settingsMenu.querySelectorAll('[role="menuitem"]')).filter((item) => {
-                    return item.innerText === 'Settings';
-                });
+                var settingsMenuItems = Array.from(settingsMenu.querySelectorAll('[role="menuitem"]')).filter(
+                    (item) => {
+                        return item.innerText === 'Settings';
+                    },
+                );
                 var settingsMenuItem = settingsMenuItems[0];
                 this.debug && console.log('settingsMenuItem:', settingsMenuItem);
 
@@ -2142,18 +2181,22 @@ class GoogleCalendarWorkflow {
                 triggerMouseEvent(settingsMenuItem, 'mouseup');
                 this.debug && console.log('clicked settingsMenuItem');
 
-                waitUntilElementExists('[aria-label="Set custom view"]')
-                .then((setCustomViewListbox) => {
+                waitUntilElementExists('[aria-label="Set custom view"]').then((setCustomViewListbox) => {
                     this.debug && console.log('setCustomViewListbox:', setCustomViewListbox);
 
                     var selectedSetCustomViewListbox = setCustomViewListbox.querySelector('[aria-selected="true"]');
                     selectedSetCustomViewListbox.click();
 
-                    waitMilliseconds(500)
-                    .then(() => {
-                        var setCustomViewListboxTwoWeeks = setCustomViewListbox.querySelector('[aria-label="2 weeks"][role="option"]');
-                        var setCustomViewListboxThreeWeeks = setCustomViewListbox.querySelector('[aria-label="3 weeks"][role="option"]');
-                        var setCustomViewListboxFourWeeks = setCustomViewListbox.querySelector('[aria-label="4 weeks"][role="option"]');
+                    waitMilliseconds(500).then(() => {
+                        var setCustomViewListboxTwoWeeks = setCustomViewListbox.querySelector(
+                            '[aria-label="2 weeks"][role="option"]',
+                        );
+                        var setCustomViewListboxThreeWeeks = setCustomViewListbox.querySelector(
+                            '[aria-label="3 weeks"][role="option"]',
+                        );
+                        var setCustomViewListboxFourWeeks = setCustomViewListbox.querySelector(
+                            '[aria-label="4 weeks"][role="option"]',
+                        );
 
                         if (numberOfWeeks === 2) {
                             setCustomViewListboxTwoWeeks.click();
@@ -2169,8 +2212,7 @@ class GoogleCalendarWorkflow {
                             return;
                         }
 
-                        waitMilliseconds(500)
-                        .then(() => {
+                        waitMilliseconds(500).then(() => {
                             var goBackButton = document.querySelector('[aria-label="Go back"]');
                             goBackButton.click();
                             this.debug && console.log('goBackButton clicked');
@@ -2228,8 +2270,8 @@ class GoogleCalendarWorkflow {
     }
 }
 
-if (typeof(window) === 'undefined') {
-    module.exports = GoogleCalendarWorkflow
+if (typeof window === 'undefined') {
+    module.exports = GoogleCalendarWorkflow;
 } else {
     new GoogleCalendarWorkflow({
         'debug': DEBUG,
