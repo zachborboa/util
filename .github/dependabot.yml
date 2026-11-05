@@ -1,0 +1,8 @@
+# Bump each hook's `rev` in .pre-commit-config.yaml.
+# Point a hook at a remote repo for it to get bumps; Dependabot skips `repo: local` hooks and their additional_dependencies (https://github.com/dependabot/dependabot-core/issues/15489).
+updates:
+- directory: /
+  package-ecosystem: pre-commit
+  schedule:
+    interval: weekly
+version: 2
