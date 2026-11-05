@@ -28,10 +28,6 @@ Provides quick icon access to your Chrome downloads.
 
 Provides quick icon access to your Chrome extensions and display how many tabs are open.
 
-### Gmail Fixed Width Text
-
-Fixed width text for Gmail.
-
 ### Gmail Suck Less
 
 Make Gmail suck less.
