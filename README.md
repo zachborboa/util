@@ -46,10 +46,6 @@ Enhancements for https://news.ycombinator.com/.
 
 Continually check and ensure select pages are open.
 
-### Pin Tab
-
-Automatically pin tabs based on url patterns and quickly pin and unpin your tabs.
-
 ### Redirect Requests
 
 Redirect requests using url pattern matching.
