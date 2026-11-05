@@ -5,5 +5,8 @@
   "description": "Always-on base extension.",
   "manifest_version": 3,
   "name": "Base",
+  "permissions": [
+    "tabs"
+  ],
   "version": "0.0.1"
 }
