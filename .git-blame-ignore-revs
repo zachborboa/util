@@ -1,0 +1,5 @@
+# Skip formatting-only commits in git blame. GitHub reads this file on its own; locally, run:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# Clean up JavaScript formatting with Prettier
+f7c728318b4ec95194dde8825ac712f8da5eed62
