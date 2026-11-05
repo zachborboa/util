@@ -18,3 +18,10 @@ repos:
     language: script
     files: 'extensions/google_calendar_workflow/js/.*'
     entry: scripts/google_calendar_move_to_date_test.sh
+  # Regenerate READMEs from every manifest on each commit, so an added, renamed or deleted extension can't leave them stale.
+  - always_run: true
+    entry: scripts/update_readme.sh
+    id: update-readme
+    language: script
+    name: update-readme
+    pass_filenames: false
