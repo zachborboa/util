@@ -4,6 +4,18 @@
   },
   "content_scripts": [
     {
+      "css": [
+        "css/gmail_style.css",
+        "css/gmail_fixed_width_text_style.css"
+      ],
+      "js": [
+        "js/content_script_gmail_hide_mobile_notifications_nag.js"
+      ],
+      "matches": [
+        "https://mail.google.com/*"
+      ]
+    },
+    {
       "js": [
         "js/content_script_github_pull_commit_range.js"
       ],

@@ -28,10 +28,6 @@ Provides quick icon access to your Chrome downloads.
 
 Provides quick icon access to your Chrome extensions and display how many tabs are open.
 
-### Gmail Suck Less
-
-Make Gmail suck less.
-
 ### Google Calendar Workflow
 
 Allows one to keep a list of things to do, prioritize that list, and execute on it in Google Calendar.
