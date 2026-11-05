@@ -1,0 +1,9 @@
+{
+  "background": {
+    "service_worker": "js/background.js"
+  },
+  "description": "Always-on base extension.",
+  "manifest_version": 3,
+  "name": "Base",
+  "version": "0.0.1"
+}
