@@ -18,6 +18,18 @@ repos:
     language: script
     files: 'extensions/google_calendar_workflow/js/.*'
     entry: scripts/google_calendar_move_to_date_test.sh
+  # Format staged JavaScript; style lives in .prettierrc.json and vendored libraries in .prettierignore.
+  - additional_dependencies:
+    - prettier@3.9.10
+    args:
+    - --log-level=warn
+    - --write
+    entry: prettier
+    id: prettier
+    language: node
+    name: prettier
+    types:
+    - javascript
   # Regenerate READMEs from every manifest on each commit, so an added, renamed or deleted extension can't leave them stale.
   - always_run: true
     entry: scripts/update_readme.sh

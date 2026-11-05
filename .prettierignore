@@ -1,0 +1,3 @@
+# Skip vendored libraries; they track upstream, not this repo's style.
+extensions/*/js/handlebars.js
+extensions/*/js/jquery*.js
