@@ -2,6 +2,17 @@
   "background": {
     "service_worker": "js/background.js"
   },
+  "content_scripts": [
+    {
+      "js": [
+        "js/content_script_github_pull_commit_range.js"
+      ],
+      "matches": [
+        "https://github.com/*/*/pull/*/changes/*..*"
+      ],
+      "run_at": "document_start"
+    }
+  ],
   "description": "Always-on base extension.",
   "manifest_version": 3,
   "name": "Base",
