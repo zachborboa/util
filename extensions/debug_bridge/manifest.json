@@ -1,0 +1,34 @@
+{
+  "action": {
+    "default_title": "Arm Debug Bridge for this tab"
+  },
+  "background": {
+    "service_worker": "js/background.js"
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "js/content_script.js"
+      ],
+      "matches": [
+        "https://example.com/*"
+      ]
+    }
+  ],
+  "description": "Run JavaScript in the browser tab in view from a terminal, through a local server. Keep it off except while debugging.",
+  "host_permissions": [
+    "http://localhost:8765/*"
+  ],
+  "manifest_version": 3,
+  "name": "Debug Bridge",
+  "options_ui": {
+    "open_in_tab": true,
+    "page": "options.html"
+  },
+  "permissions": [
+    "activeTab",
+    "debugger",
+    "storage"
+  ],
+  "version": "0.0.1"
+}

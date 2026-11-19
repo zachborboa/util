@@ -20,6 +20,10 @@ Block requests from loading resources using url pattern matching.
 
 Allowing closing a window's tab.
 
+### Debug Bridge
+
+Run JavaScript in the browser tab in view from a terminal, through a local server. Keep it off except while debugging.
+
 ### Downloads Button
 
 Provides quick icon access to your Chrome downloads.
