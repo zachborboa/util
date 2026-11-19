@@ -23,6 +23,14 @@
         "https://github.com/*/*/pull/*/changes/*..*"
       ],
       "run_at": "document_start"
+    },
+    {
+      "js": [
+        "js/content_script_github_pull_lgtm.js"
+      ],
+      "matches": [
+        "https://github.com/*/*/pull/*"
+      ]
     }
   ],
   "description": "Always-on base extension.",
