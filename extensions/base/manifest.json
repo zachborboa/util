@@ -31,6 +31,14 @@
       "matches": [
         "https://github.com/*/*/pull/*"
       ]
+    },
+    {
+      "js": [
+        "js/content_script_github_notifications_done_merged.js"
+      ],
+      "matches": [
+        "https://github.com/*"
+      ]
     }
   ],
   "description": "Always-on base extension.",
