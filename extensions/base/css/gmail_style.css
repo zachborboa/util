@@ -4,7 +4,6 @@
 
 .TO .nU > .n0 {
   -webkit-font-smoothing: auto !important;
-  color: #222 !important;
   font-family: arial, sans-serif !important;
   font-size: 12.8px !important;
   letter-spacing: 0 !important;
@@ -46,7 +45,6 @@ div > .aeN,
 
 .Wr > .Wn {
   -webkit-font-smoothing: auto !important;
-  color: #222 !important;
   font-family: arial, sans-serif !important;
   font-size: 15px !important;
   letter-spacing: 0 !important;
@@ -62,13 +60,8 @@ div > .aeN,
   transform: rotate(180deg);
 }
 
-.yO {
-  background-color: rgba(243, 243, 243, 0.85) !important;
-}
-
 .yW {
   -webkit-font-smoothing: auto !important;
-  color: #222 !important;
   font-family: arial, sans-serif !important;
   font-size: 12.8px !important;
   letter-spacing: 0 !important;

@@ -1,6 +1,4 @@
 // Previous (better) gmail style.
-$thread-list-background-color: rgba(243, 243, 243, .85);
-$thread-list-email-from-color: #222;
 $thread-list-email-from-font-family: arial, sans-serif;
 $thread-list-email-from-font-size: 12.8px;
 $thread-list-email-from-letter-spacing: 0;
@@ -24,7 +22,6 @@ $thread-list-email-subject-webkit-font-smoothing: auto;
 .TO .nU > .n0 {
     // Fix sidebar entry font.
     -webkit-font-smoothing: auto !important;
-    color: #222 !important;
     font-family: arial, sans-serif !important;
     font-size: 12.8px !important;
     letter-spacing: 0 !important;
@@ -68,7 +65,6 @@ div > .aeN,
 // Fix thread section header font.
 .Wr > .Wn {
     -webkit-font-smoothing: auto !important;
-    color: #222 !important;
     font-family: arial, sans-serif !important;
     font-size: 15px !important;
     letter-spacing: 0 !important;
@@ -84,15 +80,9 @@ div > .aeN,
     transform: rotate(180deg);
 }
 
-// Fix thread list background color.
-.yO {
-    background-color: $thread-list-background-color !important;
-}
-
 // Fix thread list email from font.
 .yW {
     -webkit-font-smoothing: $thread-list-email-from-webkit-font-smoothing !important;
-    color: $thread-list-email-from-color !important;
     font-family: $thread-list-email-from-font-family !important;
     font-size: $thread-list-email-from-font-size !important;
     letter-spacing: $thread-list-email-from-letter-spacing !important;
