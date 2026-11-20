@@ -75,7 +75,9 @@ if ($path === '/result' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
     file_put_contents("{$bridge_dir}/results/{$id}.json", $body);
-    log_line("Saved result {$id}");
+    unset($result['id']);
+    $preview = preview(json_encode($result, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+    log_line("Saved result {$id}: {$preview}");
     http_response_code(204);
     exit;
 }
