@@ -2,7 +2,7 @@
 # Run a JavaScript expression in the browser tab in view through the debug bridge and print the result.
 #
 # Usage:
-#   BRIDGE_DIR=/path/to/queue ./eval.sh 'document.title'
+#   BRIDGE_DIR=/tmp/debug-bridge ./eval.sh 'document.title'
 #
 # The expression may return a promise; its value must survive JSON (strings, numbers, plain objects, arrays).
 
