@@ -14,6 +14,12 @@ function log_line(string $message): void
     file_put_contents('php://stderr', $message . "\n");
 }
 
+// Squeeze text onto one short line, so a long payload can't flood the console.
+function preview(string $text): string
+{
+    return substr(preg_replace('/\s+/', ' ', $text), 0, 120);
+}
+
 $bridge_dir = getenv('BRIDGE_DIR');
 if ($bridge_dir === false || $bridge_dir === '') {
     http_response_code(500);
@@ -45,7 +51,7 @@ if ($path === '/next' && $_SERVER['REQUEST_METHOD'] === 'GET') {
     $id = basename($command_file, '.js');
     $code = file_get_contents($command_file);
     rename($command_file, "{$bridge_dir}/sent/{$id}.js");
-    $preview = substr(preg_replace('/\s+/', ' ', $code), 0, 120);
+    $preview = preview($code);
     log_line("Handed out {$id}: {$preview}");
     header('Content-Type: application/json');
     echo json_encode([
