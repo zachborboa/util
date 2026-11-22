@@ -24,7 +24,7 @@ Allowing closing a window's tab.
 
 ### Debug Bridge
 
-Run JavaScript in the browser tab in view from a terminal, through a local server. Keep it off except while debugging.
+Run JavaScript in the armed browser tab from a terminal, through a local server. Keep it off except while debugging.
 
 ### Downloads Button
 

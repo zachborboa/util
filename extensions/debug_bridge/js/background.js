@@ -1,9 +1,12 @@
-// Run JavaScript queued on the local debug bridge server (server.php) in the tab that polled, and post the result back.
+// Run JavaScript queued on the local debug bridge server (server.php) in the armed tab, and post the result back.
 // Keep the port in sync with host_permissions in manifest.json.
 const DEBUG_BRIDGE_URL = 'http://localhost:8765';
 
-// Wait this long after the server fails to answer before trying again, so a stopped server doesn't flood the console with errors.
-const DEBUG_BRIDGE_RETRY_MS = 30000;
+// Ask for the next command this often while a tab is armed, so a queued command runs about as soon as it lands.
+const DEBUG_BRIDGE_POLL_MS = 1000;
+
+// Wait this long after the server fails to answer: short enough that a server started after the arm click gets picked up within moments.
+const DEBUG_BRIDGE_RETRY_MS = 2000;
 
 // Keep a tab armed this long after the toolbar click: long enough for a debugging session, short enough that a forgotten arm lapses on its own.
 const ARM_DURATION_MS = 30 * 60 * 1000;
@@ -11,19 +14,12 @@ const ARM_DURATION_MS = 30 * 60 * 1000;
 const ARM_TITLE = 'Arm Debug Bridge for this tab';
 const DISARM_TITLE = 'Disarm Debug Bridge (armed for this tab)';
 
-let debugBridgeBusy = false;
-let debugBridgeFailedAt = 0;
+let debugBridgePolling = false;
 
 // Evaluate through the debugger protocol: extension code can't eval, and the page's own policy blocks injected scripts.
 async function evaluateInTab(tabId, code) {
-    const target = { 'tabId': tabId };
     try {
-        await chrome.debugger.attach(target, '1.3');
-    } catch (error) {
-        return { 'error': 'attach failed: ' + error.message };
-    }
-    try {
-        const response = await chrome.debugger.sendCommand(target, 'Runtime.evaluate', {
+        const response = await chrome.debugger.sendCommand({ 'tabId': tabId }, 'Runtime.evaluate', {
             'awaitPromise': true,
             'expression': code,
             'returnByValue': true,
@@ -35,8 +31,6 @@ async function evaluateInTab(tabId, code) {
         return { 'value': response.result.value };
     } catch (error) {
         return { 'error': error.message };
-    } finally {
-        await chrome.debugger.detach(target);
     }
 }
 
@@ -71,7 +65,18 @@ async function getArmedTab() {
     return stored.armedTab;
 }
 
+// Attach the debugger for the whole arm: commands then skip a per-command attach, and the open session keeps this worker alive between polls.
 async function arm(tab) {
+    const target = { 'tabId': tab.id };
+    try {
+        await chrome.debugger.attach(target, '1.3');
+    } catch (error) {
+        console.warn('Debug Bridge: attach failed: ' + error.message);
+        return;
+    }
+
+    // Report navigation, so leaving the armed site disarms right away rather than at the next command.
+    await chrome.debugger.sendCommand(target, 'Page.enable');
     await chrome.storage.session.set({
         'armedTab': {
             'expiresAt': Date.now() + ARM_DURATION_MS,
@@ -81,55 +86,74 @@ async function arm(tab) {
     });
     await chrome.action.setBadgeText({ 'tabId': tab.id, 'text': 'ON' });
     await chrome.action.setTitle({ 'tabId': tab.id, 'title': DISARM_TITLE });
+    pollDebugBridge();
 }
 
-async function disarm(tabId) {
+async function forgetArm() {
     await chrome.storage.session.remove('armedTab');
+}
+
+async function showDisarmed(tabId) {
     await chrome.action.setBadgeText({ 'tabId': tabId, 'text': '' });
     await chrome.action.setTitle({ 'tabId': tabId, 'title': ARM_TITLE });
 }
 
-// Accept a poll only from the armed tab, still on the site it was armed on, before the arm lapses.
-async function isArmed(tabId, url) {
-    const armedTab = await getArmedTab();
-    if (armedTab === null) {
-        return false;
-    } else if (armedTab.tabId !== tabId) {
-        return false;
-    } else if (Date.now() > armedTab.expiresAt) {
-        await disarm(tabId);
-        return false;
-    } else if (new URL(url).origin !== armedTab.origin) {
-        await disarm(tabId);
-        return false;
+async function disarm(tabId) {
+    // Carry on when the session is already gone (a worker restart can drop it), so the arm never gets stuck on.
+    try {
+        await chrome.debugger.detach({ 'tabId': tabId });
+    } catch (error) {
+        console.warn('Debug Bridge: detach failed: ' + error.message);
     }
-    return true;
+    await forgetArm();
+    await showDisarmed(tabId);
 }
 
-async function pollDebugBridge(tab, url) {
-    if (!(await isArmed(tab.id, url))) {
-        return;
-    } else if (debugBridgeBusy) {
-        return;
-    } else if (Date.now() - debugBridgeFailedAt < DEBUG_BRIDGE_RETRY_MS) {
+function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Run the next queued command, if there is one, and return how long to wait before asking again.
+async function runNextCommand(tabId) {
+    try {
+        const response = await fetch(DEBUG_BRIDGE_URL + '/next');
+        if (response.status !== 200) {
+            return DEBUG_BRIDGE_POLL_MS;
+        }
+        const command = await response.json();
+        const location = await evaluateInTab(tabId, 'location.href');
+        const result = await runCommand(tabId, command);
+        await fetch(DEBUG_BRIDGE_URL + '/result', {
+            'body': JSON.stringify({ 'id': command.id, 'url': location.value, ...result }),
+            'method': 'POST',
+        });
+        return DEBUG_BRIDGE_POLL_MS;
+    } catch (error) {
+        return DEBUG_BRIDGE_RETRY_MS;
+    }
+}
+
+// Poll the server for as long as a tab stays armed, one loop at a time, until the arm ends or lapses.
+async function pollDebugBridge() {
+    if (debugBridgePolling) {
         return;
     }
 
-    debugBridgeBusy = true;
+    debugBridgePolling = true;
     try {
-        const response = await fetch(DEBUG_BRIDGE_URL + '/next');
-        if (response.status === 200) {
-            const command = await response.json();
-            const result = await runCommand(tab.id, command);
-            await fetch(DEBUG_BRIDGE_URL + '/result', {
-                'body': JSON.stringify({ 'id': command.id, 'url': url, ...result }),
-                'method': 'POST',
-            });
+        while (true) {
+            const armedTab = await getArmedTab();
+            if (armedTab === null) {
+                break;
+            } else if (Date.now() > armedTab.expiresAt) {
+                await disarm(armedTab.tabId);
+                break;
+            }
+            const delayMs = await runNextCommand(armedTab.tabId);
+            await sleep(delayMs);
         }
-    } catch (error) {
-        debugBridgeFailedAt = Date.now();
     } finally {
-        debugBridgeBusy = false;
+        debugBridgePolling = false;
     }
 }
 
@@ -146,23 +170,49 @@ chrome.action.onClicked.addListener(async function (tab) {
     }
 });
 
-chrome.tabs.onRemoved.addListener(async function (tabId) {
+// Disarm when the armed tab's top frame leaves the site it was armed on.
+chrome.debugger.onEvent.addListener(async function (source, method, params) {
+    if (method !== 'Page.frameNavigated') {
+        return;
+    } else if (params.frame.parentId !== undefined) {
+        return;
+    }
+
     const armedTab = await getArmedTab();
     if (armedTab === null) {
         return;
-    } else if (armedTab.tabId !== tabId) {
+    } else if (armedTab.tabId !== source.tabId) {
+        return;
+    } else if (new URL(params.frame.url).origin === armedTab.origin) {
         return;
     }
-    await chrome.storage.session.remove('armedTab');
+    await disarm(source.tabId);
+});
+
+// Forget the arm when Chrome ends the debugging session itself: the tab closed, or the user pressed Cancel on the debugging bar.
+chrome.debugger.onDetach.addListener(async function (source, reason) {
+    const armedTab = await getArmedTab();
+    if (armedTab === null) {
+        return;
+    } else if (armedTab.tabId !== source.tabId) {
+        return;
+    }
+    await forgetArm();
+
+    // Reset the badge only while the tab still exists; a closed tab has no badge left to reset.
+    if (reason !== 'target_closed') {
+        await showDisarmed(source.tabId);
+    }
 });
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-    if (message.type === 'debug-bridge-poll') {
-        pollDebugBridge(sender.tab, message.url);
-    } else if (message.type === 'get-pairing-token') {
+    if (message.type === 'get-pairing-token') {
         getPairingToken().then(sendResponse);
 
         // Keep the channel open for the asynchronous reply.
         return true;
     }
 });
+
+// Resume polling if the worker restarts while a tab is armed; the open debugger session normally keeps it alive, so this covers an unexpected stop.
+pollDebugBridge();

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run a JavaScript expression in the browser tab in view through the debug bridge and print the result.
+# Run a JavaScript expression in the armed browser tab through the debug bridge and print the result.
 #
 # Usage:
 #   BRIDGE_DIR=/tmp/debug-bridge ./eval.sh 'document.title'
@@ -10,7 +10,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-# Wait this long for a result; the tab only picks up commands while it's in view, so allow time to switch to it.
+# Wait this long for a result: long enough to start the server or arm a tab after queueing.
 timeout_seconds=30
 
 code="$1"
@@ -32,6 +32,6 @@ for ((elapsed = 0; elapsed < timeout_seconds * 10; elapsed++)); do
     sleep 0.1
 done
 
-echo "No result after ${timeout_seconds}s; is a tab armed and in view, and is the server running?" >&2
+echo "No result after ${timeout_seconds}s; is a tab armed and is the server running?" >&2
 rm -f "${commands_dir}/${id}.js"
 exit 1
