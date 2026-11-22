@@ -3,7 +3,7 @@
 //
 // Usage:
 //   BRIDGE_DIR=/tmp/debug-bridge BRIDGE_TOKEN=<token from the extension's options page> php -S localhost:8765 server.php
-//   BRIDGE_DIR=/tmp/debug-bridge ./eval.sh 'document.title'
+//   ./eval.sh 'document.title'
 //
 // Commands get queued only as files under $BRIDGE_DIR/commands, never over HTTP, so a web page that finds the port can't run code through the bridge.
 // Send the token with every command, so the extension can tell this server from any other program listening on the port.

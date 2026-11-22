@@ -10,6 +10,6 @@ Keep the extension off at `chrome://extensions` except while debugging: it holds
   - The tab can sit in the background; commands still run in it.
   - Only the armed tab runs commands, and the arm lapses on its own after a while, when the tab closes or when it leaves the site it was armed on.
   - Click the icon again, or press Cancel on Chrome's debugging bar, to disarm.
-- Run an expression in that tab and print its result: `BRIDGE_DIR=/tmp/debug-bridge ./eval.sh 'document.title'`
+- Run an expression in that tab and print its result: `./eval.sh 'document.title'`, or pipe a longer script to `./eval.sh` on stdin
 
 Commands get queued only as files under `$BRIDGE_DIR/commands`, never over HTTP, so a web page that finds the port can't run code through the bridge.

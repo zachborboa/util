@@ -4,6 +4,9 @@
 #   source "$(dirname "$0")/queue_command.inc.sh"
 #   queue_command_and_print_result "js" "document.title"
 
+# Default the queue directory, so neither the server nor the clients need it spelled out.
+export BRIDGE_DIR="${BRIDGE_DIR:-/tmp/debug-bridge}"
+
 # Wait this long for a result: long enough to start the server or arm a tab after queueing.
 timeout_seconds=30
 
