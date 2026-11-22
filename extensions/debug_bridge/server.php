@@ -20,6 +20,13 @@ function preview(string $text): string
     return substr(preg_replace('/\s+/', ' ', $text), 0, 120);
 }
 
+// Refuse requests addressed to any other host, so a site whose domain resolves to this machine can't read commands or plant results.
+$expected_host = "localhost:{$_SERVER['SERVER_PORT']}";
+if (($_SERVER['HTTP_HOST'] ?? '') !== $expected_host) {
+    http_response_code(403);
+    exit;
+}
+
 $bridge_dir = getenv('BRIDGE_DIR');
 if ($bridge_dir === false || $bridge_dir === '') {
     http_response_code(500);
