@@ -34,4 +34,21 @@ find "${BRIDGE_DIR}" \
     -mtime +0 \
     -delete
 
-exec php -S "localhost:${port}" "${script_dir}/server.php"
+# Delete every queue file once the server stops; the day-old sweep above catches what a kill -9 or crash skips.
+clear_queue() {
+    find "${BRIDGE_DIR}" \
+        -type "f" \
+        -delete
+}
+trap clear_queue EXIT
+
+php -S "localhost:${port}" "${script_dir}/server.php" &
+server_pid=$!
+
+# Stop the server on any signal the script gets: a background child ignores Ctrl+C and a plain kill would orphan it.
+stop_server() {
+    kill "${server_pid}"
+}
+trap stop_server HUP INT TERM
+
+wait "${server_pid}"
