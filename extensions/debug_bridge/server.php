@@ -44,6 +44,21 @@ foreach (['commands', 'sent', 'results'] as $subdir) {
     }
 }
 
+// Refuse a queue directory another account can reach: whoever can drop a file into commands runs code in the armed tab.
+// Log the refusal too, since the extension is the only one that sees the response.
+foreach (['', '/commands', '/sent', '/results'] as $subdir) {
+    $queue_dir = "{$bridge_dir}{$subdir}";
+    if (fileowner($queue_dir) !== posix_geteuid()) {
+        log_line("Refusing {$queue_dir}: another account owns it.");
+        http_response_code(500);
+        exit;
+    } elseif ((fileperms($queue_dir) & 0077) !== 0) {
+        log_line("Refusing {$queue_dir}: other accounts can open it; run chmod 700 on it.");
+        http_response_code(500);
+        exit;
+    }
+}
+
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 // Hand out the oldest queued command and move it aside so no other tab runs it too.
