@@ -1,15 +1,17 @@
-// Show the server start command with this install's pairing token filled in, ready to copy.
+// Show the command that saves this install's pairing token where start_server.sh reads it, ready to copy.
 chrome.runtime.sendMessage({ 'type': 'get-pairing-token' }).then(function (pairingToken) {
-    document.getElementById('server-command').textContent =
-        'BRIDGE_DIR=/tmp/debug-bridge BRIDGE_TOKEN=' + pairingToken + ' php -S localhost:8765 server.php';
-    document.getElementById('copy-server-command').disabled = false;
+    document.getElementById('save-token-command').textContent =
+        '(umask 077 && mkdir -p ~/.config/debug-bridge && printf "%s\\n" ' +
+        pairingToken +
+        ' > ~/.config/debug-bridge/token)';
+    document.getElementById('copy-save-token-command').disabled = false;
 });
 
-// Copy the server command and confirm beside the button, since the clipboard gives no feedback of its own.
-document.getElementById('copy-server-command').addEventListener('click', function () {
-    var serverCommand = document.getElementById('server-command').textContent;
+// Copy the save command and confirm beside the button, since the clipboard gives no feedback of its own.
+document.getElementById('copy-save-token-command').addEventListener('click', function () {
+    var saveTokenCommand = document.getElementById('save-token-command').textContent;
     var copyStatus = document.getElementById('copy-status');
-    navigator.clipboard.writeText(serverCommand).then(
+    navigator.clipboard.writeText(saveTokenCommand).then(
         function () {
             copyStatus.textContent = 'Copied.';
         },

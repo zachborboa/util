@@ -2,7 +2,7 @@
 // Serve the debug bridge: hand queued JavaScript to the extension and save what it sends back.
 //
 // Usage:
-//   BRIDGE_DIR=/tmp/debug-bridge BRIDGE_TOKEN=<token from the extension's options page> php -S localhost:8765 server.php
+//   ./start_server.sh
 //   ./eval.sh 'document.title'
 //
 // Commands get queued only as files under $BRIDGE_DIR/commands, never over HTTP, so a web page that finds the port can't run code through the bridge.

@@ -34,7 +34,7 @@ async function evaluateInTab(tabId, code) {
     }
 }
 
-// Make the pairing token once per install; the user copies it from the options page into the server's BRIDGE_TOKEN.
+// Make the pairing token once per install; the user saves it from the options page into the file start_server.sh reads.
 async function getPairingToken() {
     const stored = await chrome.storage.local.get('pairingToken');
     if (stored.pairingToken !== undefined) {

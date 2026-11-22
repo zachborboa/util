@@ -4,8 +4,9 @@ Run JavaScript in the armed browser tab from a terminal, through a local server.
 
 Keep the extension off at `chrome://extensions` except while debugging: it holds the `debugger` permission, which can run any code in any tab.
 
-- Start the server with the command on the extension's options page, which fills in the pairing token: `BRIDGE_DIR=/tmp/debug-bridge BRIDGE_TOKEN=<token> php -S localhost:8765 server.php`
+- Pair once: run the command on the extension's options page, which saves the pairing token to `~/.config/debug-bridge/token`.
   - The extension refuses any command without that token, so another program listening on the port can't feed it code.
+- Start the server with `./start_server.sh`; it runs until stopped.
 - Arm the tab to debug by clicking the extension's toolbar icon; the icon shows `ON` while armed and Chrome shows its "started debugging this browser" bar.
   - The tab can sit in the background; commands still run in it.
   - Only the armed tab runs commands, and the arm lapses on its own after a while, when the tab closes or when it leaves the site it was armed on.
