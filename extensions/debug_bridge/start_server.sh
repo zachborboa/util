@@ -27,4 +27,11 @@ fi
 BRIDGE_TOKEN="$(cat "${token_file}")"
 export BRIDGE_TOKEN
 
+# Delete queue files older than a day: results can hold page data, and nothing else clears them before a reboot.
+mkdir -p "${BRIDGE_DIR}"
+find "${BRIDGE_DIR}" \
+    -type "f" \
+    -mtime +0 \
+    -delete
+
 exec php -S "localhost:${port}" "${script_dir}/server.php"
