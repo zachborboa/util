@@ -5,7 +5,11 @@
 #   queue_command_and_print_result "js" "document.title"
 
 # Default the queue directory, so neither the server nor the clients need it spelled out.
-export BRIDGE_DIR="${BRIDGE_DIR:-/tmp/debug-bridge}"
+# Keep it under the home directory: anyone who can write a file into it runs code in the armed tab, and /tmp is shared by every account.
+export BRIDGE_DIR="${BRIDGE_DIR:-${HOME}/.cache/debug-bridge}"
+
+# Create every queue file and directory readable by this account alone, since commands and results can hold page data.
+umask 077
 
 # Wait this long for a result: long enough to start the server or arm a tab after queueing.
 timeout_seconds=30

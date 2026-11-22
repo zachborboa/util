@@ -12,7 +12,7 @@ set -o pipefail
 
 script_dir="$(cd "$(dirname "$0")" && pwd)"
 
-# Pick up the BRIDGE_DIR default shared with the clients.
+# Pick up the BRIDGE_DIR default and the private umask shared with the clients.
 source "${script_dir}/queue_command.inc.sh"
 
 # Keep the port in sync with DEBUG_BRIDGE_URL in js/background.js and host_permissions in manifest.json.
