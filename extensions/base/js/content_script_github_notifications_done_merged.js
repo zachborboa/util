@@ -12,10 +12,22 @@ function isMergedRow(row) {
     return row.querySelector('.octicon-git-merge') !== null;
 }
 
+function isArchivedRow(row) {
+    return row.classList.contains('notification-archived');
+}
+
+// Skip rows already marked done: GitHub keeps them in the list, hidden, until its next re-render.
+function isMergedNotDoneRow(row) {
+    if (isArchivedRow(row)) {
+        return false;
+    }
+    return isMergedRow(row);
+}
+
 function findMergedRows() {
     const mergedRows = [];
     for (const row of document.querySelectorAll('.js-notifications-list-item')) {
-        if (isMergedRow(row)) {
+        if (isMergedNotDoneRow(row)) {
             mergedRows.push(row);
         }
     }
@@ -28,7 +40,7 @@ function markMergedDone() {
         const checkbox = row.querySelector('.js-notification-bulk-action-check-item');
 
         // Click rather than set checked, so GitHub's selection count and toolbar follow along.
-        if (checkbox.checked !== isMergedRow(row)) {
+        if (checkbox.checked !== isMergedNotDoneRow(row)) {
             checkbox.click();
         }
     }
@@ -92,7 +104,9 @@ function updateDoneMergedButton() {
 }
 
 // Re-add the button whenever GitHub re-renders the list or navigates to the notifications page.
+// Watch class changes too, since marking a row done only swaps its class.
 new MutationObserver(updateDoneMergedButton).observe(document.documentElement, {
+    attributeFilter: ['class'],
     childList: true,
     subtree: true,
 });
