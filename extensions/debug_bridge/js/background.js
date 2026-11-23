@@ -2,6 +2,9 @@
 // Keep the port in sync with host_permissions in manifest.json.
 const DEBUG_BRIDGE_URL = 'http://localhost:8765';
 
+// Send this header with every request, so the server can tell the extension from a web page: a page can't add a custom header to a localhost request.
+const DEBUG_BRIDGE_HEADERS = { 'X-Debug-Bridge': '1' };
+
 // Ask for the next command this often while a tab is armed, so a queued command runs about as soon as it lands.
 const DEBUG_BRIDGE_POLL_MS = 1000;
 
@@ -116,7 +119,9 @@ function sleep(ms) {
 // Run the next queued command, if there is one, and return how long to wait before asking again.
 async function runNextCommand(tabId) {
     try {
-        const response = await fetch(DEBUG_BRIDGE_URL + '/next');
+        const response = await fetch(DEBUG_BRIDGE_URL + '/next', {
+            'headers': DEBUG_BRIDGE_HEADERS,
+        });
         if (response.status !== 200) {
             return DEBUG_BRIDGE_POLL_MS;
         }
@@ -125,6 +130,7 @@ async function runNextCommand(tabId) {
         const result = await runCommand(tabId, command);
         await fetch(DEBUG_BRIDGE_URL + '/result', {
             'body': JSON.stringify({ 'id': command.id, 'url': location.value, ...result }),
+            'headers': DEBUG_BRIDGE_HEADERS,
             'method': 'POST',
         });
         return DEBUG_BRIDGE_POLL_MS;

@@ -27,6 +27,16 @@ if (($_SERVER['HTTP_HOST'] ?? '') !== $expected_host) {
     exit;
 }
 
+// Refuse the browser's preflight (OPTIONS) and never answer it with permissive Access-Control-Allow-* headers: that approval is what would let a web page send the header checked below.
+// Refuse requests without the extension's header, so a web page can't take queued commands or watch for them.
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(403);
+    exit;
+} elseif (($_SERVER['HTTP_X_DEBUG_BRIDGE'] ?? '') !== '1') {
+    http_response_code(403);
+    exit;
+}
+
 $bridge_dir = getenv('BRIDGE_DIR');
 if ($bridge_dir === false || $bridge_dir === '') {
     http_response_code(500);

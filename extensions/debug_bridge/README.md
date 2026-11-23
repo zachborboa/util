@@ -14,3 +14,5 @@ Keep the extension off at `chrome://extensions` except while debugging: it holds
 - Run an expression in that tab and print its result: `./eval.sh 'document.title'`, or pipe a longer script to `./eval.sh` on stdin
 
 Commands get queued only as files under `$BRIDGE_DIR/commands`, never over HTTP, so a web page that finds the port can't run code through the bridge.
+
+The server also refuses any request without the extension's `X-Debug-Bridge` header, which a web page can't send to localhost, so a page can't take queued commands or tell when one is waiting.
