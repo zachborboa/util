@@ -54,9 +54,26 @@ async function runCommand(tabId, command) {
     const pairingToken = await getPairingToken();
     if (command.token !== pairingToken) {
         console.warn('Debug Bridge: refused a command without the pairing token');
+        await forgetPairing();
         return { 'error': "refused: BRIDGE_TOKEN doesn't match the token on the extension's options page" };
     }
+    await chrome.storage.local.set({ 'paired': true });
     return evaluateInTab(tabId, command.code);
+}
+
+// Treat the install as paired once a command carries the matching token: nothing else proves the user saved the token file.
+async function isPaired() {
+    const stored = await chrome.storage.local.get('paired');
+    return stored.paired === true;
+}
+
+// Reopen the options page when a paired install starts getting the wrong token, so the save command is at hand; skip it while unpaired, since the arm click already opened it.
+async function forgetPairing() {
+    const paired = await isPaired();
+    await chrome.storage.local.set({ 'paired': false });
+    if (paired) {
+        await chrome.runtime.openOptionsPage();
+    }
 }
 
 // Read the armed tab from session storage, which survives the background worker stopping but not a browser restart.
@@ -90,6 +107,11 @@ async function arm(tab) {
     await chrome.action.setBadgeText({ 'tabId': tab.id, 'text': 'ON' });
     await chrome.action.setTitle({ 'tabId': tab.id, 'title': DISARM_TITLE });
     pollDebugBridge();
+
+    // Open the options page until pairing is proven, so the save command is one click away when start_server.sh can't find the token.
+    if (!(await isPaired())) {
+        await chrome.runtime.openOptionsPage();
+    }
 }
 
 async function forgetArm() {

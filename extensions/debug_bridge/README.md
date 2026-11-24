@@ -6,6 +6,7 @@ Keep the extension off at `chrome://extensions` except while debugging: it holds
 
 - Pair once: run the command on the extension's options page, which saves the pairing token to `~/.config/debug-bridge/token`.
   - The extension refuses any command without that token, so another program listening on the port can't feed it code.
+  - Arming opens the options page until the first command arrives with the matching token, and again whenever a paired install gets a wrong one.
 - Start the server with `./start_server.sh`; it runs until stopped.
 - Arm the tab to debug by clicking the extension's toolbar icon; the icon shows `ON` while armed and Chrome shows its "started debugging this browser" bar.
   - The tab can sit in the background; commands still run in it.
